@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V09 — Data Mosaic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --teal-mid: oklch(40% 0.10 178);
+      --ink: oklch(20% 0.01 250);
+      --ink-2: oklch(42% 0.01 250);
+      --ink-3: oklch(58% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+      --warm: oklch(95% 0.02 70);
+      --cool: oklch(95% 0.015 250);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 48px; border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .topbar-brand { font-size: 12px; font-weight: 700; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+    .tabs { display: flex; list-style: none; }
+    .tabs li a {
+      display: block; padding: 12px 14px; font-size: 12px; font-weight: 500;
+      color: var(--ink-3); text-decoration: none; border-bottom: 2px solid transparent;
+    }
+    .tabs li.active a { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }
+
+    .main { flex: 1; overflow-y: auto; padding: 32px; }
+
+    .mosaic {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto auto auto;
+      gap: 12px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .tile {
+      border-radius: 10px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    /* Hero tile */
+    .tile-hero {
+      grid-column: 1 / 3;
+      grid-row: 1 / 3;
+      background: var(--teal-mid);
+      color: oklch(95% 0.01 178);
+      padding: 40px;
+      justify-content: space-between;
+    }
+
+    .tile-hero .tile-eyebrow {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .tile-hero h1 {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      margin-bottom: 12px;
+    }
+
+    .tile-hero p {
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0.8;
+      max-width: 360px;
+    }
+
+    /* Stat tiles */
+    .tile-stat {
+      background: var(--teal-soft);
+      border: 1px solid oklch(89% 0.04 178);
+    }
+
+    .tile-stat .stat-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 36px;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: -0.04em;
+      margin-bottom: 6px;
+    }
+
+    .tile-stat .stat-label {
+      font-size: 12px;
+      color: var(--ink-2);
+      line-height: 1.4;
+    }
+
+    /* Content tiles */
+    .tile-content {
+      background: var(--warm);
+      border: 1px solid oklch(91% 0.015 70);
+    }
+
+    .tile-cool {
+      background: var(--cool);
+      border: 1px solid oklch(91% 0.012 250);
+    }
+
+    .tile-content .tile-label,
+    .tile-cool .tile-label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 10px;
+    }
+
+    .tile-content h3,
+    .tile-cool h3 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+
+    .tile-content p,
+    .tile-cool p {
+      font-size: 12.5px;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    /* Nav tile */
+    .tile-nav {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      grid-column: 4;
+      grid-row: 2 / 4;
+      padding: 24px;
+      justify-content: flex-start;
+      gap: 12px;
+    }
+
+    .tile-nav .nav-label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 4px;
+    }
+
+    .tile-nav a {
+      display: block;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-2);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .tile-nav a:hover { border-color: var(--teal); color: var(--ink); }
+
+    /* Wide tile */
+    .tile-wide {
+      grid-column: 1 / 4;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 32px;
+      padding: 24px 32px;
+    }
+
+    .tile-wide .quote-mark {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--teal);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .tile-wide blockquote {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--ink-2);
+      line-height: 1.6;
+    }
+
+    .tile-wide cite {
+      font-style: normal;
+      font-size: 11px;
+      color: var(--ink-3);
+      display: block;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+      <ul class="tabs">
+        <li class="active"><a href="#">Overview</a></li>
+        <li><a href="#">Featured</a></li>
+        <li><a href="#">More from R&I</a></li>
+        <li><a href="#">Customer</a></li>
+      </ul>
+    </header>
+    <main class="main">
+      <div class="mosaic">
+        <div class="tile tile-hero">
+          <div class="tile-eyebrow">Q1 2026 · Dec – Mar</div>
+          <div>
+            <h1>What we learned this quarter</h1>
+            <p>Seven research outputs covering students, partners, brand health, membership, and market intelligence.</p>
+          </div>
+        </div>
+
+        <div class="tile tile-stat">
+          <div class="stat-val">3.2×</div>
+          <div class="stat-label">Student order frequency vs. general pop.</div>
+        </div>
+
+        <div class="tile tile-stat">
+          <div class="stat-val">34%</div>
+          <div class="stat-label">Social basket-splitting in student orders</div>
+        </div>
+
+        <div class="tile tile-content">
+          <div class="tile-label">Brand</div>
+          <h3>Awareness growing in key demographics</h3>
+          <p>Deliveroo gaining vs. competitors in target segments</p>
+        </div>
+
+        <div class="tile tile-cool">
+          <div class="tile-label">International</div>
+          <h3>French consumers prefer evening and quality</h3>
+          <p>Speed matters less than restaurant quality in France</p>
+        </div>
+
+        <div class="tile tile-nav">
+          <div class="nav-label">Sections</div>
+          <a href="#">Featured Research</a>
+          <a href="#">More from R&I</a>
+          <a href="#">Meet the Customer</a>
+          <a href="#">Appendix</a>
+        </div>
+
+        <div class="tile tile-wide">
+          <div class="quote-mark">"</div>
+          <blockquote>
+            We split one big order between three of us — it's cheaper than cooking and nobody has to wash up.
+            <cite>— Research participant, Edinburgh</cite>
+          </blockquote>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

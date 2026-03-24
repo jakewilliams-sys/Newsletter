@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V10 — Progressive Reveal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(95% 0.03 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(42% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 52px; border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .topbar-brand { font-size: 13px; font-weight: 700; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+    }
+
+    .reveal-container {
+      max-width: 560px;
+      width: 100%;
+    }
+
+    .quarter-line {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-3);
+      margin-bottom: 32px;
+      letter-spacing: 0.04em;
+    }
+
+    .quarter-line .teal { color: var(--teal); }
+
+    h1 {
+      font-size: clamp(40px, 5vw, 56px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      margin-bottom: 40px;
+    }
+
+    .sections-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-item {
+      border-top: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .section-item:last-child { border-bottom: 1px solid var(--border); }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 4px;
+      cursor: pointer;
+      transition: color 0.15s;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .section-header:hover { color: var(--teal); }
+
+    .section-name {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-3);
+    }
+
+    .section-toggle {
+      font-size: 18px;
+      color: var(--ink-3);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), color 0.15s;
+      line-height: 1;
+    }
+
+    .section-item.open .section-toggle {
+      transform: rotate(45deg);
+      color: var(--teal);
+    }
+
+    .section-item.open .section-header { color: var(--teal); }
+
+    .section-preview {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .section-item.open .section-preview {
+      max-height: 200px;
+    }
+
+    .preview-inner {
+      padding: 0 4px 20px 36px;
+    }
+
+    .preview-inner p {
+      font-size: 14px;
+      color: var(--ink-2);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .preview-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--teal-soft);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--ink-2);
+    }
+
+    .preview-stat strong {
+      font-family: 'DM Mono', monospace;
+      font-size: 16px;
+      color: var(--teal);
+      font-weight: 500;
+    }
+
+    .preview-link {
+      display: inline-block;
+      margin-left: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    .preview-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+  </header>
+  <main class="main">
+    <div class="reveal-container">
+      <div class="quarter-line"><span class="teal">●</span> December 2025 – March 2026</div>
+      <h1>What we learned this quarter</h1>
+
+      <ul class="sections-list">
+        <li class="section-item open">
+          <div class="section-header" onclick="toggle(this)">
+            <span class="section-name"><span class="section-num">01</span> Featured Research</span>
+            <span class="section-toggle">+</span>
+          </div>
+          <div class="section-preview">
+            <div class="preview-inner">
+              <p>Four deep-dives including student ordering behaviour, Plus membership retention, brand health, and French market preferences.</p>
+              <span class="preview-stat"><strong>4</strong> outputs</span>
+              <a href="#" class="preview-link">Explore →</a>
+            </div>
+          </div>
+        </li>
+        <li class="section-item">
+          <div class="section-header" onclick="toggle(this)">
+            <span class="section-name"><span class="section-num">02</span> More from R&I</span>
+            <span class="section-toggle">+</span>
+          </div>
+          <div class="section-preview">
+            <div class="preview-inner">
+              <p>Partner NPS segmentation, Medallia customer satisfaction digest, and competitor landscape analysis.</p>
+              <span class="preview-stat"><strong>3</strong> outputs</span>
+              <a href="#" class="preview-link">Explore →</a>
+            </div>
+          </div>
+        </li>
+        <li class="section-item">
+          <div class="section-header" onclick="toggle(this)">
+            <span class="section-name"><span class="section-num">03</span> Meet the Customer</span>
+            <span class="section-toggle">+</span>
+          </div>
+          <div class="section-preview">
+            <div class="preview-inner">
+              <p>A portrait of Maria J. — long-term Plus subscriber, 46 lifetime orders, and strong opinions on delivery quality and support.</p>
+              <a href="#" class="preview-link">Read profile →</a>
+            </div>
+          </div>
+        </li>
+        <li class="section-item">
+          <div class="section-header" onclick="toggle(this)">
+            <span class="section-name"><span class="section-num">04</span> Appendix</span>
+            <span class="section-toggle">+</span>
+          </div>
+          <div class="section-preview">
+            <div class="preview-inner">
+              <p>Full reference table of all 7 research outputs with contributors, dates, and links.</p>
+              <a href="#" class="preview-link">View table →</a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <script>
+    function toggle(header) {
+      const item = header.parentElement;
+      item.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

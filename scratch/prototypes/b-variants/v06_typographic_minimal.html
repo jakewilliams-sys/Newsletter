@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V06 — Typographic Minimal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(44% 0.01 250);
+      --ink-3: oklch(62% 0.015 250);
+      --surface: oklch(98% 0.003 250);
+      --border: oklch(90% 0.008 250);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page {
+      max-width: 600px;
+      padding: 0 32px;
+    }
+
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-3);
+      letter-spacing: 0.04em;
+      margin-bottom: 40px;
+    }
+
+    .eyebrow .teal { color: var(--teal); }
+
+    h1 {
+      font-size: clamp(44px, 6vw, 68px);
+      font-weight: 700;
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      margin-bottom: 32px;
+    }
+
+    h1 .light {
+      font-weight: 400;
+      color: var(--ink-2);
+    }
+
+    .body-text {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--ink-2);
+      max-width: 440px;
+      margin-bottom: 48px;
+    }
+
+    .teal-line {
+      width: 40px;
+      height: 2px;
+      background: var(--teal);
+      margin-bottom: 48px;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .nav-item:hover {
+      border-color: var(--teal);
+      background: oklch(97.5% 0.01 178);
+    }
+
+    .nav-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-3);
+    }
+
+    .nav-text {
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="eyebrow"><span class="teal">R&I</span> — Q1 2026 — Dec to Mar</div>
+    <h1>What we<br>learned <span class="light">this<br>quarter</span></h1>
+    <p class="body-text">
+      Seven pieces of research from across the team. Students, partners,
+      brand health, membership, and market intelligence.
+    </p>
+    <div class="teal-line"></div>
+    <div class="nav-grid">
+      <a href="#" class="nav-item">
+        <span class="nav-num">01</span>
+        <span class="nav-text">Featured Research</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-num">02</span>
+        <span class="nav-text">More from R&I</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-num">03</span>
+        <span class="nav-text">Meet the Customer</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-num">04</span>
+        <span class="nav-text">Appendix</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

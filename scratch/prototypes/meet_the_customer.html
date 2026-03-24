@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R&I Newsletter — Meet the Customer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --teal-mid: oklch(82% 0.08 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(40% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --ink-4: oklch(74% 0.01 250);
+      --surface: oklch(98.5% 0.003 250);
+      --surface-raised: oklch(99.2% 0.002 250);
+      --border: oklch(91% 0.008 250);
+      --border-light: oklch(94% 0.005 250);
+      --up: oklch(62% 0.12 155);
+      --up-soft: oklch(94% 0.03 155);
+      --down: oklch(65% 0.12 45);
+      --down-soft: oklch(94% 0.03 45);
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    .topbar {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 0 48px; height: 64px;
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      background: var(--surface-raised); z-index: 200; position: relative;
+    }
+    .topbar-brand { font-size: 14px; font-weight: 700; justify-self: start; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 8px; font-size: 13px; }
+    .pill-nav {
+      display: flex; gap: 6px; padding: 6px;
+      background: oklch(96% 0.005 250); border-radius: 999px;
+      border: 1px solid var(--border); justify-self: center;
+    }
+    .pill-nav a {
+      display: block; padding: 10px 20px; font-size: 13px; font-weight: 500;
+      color: var(--ink-2); text-decoration: none; border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .pill-nav a:hover { color: var(--ink); background: oklch(94% 0.01 250); }
+    .pill-nav a.active { background: var(--teal); color: white; font-weight: 600; }
+
+    .main { flex: 1; overflow-y: auto; overflow-x: hidden; }
+    .story { max-width: 960px; margin: 0 auto; padding: 56px 48px 140px; }
+
+    /* ─── Scroll Reveal ─── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.7s var(--ease-out-quart), transform 0.7s var(--ease-out-quart);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── Chapter ─── */
+    .chapter { margin-bottom: 80px; }
+    .chapter-number {
+      font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal);
+      margin-bottom: 12px;
+    }
+    .chapter-title {
+      font-size: clamp(28px, 3.5vw, 38px); font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.15; color: var(--ink);
+      margin-bottom: 20px;
+    }
+
+    /* ─── Narrative text ─── */
+    .narrative {
+      font-size: 16px; line-height: 1.75; color: var(--ink-2); max-width: 62ch;
+      margin-bottom: 32px;
+    }
+    .narrative strong { color: var(--ink); font-weight: 600; }
+    .narrative em { font-style: italic; color: var(--ink); }
+
+    /* ─── The intro / name reveal ─── */
+    .name-reveal {
+      margin-bottom: 72px;
+    }
+    .name-reveal h1 {
+      font-size: clamp(48px, 6vw, 72px); font-weight: 700;
+      letter-spacing: -0.04em; line-height: 1; color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .name-reveal .subtitle {
+      font-size: 16px; color: var(--ink-3); font-weight: 400;
+    }
+    .name-reveal .subtitle strong {
+      color: var(--teal); font-weight: 600;
+    }
+    .profile-strip {
+      display: flex; gap: 32px; margin-top: 28px; padding: 20px 0;
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .profile-strip .detail {
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .profile-strip .detail-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-4);
+    }
+    .profile-strip .detail-value {
+      font-size: 14px; font-weight: 500; color: var(--ink);
+    }
+    .plus-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;
+      background: oklch(68% 0.14 178 / 0.1); color: var(--teal);
+    }
+
+    /* ─── Quote ─── */
+    .voice {
+      margin: 40px 0 40px 0; padding: 28px 32px;
+      background: var(--surface-raised);
+      border-radius: 12px; border: 1px solid var(--border-light);
+      position: relative;
+    }
+    .voice::before {
+      content: '\201C'; position: absolute; top: 12px; left: 20px;
+      font-size: 48px; line-height: 1; color: var(--teal-mid); font-family: Georgia, serif;
+    }
+    .voice blockquote {
+      font-size: 17px; line-height: 1.7; color: var(--ink);
+      font-style: italic; padding-left: 28px;
+    }
+    .voice .attr {
+      font-size: 12px; color: var(--ink-4); margin-top: 12px; font-style: normal;
+      padding-left: 28px;
+    }
+
+    /* ─── Evidence (data that proves the narrative) ─── */
+    .evidence {
+      margin: 36px 0 36px 0;
+      padding: 32px 36px; background: var(--surface-raised);
+      border: 1px solid var(--border); border-radius: 12px;
+    }
+    .evidence-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-4);
+      margin-bottom: 16px;
+    }
+
+    /* ─── Big stat (inline in narrative) ─── */
+    .big-stat {
+      display: flex; align-items: baseline; gap: 16px;
+      margin: 24px 0;
+    }
+    .big-stat-number {
+      font-family: 'DM Mono', monospace; font-size: clamp(44px, 5vw, 60px);
+      font-weight: 500; letter-spacing: -0.05em; line-height: 1; color: var(--ink);
+    }
+    .big-stat-context {
+      font-size: 15px; color: var(--ink-3); line-height: 1.4; max-width: 28ch;
+    }
+
+    /* ─── Before / After comparison ─── */
+    .before-after {
+      display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px;
+      align-items: center; margin: 32px 0;
+    }
+    .ba-card {
+      padding: 24px 28px; border-radius: 10px; text-align: center;
+    }
+    .ba-card.before {
+      background: var(--down-soft); border: 1px solid oklch(90% 0.04 45);
+    }
+    .ba-card.after {
+      background: var(--up-soft); border: 1px solid oklch(90% 0.04 155);
+    }
+    .ba-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .ba-card.before .ba-label { color: var(--down); }
+    .ba-card.after .ba-label { color: var(--up); }
+    .ba-number {
+      font-family: 'DM Mono', monospace; font-size: 36px;
+      font-weight: 500; letter-spacing: -0.04em; color: var(--ink);
+    }
+    .ba-detail {
+      font-size: 13px; color: var(--ink-3); margin-top: 6px;
+    }
+    .ba-arrow {
+      font-size: 24px; color: var(--ink-4);
+    }
+
+    /* ─── Trend tag ─── */
+    .trend {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500;
+      padding: 4px 12px; border-radius: 999px;
+    }
+    .trend.up { color: var(--up); background: var(--up-soft); }
+    .trend.down { color: var(--down); background: var(--down-soft); }
+
+    /* ─── Heatmap ─── */
+    .heatmap {
+      display: grid; grid-template-columns: 56px repeat(7, 1fr); gap: 4px;
+      font-size: 11px;
+    }
+    .heatmap-label {
+      display: flex; align-items: center; justify-content: flex-end;
+      padding-right: 8px; color: var(--ink-4); font-size: 11px;
+    }
+    .heatmap-day {
+      text-align: center; color: var(--ink-4); font-weight: 500;
+      padding-bottom: 4px; font-size: 10px; letter-spacing: 0.04em;
+    }
+    .heatmap-cell { aspect-ratio: 1; border-radius: 4px; }
+    .heatmap-cell.l0 { background: oklch(96% 0.005 250); }
+    .heatmap-cell.l1 { background: oklch(90% 0.04 178); }
+    .heatmap-cell.l2 { background: oklch(80% 0.08 178); }
+    .heatmap-cell.l3 { background: oklch(68% 0.14 178); }
+    .heatmap-cell.l4 { background: oklch(55% 0.14 178); }
+
+    /* ─── Cuisine Bars ─── */
+    .cuisine-row {
+      display: grid; grid-template-columns: 90px 1fr 48px;
+      align-items: center; gap: 16px; margin-bottom: 10px;
+    }
+    .cuisine-name { font-size: 14px; color: var(--ink-2); text-align: right; font-weight: 500; }
+    .cuisine-track { height: 28px; background: oklch(96% 0.005 250); border-radius: 4px; overflow: hidden; }
+    .cuisine-fill {
+      height: 100%; border-radius: 4px;
+      transition: width 0.8s var(--ease-out-expo);
+    }
+    .cuisine-fill.c1 { background: var(--teal); }
+    .cuisine-fill.c2 { background: var(--teal-mid); }
+    .cuisine-fill.c3 { background: oklch(82% 0.06 178); }
+    .cuisine-fill.c4 { background: oklch(88% 0.04 178); }
+    .cuisine-pct { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-3); }
+
+    /* ─── Sparkline ─── */
+    .sparkline-container {
+      padding: 20px 0 8px;
+    }
+    .sparkline-meta {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--ink-4); margin-top: 8px;
+    }
+
+    /* ─── Favourite Spots ─── */
+    .spot-list { margin-top: 16px; }
+    .spot {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0; border-bottom: 1px solid var(--border-light);
+    }
+    .spot:first-child { border-top: 1px solid var(--border-light); }
+    .spot-rank {
+      font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-4);
+      width: 24px;
+    }
+    .spot-info { display: flex; flex-direction: column; gap: 2px; flex: 1; margin-left: 8px; }
+    .spot-name { font-size: 15px; font-weight: 600; }
+    .spot-cuisine { font-size: 12px; color: var(--ink-3); }
+    .spot-orders {
+      font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink-3);
+    }
+
+    /* ─── Time of Day ─── */
+    .time-bars { display: flex; gap: 8px; height: 140px; margin-top: 12px; }
+    .time-bar {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: flex-end; gap: 6px;
+    }
+    .time-bar-fill {
+      width: 100%; border-radius: 4px 4px 0 0;
+      transition: height 0.6s var(--ease-out-expo);
+    }
+    .time-bar-fill.peak { background: var(--teal); }
+    .time-bar-fill.mid { background: var(--teal-mid); }
+    .time-bar-fill.low { background: oklch(90% 0.03 178); }
+    .time-bar-label { font-size: 10px; color: var(--ink-4); }
+    .time-callout {
+      margin-top: 14px; font-size: 13px; color: var(--ink-3);
+    }
+    .time-callout strong { color: var(--ink); font-weight: 600; }
+
+    /* ─── Two-up layout ─── */
+    .two-up {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+      margin: 32px 0;
+    }
+    .two-up .evidence { margin: 0; }
+
+    /* ─── Savings breakdown ─── */
+    .savings-row {
+      display: flex; align-items: baseline; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid var(--border-light);
+      font-size: 14px;
+    }
+    .savings-row:last-child { border-bottom: none; font-weight: 600; }
+    .savings-row .savings-label { color: var(--ink-2); }
+    .savings-row .savings-value {
+      font-family: 'DM Mono', monospace; font-weight: 500; color: var(--ink);
+    }
+    .savings-row:last-child .savings-value { color: var(--up); font-size: 18px; }
+
+    /* ─── Connection Card ─── */
+    .connection {
+      margin-top: 24px; padding: 32px 36px;
+      background: var(--teal-soft); border: 1px solid oklch(88% 0.05 178);
+      border-radius: 12px;
+    }
+    .connection-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal);
+      margin-bottom: 12px;
+    }
+    .connection p {
+      font-size: 15px; line-height: 1.65; color: var(--ink-2); margin-bottom: 16px;
+    }
+    .connection a {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 14px; font-weight: 600; color: var(--teal);
+      text-decoration: none; transition: gap 0.2s var(--ease-out-quart);
+    }
+    .connection a:hover { gap: 10px; }
+    .connection a svg { width: 14px; height: 14px; }
+
+    /* ─── Divider ─── */
+    .chapter-break {
+      display: flex; align-items: center; gap: 16px;
+      margin: 72px 0 56px;
+    }
+    .chapter-break::before, .chapter-break::after {
+      content: ''; flex: 1; height: 1px; background: var(--border-light);
+    }
+    .chapter-break span {
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--ink-4);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+      <nav class="pill-nav">
+        <a href="#">Headlines</a>
+        <a href="#">More Research</a>
+        <a href="#" class="active">Meet the Customer</a>
+      </nav>
+      <div style="justify-self:end;"></div>
+    </header>
+
+    <div class="main" id="mainArea">
+      <div class="story">
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- ACT 1: WHY HER?                            -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="reveal name-reveal">
+          <h1>Maria</h1>
+          <p class="subtitle">London · Customer since March 2024 · <strong>Plus Gold</strong></p>
+          <div class="profile-strip">
+            <div class="detail">
+              <span class="detail-label">Lifetime orders</span>
+              <span class="detail-value" data-count="247">0</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">This quarter</span>
+              <span class="detail-value" data-count="52">0</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Avg basket</span>
+              <span class="detail-value">£23.40</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Top cuisine</span>
+              <span class="detail-value">Japanese</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal chapter">
+          <p class="narrative">We chose Maria because her story is one we're seeing more often in the data — but rarely get to hear in someone's own words. She's a <strong>high-frequency Plus Gold member</strong> who, on paper, looks like a retention success. Two hundred and forty-seven lifetime orders. Subscribed for two years. The kind of customer most teams would file under "healthy" and move on.</p>
+          <p class="narrative">But look closer and something interesting is happening. Her behaviour is <em>shifting</em>. Not in the way that triggers a churn alert — in a subtler, more human way. And it raises a question our Plus Gold research has been circling all quarter:</p>
+          <p class="narrative"><strong>What does loyalty actually look like when a customer grows up?</strong></p>
+        </div>
+
+        <div class="chapter-break reveal"><span>Chapter 1</span></div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- ACT 2: THE RITUAL                          -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="reveal chapter">
+          <div class="chapter-title">The evening ritual</div>
+          <p class="narrative">Maria's week has a rhythm. Most of it is quiet — a coffee here, an occasional lunch order. But every evening, somewhere between 7 and 11pm, something switches on. The kitchen stays dark. The app comes out.</p>
+          <p class="narrative">Look at the last four weeks of her ordering pattern. The evenings glow.</p>
+        </div>
+
+        <div class="reveal evidence">
+          <div class="evidence-label">Maria's ordering heatmap — last 4 weeks</div>
+          <div class="heatmap">
+            <div></div>
+            <div class="heatmap-day">Mon</div><div class="heatmap-day">Tue</div><div class="heatmap-day">Wed</div><div class="heatmap-day">Thu</div><div class="heatmap-day">Fri</div><div class="heatmap-day">Sat</div><div class="heatmap-day">Sun</div>
+            <div class="heatmap-label">Morning</div>
+            <div class="heatmap-cell l0"></div><div class="heatmap-cell l0"></div><div class="heatmap-cell l1"></div><div class="heatmap-cell l0"></div><div class="heatmap-cell l0"></div><div class="heatmap-cell l1"></div><div class="heatmap-cell l2"></div>
+            <div class="heatmap-label">Afternoon</div>
+            <div class="heatmap-cell l0"></div><div class="heatmap-cell l1"></div><div class="heatmap-cell l0"></div><div class="heatmap-cell l0"></div><div class="heatmap-cell l1"></div><div class="heatmap-cell l2"></div><div class="heatmap-cell l1"></div>
+            <div class="heatmap-label">Evening</div>
+            <div class="heatmap-cell l3"></div><div class="heatmap-cell l2"></div><div class="heatmap-cell l4"></div><div class="heatmap-cell l3"></div><div class="heatmap-cell l4"></div><div class="heatmap-cell l4"></div><div class="heatmap-cell l0"></div>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <p class="narrative">Sunday evening is the only gap — and she'll explain why in a moment. But first, look at what she's ordering.</p>
+        </div>
+
+        <div class="reveal evidence">
+          <div class="evidence-label">What Maria orders — cuisine split, 6 months</div>
+          <div class="cuisine-row"><span class="cuisine-name">Japanese</span><div class="cuisine-track"><div class="cuisine-fill c1" style="width:0%" data-width="72%"></div></div><span class="cuisine-pct">36%</span></div>
+          <div class="cuisine-row"><span class="cuisine-name">Italian</span><div class="cuisine-track"><div class="cuisine-fill c2" style="width:0%" data-width="44%"></div></div><span class="cuisine-pct">22%</span></div>
+          <div class="cuisine-row"><span class="cuisine-name">Thai</span><div class="cuisine-track"><div class="cuisine-fill c3" style="width:0%" data-width="30%"></div></div><span class="cuisine-pct">15%</span></div>
+          <div class="cuisine-row"><span class="cuisine-name">Burgers</span><div class="cuisine-track"><div class="cuisine-fill c4" style="width:0%" data-width="18%"></div></div><span class="cuisine-pct">9%</span></div>
+        </div>
+
+        <div class="reveal">
+          <p class="narrative">Over a third of everything she orders is Japanese. And it's not spread across restaurants — it's almost entirely one place.</p>
+        </div>
+
+        <div class="reveal evidence">
+          <div class="evidence-label">Maria's most-ordered restaurants</div>
+          <div class="spot-list">
+            <div class="spot">
+              <span class="spot-rank">01</span>
+              <div class="spot-info"><span class="spot-name">Kazu</span><span class="spot-cuisine">Japanese · Soho</span></div>
+              <span class="spot-orders">48 orders</span>
+            </div>
+            <div class="spot">
+              <span class="spot-rank">02</span>
+              <div class="spot-info"><span class="spot-name">Flat Iron</span><span class="spot-cuisine">Steak · Shoreditch</span></div>
+              <span class="spot-orders">23 orders</span>
+            </div>
+            <div class="spot">
+              <span class="spot-rank">03</span>
+              <div class="spot-info"><span class="spot-name">Rosa's Thai</span><span class="spot-cuisine">Thai · Spitalfields</span></div>
+              <span class="spot-orders">19 orders</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal voice">
+          <blockquote>"Japanese is my comfort food. There's this one place — Kazu — I've ordered from them maybe 50 times. They know my order by now, I'm sure of it."</blockquote>
+          <p class="attr">— Maria</p>
+        </div>
+
+        <div class="reveal">
+          <p class="narrative">Forty-eight orders from a single restaurant. That's not convenience — that's a <em>relationship</em>. Maria doesn't browse. She knows what she wants, and the platform's job is to get out of the way.</p>
+        </div>
+
+        <div class="chapter-break reveal"><span>Chapter 2</span></div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- ACT 3: SOMETHING CHANGED                   -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="reveal chapter">
+          <div class="chapter-title">Something changed</div>
+          <p class="narrative">Six months ago, Maria was ordering <strong>4.9 times a week</strong>. Nearly every day. That number has been falling steadily since — not dramatically, but consistently. The kind of drift that looks like noise week to week, but tells a clear story over months.</p>
+        </div>
+
+        <div class="reveal evidence">
+          <div class="evidence-label">Weekly order frequency — 6 month trend</div>
+          <div class="sparkline-container">
+            <svg id="sparkline" viewBox="0 0 500 100" style="width:100%;height:100px;">
+              <defs>
+                <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="oklch(68% 0.14 178)" stop-opacity="0.15"/>
+                  <stop offset="100%" stop-color="oklch(68% 0.14 178)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path id="sparkArea" fill="url(#sparkGrad)" opacity="0"/>
+              <path id="sparkLine" fill="none" stroke="oklch(68% 0.14 178)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
+            </svg>
+            <div class="sparkline-meta">
+              <span>Oct 2025</span>
+              <span>Mar 2026</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <p class="narrative">If this were all you saw, you might flag her as at-risk. But the story has a twist.</p>
+        </div>
+
+        <div class="reveal before-after">
+          <div class="ba-card before">
+            <div class="ba-label">6 months ago</div>
+            <div class="ba-number">4.9×</div>
+            <div class="ba-detail">orders per week</div>
+            <div class="ba-number" style="font-size:24px; margin-top:12px;">£21.30</div>
+            <div class="ba-detail">average basket</div>
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-card after">
+            <div class="ba-label">Now</div>
+            <div class="ba-number" data-count="4.1">0</div>
+            <div class="ba-detail">orders per week</div>
+            <div class="ba-number" style="font-size:24px; margin-top:12px;">£23.40</div>
+            <div class="ba-detail">average basket</div>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <p class="narrative"><strong>She's ordering less, but spending more each time.</strong> Her frequency dropped 16%, but her basket grew 10%. She's not disengaging — she's becoming more deliberate. Less impulse, more intent.</p>
+        </div>
+
+        <div class="reveal voice">
+          <blockquote>"I used to order every single night. Now it's more like four times a week — I started cooking on Sundays and meal prepping. But when I do order, I order properly."</blockquote>
+          <p class="attr">— Maria</p>
+        </div>
+
+        <div class="reveal">
+          <p class="narrative">That's the Sunday gap in the heatmap. She's not churning — she's <em>cooking</em>. And when she comes back to the app, the orders are bigger, more considered. This is what maturation looks like in a power user.</p>
+        </div>
+
+        <div class="reveal evidence">
+          <div class="evidence-label">When Maria orders</div>
+          <div class="time-bars">
+            <div class="time-bar"><div class="time-bar-fill low" data-height="12%" style="height:0%"></div><span class="time-bar-label">7–9</span></div>
+            <div class="time-bar"><div class="time-bar-fill low" data-height="8%" style="height:0%"></div><span class="time-bar-label">9–11</span></div>
+            <div class="time-bar"><div class="time-bar-fill mid" data-height="25%" style="height:0%"></div><span class="time-bar-label">11–13</span></div>
+            <div class="time-bar"><div class="time-bar-fill low" data-height="10%" style="height:0%"></div><span class="time-bar-label">13–15</span></div>
+            <div class="time-bar"><div class="time-bar-fill low" data-height="5%" style="height:0%"></div><span class="time-bar-label">15–17</span></div>
+            <div class="time-bar"><div class="time-bar-fill mid" data-height="35%" style="height:0%"></div><span class="time-bar-label">17–19</span></div>
+            <div class="time-bar"><div class="time-bar-fill peak" data-height="92%" style="height:0%"></div><span class="time-bar-label">19–21</span></div>
+            <div class="time-bar"><div class="time-bar-fill peak" data-height="78%" style="height:0%"></div><span class="time-bar-label">21–23</span></div>
+            <div class="time-bar"><div class="time-bar-fill mid" data-height="20%" style="height:0%"></div><span class="time-bar-label">23–1</span></div>
+          </div>
+          <p class="time-callout"><strong>73%</strong> of Maria's orders happen between 7pm and midnight. The app is her evening companion — not her lunch break.</p>
+        </div>
+
+        <div class="chapter-break reveal"><span>Chapter 3</span></div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- ACT 4: THE PLUS QUESTION                   -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="reveal chapter">
+          <div class="chapter-title">The moment she almost left</div>
+          <p class="narrative">Here's where Maria's story gets interesting for us. Last month, she opened the app settings and hovered over "Cancel subscription." She'd been paying £7.99 a month for Plus Gold and wondered, with fewer orders, whether it still made sense.</p>
+          <p class="narrative">This is the <em>evaluation moment</em> — the exact inflection point our Plus Gold acquisition research identified this quarter. The point where high-frequency users who've slowed down reassess whether the maths still works.</p>
+        </div>
+
+        <div class="reveal voice">
+          <blockquote>"I almost cancelled Plus last month, honestly. Not because it's bad — I just wondered if I still order enough to justify it. Then I checked and I'd saved £34 that month. So, yeah. Staying."</blockquote>
+          <p class="attr">— Maria</p>
+        </div>
+
+        <div class="reveal">
+          <p class="narrative">She checked. The savings were real. Here's what her quarter looks like:</p>
+        </div>
+
+        <div class="reveal evidence">
+          <div class="evidence-label">Plus Gold — Q1 2026 savings breakdown</div>
+          <div class="savings-row">
+            <span class="savings-label">Delivery fee savings (52 orders)</span>
+            <span class="savings-value">£78.00</span>
+          </div>
+          <div class="savings-row">
+            <span class="savings-label">Member pricing discounts</span>
+            <span class="savings-value">£11.40</span>
+          </div>
+          <div class="savings-row">
+            <span class="savings-label">Subscription cost (3 months)</span>
+            <span class="savings-value">−£23.97</span>
+          </div>
+          <div class="savings-row">
+            <span class="savings-label">Net saving this quarter</span>
+            <span class="savings-value">£65.43</span>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <p class="narrative">Even ordering less than she used to, Plus Gold saves Maria over £65 a quarter. The subscription pays for itself three times over. And that realisation — that <em>moment of checking</em> — is what kept her.</p>
+        </div>
+
+        <div class="reveal voice">
+          <blockquote>"I don't think about delivery fees anymore. That's the whole point. I'll order a coffee and a pastry on a Saturday morning just because I can. I never would have done that before Plus."</blockquote>
+          <p class="attr">— Maria</p>
+        </div>
+
+        <div class="reveal">
+          <p class="narrative">Plus Gold hasn't just removed a fee — it's removed a <em>decision</em>. The mental barrier of "is this order worth the delivery charge?" no longer exists. That's why she orders a coffee on Saturday morning. That's why a 4.1×/week customer is arguably more valuable than a 4.9× one — she's ordering across more occasions, with higher intent and lower friction.</p>
+        </div>
+
+        <div class="chapter-break reveal"><span>The bigger picture</span></div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- ACT 5: CONNECTION                          -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="reveal chapter">
+          <div class="chapter-title">Why Maria matters</div>
+          <p class="narrative">Maria isn't an outlier. She's a pattern. Our Plus Gold acquisition barriers research found that <strong>high-frequency members who slow down are the most likely to hit the evaluation moment</strong> — and the ones who check their savings are the ones who stay.</p>
+          <p class="narrative">The question for us isn't "how do we stop Maria from slowing down" — it's "how do we make sure the value is visible when she looks for it." Right now, she had to find it herself. What if we showed her?</p>
+        </div>
+
+        <div class="reveal connection">
+          <div class="connection-label">Related research this quarter</div>
+          <p>Maria's story is the human evidence behind this quarter's Plus Gold deep-dive. The research quantifies the pattern — Maria shows us what it feels like from the other side.</p>
+          <a href="#">Read the Plus Gold acquisition barriers research
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      animateElement(entry.target);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15, root: document.getElementById('mainArea') });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+function animateElement(el) {
+  el.querySelectorAll('[data-count]').forEach(numEl => {
+    const target = parseFloat(numEl.dataset.count);
+    const isFloat = numEl.dataset.count.includes('.');
+    const duration = 900;
+    const start = performance.now();
+    function tick(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      const current = target * ease;
+      numEl.textContent = isFloat
+        ? current.toFixed(numEl.dataset.count.split('.')[1].length)
+        : Math.round(current);
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+
+  el.querySelectorAll('.cuisine-fill').forEach(bar => {
+    setTimeout(() => { bar.style.width = bar.dataset.width; }, 100);
+  });
+
+  el.querySelectorAll('.time-bar-fill').forEach(bar => {
+    setTimeout(() => { bar.style.height = bar.dataset.height; }, 100);
+  });
+
+  if (el.querySelector('#sparkline')) {
+    setTimeout(() => drawSparkline(), 200);
+  }
+}
+
+function drawSparkline() {
+  const data = [4.9, 5.1, 4.7, 4.8, 4.5, 4.6, 4.3, 4.5, 4.2, 4.4, 4.0, 4.3, 4.1, 4.2, 3.9, 4.1, 4.0, 4.2, 3.8, 4.1, 4.0, 4.1, 3.9, 4.1];
+  const w = 500, h = 100, pad = 4;
+  const minV = Math.min(...data) - 0.3, maxV = Math.max(...data) + 0.3;
+  const pts = data.map((v, i) => {
+    const x = pad + (i / (data.length - 1)) * (w - pad * 2);
+    const y = pad + (1 - (v - minV) / (maxV - minV)) * (h - pad * 2);
+    return [x, y];
+  });
+  const line = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const area = line + ` L${pts[pts.length-1][0].toFixed(1)},${h} L${pts[0][0].toFixed(1)},${h} Z`;
+
+  const lineEl = document.getElementById('sparkLine');
+  const areaEl = document.getElementById('sparkArea');
+  lineEl.setAttribute('d', line);
+  areaEl.setAttribute('d', area);
+
+  const len = lineEl.getTotalLength();
+  lineEl.style.strokeDasharray = len;
+  lineEl.style.strokeDashoffset = len;
+  lineEl.style.opacity = '1';
+  lineEl.style.transition = `stroke-dashoffset 1.2s ${getComputedStyle(document.documentElement).getPropertyValue('--ease-out-expo')}`;
+  areaEl.style.opacity = '1';
+  areaEl.style.transition = 'opacity 0.8s 0.4s';
+
+  requestAnimationFrame(() => {
+    lineEl.style.strokeDashoffset = '0';
+  });
+}
+</script>
+</body>
+</html>

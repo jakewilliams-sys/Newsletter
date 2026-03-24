@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H05 — Headline Ticker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(42% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+      --dark: oklch(16% 0.015 220);
+      --dark-text: oklch(85% 0.005 220);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Ticker bar */
+    .ticker-bar {
+      background: var(--dark);
+      color: var(--dark-text);
+      height: 40px;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .ticker-label {
+      flex-shrink: 0;
+      padding: 0 16px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal);
+      border-right: 1px solid oklch(25% 0.01 220);
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .ticker-track {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .ticker-content {
+      display: flex;
+      gap: 48px;
+      animation: ticker 30s linear infinite;
+      white-space: nowrap;
+      padding-left: 16px;
+    }
+
+    .ticker-item {
+      font-size: 12px;
+      font-weight: 500;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ticker-item .t-stat {
+      font-family: 'DM Mono', monospace;
+      color: var(--teal);
+      font-weight: 500;
+    }
+
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 52px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .topbar-brand { font-size: 13px; font-weight: 700; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+    .tabs { display: flex; list-style: none; }
+    .tabs li a {
+      display: block; padding: 14px 18px; font-size: 12.5px; font-weight: 500;
+      color: var(--ink-3); text-decoration: none; border-bottom: 2px solid transparent;
+    }
+    .tabs li.active a { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }
+
+    .main {
+      flex: 1; overflow-y: auto;
+      padding: 56px 72px;
+      max-width: 900px;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .sub {
+      font-size: 15px;
+      color: var(--ink-2);
+      line-height: 1.6;
+      margin-bottom: 48px;
+      max-width: 480px;
+    }
+
+    .headline-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .headline-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+      padding: 24px 28px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .headline-item:hover {
+      border-color: var(--teal);
+      transform: translateX(4px);
+    }
+
+    .headline-item h2 {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    .headline-item .hi-meta {
+      font-size: 12px;
+      color: var(--ink-3);
+      margin-top: 4px;
+    }
+
+    .headline-item .hi-stat {
+      font-family: 'DM Mono', monospace;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: -0.04em;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="ticker-bar">
+    <div class="ticker-label">Q1 2026</div>
+    <div class="ticker-track">
+      <div class="ticker-content">
+        <span class="ticker-item"><span class="t-stat">3.2×</span> student order frequency</span>
+        <span class="ticker-item"><span class="t-stat">34%</span> social basket-splitting</span>
+        <span class="ticker-item"><span class="t-stat">40%</span> Plus retention uplift</span>
+        <span class="ticker-item"><span class="t-stat">↑8%</span> brand awareness gains</span>
+        <span class="ticker-item"><span class="t-stat">4.2/5</span> customer satisfaction</span>
+        <span class="ticker-item"><span class="t-stat">78%</span> French evening preference</span>
+        <span class="ticker-item"><span class="t-stat">3.2×</span> student order frequency</span>
+        <span class="ticker-item"><span class="t-stat">34%</span> social basket-splitting</span>
+        <span class="ticker-item"><span class="t-stat">40%</span> Plus retention uplift</span>
+        <span class="ticker-item"><span class="t-stat">↑8%</span> brand awareness gains</span>
+        <span class="ticker-item"><span class="t-stat">4.2/5</span> customer satisfaction</span>
+        <span class="ticker-item"><span class="t-stat">78%</span> French evening preference</span>
+      </div>
+    </div>
+  </div>
+  <header class="topbar">
+    <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+    <ul class="tabs">
+      <li class="active"><a href="#">Headlines</a></li>
+      <li><a href="#">Featured</a></li>
+      <li><a href="#">More from R&I</a></li>
+      <li><a href="#">Customer</a></li>
+    </ul>
+  </header>
+  <main class="main">
+    <h1>This quarter's headlines</h1>
+    <p class="sub">The key findings from 7 research outputs across the R&I team. Click any headline to read more.</p>
+    <div class="headline-stack">
+      <a href="#" class="headline-item">
+        <div>
+          <h2>Students order differently — and social ordering is 34% of their transactions</h2>
+          <div class="hi-meta">Jake Williams · Student Immersion</div>
+        </div>
+        <div class="hi-stat">3.2×</div>
+      </a>
+      <a href="#" class="headline-item">
+        <div>
+          <h2>Plus members retain 40% better — growth opportunity in the student segment</h2>
+          <div class="hi-meta">Andrea Aggio · Plus Deep-Dive</div>
+        </div>
+        <div class="hi-stat">40%</div>
+      </a>
+      <a href="#" class="headline-item">
+        <div>
+          <h2>Brand awareness growing versus competitors in key demographics</h2>
+          <div class="hi-meta">Holly Ohanian · YouGov Tracker</div>
+        </div>
+        <div class="hi-stat">↑ 8%</div>
+      </a>
+      <a href="#" class="headline-item">
+        <div>
+          <h2>French consumers prefer evening delivery and restaurant quality over speed</h2>
+          <div class="hi-meta">Sannah Siddique · French Market</div>
+        </div>
+        <div class="hi-stat">78%</div>
+      </a>
+    </div>
+  </main>
+</body>
+</html>

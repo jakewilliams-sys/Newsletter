@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H03 — Magazine Cover</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-dark: oklch(35% 0.10 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(42% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { height: 100vh; display: grid; grid-template-rows: 52px 1fr; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; border-bottom: 1px solid var(--border);
+    }
+    .topbar-brand { font-size: 13px; font-weight: 700; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+
+    .cover {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      height: 100%;
+    }
+
+    /* Left — lead story */
+    .lead-story {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 56px 72px;
+      border-right: 1px solid var(--border);
+    }
+
+    .lead-tag {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 20px;
+    }
+
+    .lead-title {
+      font-size: clamp(32px, 4vw, 44px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      max-width: 480px;
+    }
+
+    .lead-sub {
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: var(--ink-2);
+      max-width: 440px;
+      margin-bottom: 28px;
+    }
+
+    .lead-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal);
+      text-decoration: none;
+    }
+    .lead-cta:hover { text-decoration: underline; }
+
+    .lead-stat-row {
+      display: flex;
+      gap: 36px;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .lead-stat-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: -0.03em;
+    }
+    .lead-stat-label {
+      font-size: 11px;
+      color: var(--ink-3);
+      margin-top: 2px;
+    }
+
+    /* Right — sidebar teasers */
+    .sidebar-teasers {
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .teaser {
+      flex: 1;
+      padding: 28px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--ink);
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+
+    .teaser:hover { background: oklch(97% 0.005 250); }
+    .teaser:last-child { border-bottom: none; }
+
+    .teaser .teaser-tag {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-3); margin-bottom: 8px;
+    }
+
+    .teaser h3 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+
+    .teaser p {
+      font-size: 12.5px;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .teaser .teaser-stat {
+      font-family: 'DM Mono', monospace;
+      font-size: 16px;
+      color: var(--teal);
+      margin-top: 8px;
+    }
+
+    .teaser.customer {
+      background: oklch(97% 0.01 178);
+    }
+    .teaser.customer:hover { background: oklch(95.5% 0.02 178); }
+    .teaser.customer .teaser-tag { color: var(--teal); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+    </header>
+    <div class="cover">
+      <div class="lead-story">
+        <div class="lead-tag">Lead Finding · Student Research</div>
+        <h1 class="lead-title">Students order differently — and more often than we thought</h1>
+        <p class="lead-sub">
+          Social ordering with flatmates accounts for 34% of student transactions — a behaviour
+          nearly absent in the general population. This changes how we think about student growth strategy.
+        </p>
+        <a href="#" class="lead-cta">Read the full research →</a>
+        <div class="lead-stat-row">
+          <div>
+            <div class="lead-stat-val">3.2×</div>
+            <div class="lead-stat-label">Order frequency</div>
+          </div>
+          <div>
+            <div class="lead-stat-val">34%</div>
+            <div class="lead-stat-label">Social orders</div>
+          </div>
+          <div>
+            <div class="lead-stat-val">2.1×</div>
+            <div class="lead-stat-label">Plus adoption</div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-teasers">
+        <a href="#" class="teaser">
+          <div class="teaser-tag">Brand Health</div>
+          <h3>Deliveroo awareness growing in key demographics</h3>
+          <p>Gains versus competitors in target segments</p>
+          <div class="teaser-stat">↑ 8%</div>
+        </a>
+        <a href="#" class="teaser">
+          <div class="teaser-tag">Membership</div>
+          <h3>Plus members retain 40% better</h3>
+          <p>Growth opportunity in the student segment</p>
+          <div class="teaser-stat">40%</div>
+        </a>
+        <a href="#" class="teaser">
+          <div class="teaser-tag">International</div>
+          <h3>French consumers prefer evening and quality</h3>
+          <p>Speed matters less than restaurant quality</p>
+          <div class="teaser-stat">78%</div>
+        </a>
+        <a href="#" class="teaser customer">
+          <div class="teaser-tag">Meet the Customer</div>
+          <h3>Maria J. — Plus Silver, 46 orders</h3>
+          <p>"I'd pay more if support had my back."</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

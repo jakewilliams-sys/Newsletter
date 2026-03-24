@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H10 — Carousel Hero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(42% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 52px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .topbar-brand { font-size: 13px; font-weight: 700; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 72px;
+    }
+
+    .carousel-area {
+      max-width: 620px;
+      width: 100%;
+    }
+
+    .carousel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    .carousel-header .ch-left {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-3);
+    }
+    .carousel-header .ch-left .teal { color: var(--teal); }
+
+    .carousel-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .carousel-btn {
+      width: 36px; height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: none;
+      font-size: 16px;
+      color: var(--ink-3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .carousel-btn:hover { border-color: var(--teal); color: var(--ink); }
+
+    /* Slides */
+    .slide {
+      display: none;
+    }
+    .slide.active { display: block; }
+
+    .slide-tag {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+
+    .slide h2 {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+      margin-bottom: 16px;
+    }
+
+    .slide p {
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: var(--ink-2);
+      max-width: 500px;
+      margin-bottom: 28px;
+    }
+
+    .slide-stats {
+      display: flex;
+      gap: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .slide-stat-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: -0.03em;
+    }
+    .slide-stat-label {
+      font-size: 11px;
+      color: var(--ink-3);
+      margin-top: 2px;
+    }
+
+    .slide-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal);
+      text-decoration: none;
+    }
+    .slide-link:hover { text-decoration: underline; }
+
+    /* Dots */
+    .carousel-dots {
+      display: flex;
+      gap: 8px;
+      margin-top: 40px;
+    }
+
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .dot.active {
+      background: var(--teal);
+      transform: scale(1.25);
+    }
+
+    .dot:hover { background: var(--ink-3); }
+
+    /* Section nav */
+    .section-nav {
+      display: flex;
+      gap: 16px;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-nav a {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-3);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .section-nav a:hover { color: var(--teal); }
+    .section-nav a.primary { color: var(--teal); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+    </header>
+    <main class="main">
+      <div class="carousel-area">
+        <div class="carousel-header">
+          <div class="ch-left"><span class="teal">●</span> Headline <span id="slideNum">1</span> of 4</div>
+          <div class="carousel-controls">
+            <button class="carousel-btn" onclick="prev()">←</button>
+            <button class="carousel-btn" onclick="next()">→</button>
+          </div>
+        </div>
+
+        <div class="slide active" data-slide="0">
+          <div class="slide-tag">Student Research</div>
+          <h2>Students order 3.2× more often — and split baskets with flatmates</h2>
+          <p>Social ordering accounts for 34% of student transactions. This behaviour is nearly absent in the general population and suggests a product opportunity around group ordering.</p>
+          <div class="slide-stats">
+            <div><div class="slide-stat-val">3.2×</div><div class="slide-stat-label">Order frequency</div></div>
+            <div><div class="slide-stat-val">34%</div><div class="slide-stat-label">Social orders</div></div>
+          </div>
+          <a href="#" class="slide-link">Read the full research →</a>
+        </div>
+
+        <div class="slide" data-slide="1">
+          <div class="slide-tag">Membership</div>
+          <h2>Plus members retain 40% better — the student segment is the biggest lever</h2>
+          <p>Plus members order 3.2× more frequently. Student Plus adoption is already 2.1× higher than average, pointing to a clear growth opportunity.</p>
+          <div class="slide-stats">
+            <div><div class="slide-stat-val">40%</div><div class="slide-stat-label">Retention uplift</div></div>
+            <div><div class="slide-stat-val">2.1×</div><div class="slide-stat-label">Student adoption</div></div>
+          </div>
+          <a href="#" class="slide-link">Read the full research →</a>
+        </div>
+
+        <div class="slide" data-slide="2">
+          <div class="slide-tag">Brand Health</div>
+          <h2>Deliveroo awareness growing in key demographics versus competitors</h2>
+          <p>Quarterly brand health metrics show sustained gains in the segments that matter most to the business.</p>
+          <div class="slide-stats">
+            <div><div class="slide-stat-val">↑ 8%</div><div class="slide-stat-label">Awareness gain</div></div>
+          </div>
+          <a href="#" class="slide-link">Read the full research →</a>
+        </div>
+
+        <div class="slide" data-slide="3">
+          <div class="slide-tag">International</div>
+          <h2>French consumers prefer evening delivery and restaurant quality over speed</h2>
+          <p>A fundamentally different market profile from the UK. Positioning in France should lead with quality, not speed.</p>
+          <div class="slide-stats">
+            <div><div class="slide-stat-val">78%</div><div class="slide-stat-label">Quality-first</div></div>
+          </div>
+          <a href="#" class="slide-link">Read the full research →</a>
+        </div>
+
+        <div class="carousel-dots">
+          <div class="dot active" onclick="goTo(0)"></div>
+          <div class="dot" onclick="goTo(1)"></div>
+          <div class="dot" onclick="goTo(2)"></div>
+          <div class="dot" onclick="goTo(3)"></div>
+        </div>
+
+        <div class="section-nav">
+          <a href="#" class="primary">Meet the Customer →</a>
+          <a href="#">More from R&I</a>
+          <a href="#">Appendix</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let current = 0;
+    const total = 4;
+
+    function show(idx) {
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+      document.querySelectorAll('.slide')[idx].classList.add('active');
+      document.querySelectorAll('.dot')[idx].classList.add('active');
+      document.getElementById('slideNum').textContent = idx + 1;
+      current = idx;
+    }
+
+    function next() { show((current + 1) % total); }
+    function prev() { show((current - 1 + total) % total); }
+    function goTo(idx) { show(idx); }
+  </script>
+</body>
+</html>

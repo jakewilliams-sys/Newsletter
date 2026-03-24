@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>i05 — Integrated Nav</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(40% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+    .brand-bar {
+      padding: 12px 48px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .brand-bar .brand {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .brand-bar .brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; font-size: 12px; }
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 48px 48px;
+    }
+    .content { max-width: 960px; margin: 0 auto; }
+    .content-nav {
+      padding: 24px 0 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+    }
+    .content-nav-list {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .content-nav a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-2);
+      text-decoration: none;
+      padding-bottom: 4px;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .content-nav a:hover {
+      color: var(--ink);
+      border-bottom-color: var(--ink-3);
+    }
+    .content-nav a.active {
+      color: var(--teal);
+      font-weight: 600;
+      border-bottom-color: var(--teal);
+    }
+    .intro-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .intro-row h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+    .intro-row p { font-size: 13px; color: var(--ink-3); }
+    .headlines-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .headline-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: border-color 0.2s, transform 0.15s;
+      min-height: 180px;
+      cursor: pointer;
+    }
+    .headline-card:hover {
+      border-color: var(--teal);
+      transform: translateY(-2px);
+    }
+    .headline-card .tag {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 10px;
+    }
+    .headline-card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.015em;
+      flex: 1;
+    }
+    .headline-card .card-bottom {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .headline-card .author { font-size: 12px; color: var(--ink-3); }
+    .stat-inline {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .stat-inline .stat-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: -0.03em;
+    }
+    .stat-inline .stat-label {
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+    .headline-card.hero {
+      grid-column: 1 / -1;
+      flex-direction: row;
+      align-items: center;
+      gap: 48px;
+      min-height: auto;
+      padding: 40px 48px;
+      background: var(--teal-soft);
+      border-color: oklch(88% 0.05 178);
+    }
+    .headline-card.hero:hover { border-color: var(--teal); }
+    .headline-card.hero .hero-text { flex: 1; }
+    .headline-card.hero h2 { font-size: 22px; margin-bottom: 8px; }
+    .headline-card.hero p {
+      font-size: 14px;
+      color: var(--ink-2);
+      line-height: 1.55;
+    }
+    .headline-card.hero .stat-inline .stat-value { font-size: 48px; }
+    .headline-card.hero .stat-inline .stat-label { font-size: 14px; }
+    .more-section {
+      margin-top: 24px;
+      padding: 24px 32px;
+      background: oklch(96% 0.005 250);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .more-section p { font-size: 14px; color: var(--ink-2); }
+    .more-section p strong { color: var(--ink); }
+    .more-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal);
+      text-decoration: none;
+    }
+    .more-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="brand-bar">
+      <div class="brand">R&I Newsletter<span>Q1 2026</span></div>
+    </header>
+    <main class="main">
+      <div class="content">
+        <nav class="content-nav">
+          <ul class="content-nav-list">
+            <li><a href="#" class="active">Headlines</a></li>
+            <li><a href="#">Featured Research</a></li>
+            <li><a href="#">More from R&I</a></li>
+            <li><a href="#">Meet the Customer</a></li>
+          </ul>
+        </nav>
+        <div class="intro-row">
+          <h1>This quarter's headlines</h1>
+          <p>Dec 2025 – Mar 2026 · 7 outputs</p>
+        </div>
+        <div class="headlines-grid">
+          <a href="#" class="headline-card hero">
+            <div class="hero-text">
+              <div class="tag">Student Research</div>
+              <h2>Students order differently — and more often than we thought</h2>
+              <p>By Jake Williams</p>
+            </div>
+            <div class="stat-inline">
+              <span class="stat-value">3.2×</span>
+              <span class="stat-label">higher order frequency vs. non-students</span>
+            </div>
+          </a>
+          <a href="#" class="headline-card">
+            <div class="tag">Brand Health</div>
+            <h2>Deliveroo awareness growing in key demographics</h2>
+            <div class="card-bottom">
+              <span class="author">Holly Ohanian</span>
+              <div class="stat-inline">
+                <span class="stat-value">↑ 8%</span>
+                <span class="stat-label">brand awareness gain</span>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="headline-card">
+            <div class="tag">Membership</div>
+            <h2>Plus members order 3.2× more and retain 40% better</h2>
+            <div class="card-bottom">
+              <span class="author">Andrea Aggio</span>
+              <div class="stat-inline">
+                <span class="stat-value">40%</span>
+                <span class="stat-label">higher retention</span>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="headline-card">
+            <div class="tag">International</div>
+            <h2>French consumers prefer evening delivery and restaurant quality over speed</h2>
+            <div class="card-bottom">
+              <span class="author">Sannah Siddique</span>
+              <div class="stat-inline">
+                <span class="stat-value">78%</span>
+                <span class="stat-label">prefer quality over speed</span>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="headline-card">
+            <div class="tag">Competitor</div>
+            <h2>Just Eat gaining share in suburban areas while Uber Eats pushes grocery</h2>
+            <div class="card-bottom">
+              <span class="author">Bea Jones</span>
+            </div>
+          </a>
+        </div>
+        <div class="more-section">
+          <p><strong>Meet the Customer</strong> — Maria J., Plus Silver, 46 orders</p>
+          <a href="#" class="more-link">Read her story →</a>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

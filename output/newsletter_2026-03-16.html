@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research &amp; Insights Newsletter — Q1 2026 | January - March</title>
+  <style>
+
+    :root {
+      --teal: #00CCBC;
+      --teal-dark: #00A89D;
+      --dark: #2E3333;
+      --grey-100: #F7F8F8;
+      --grey-200: #E8EAEB;
+      --grey-400: #ABB1B1;
+      --grey-600: #6B7070;
+      --white: #FFFFFF;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-hover: 0 4px 16px rgba(0,0,0,0.10);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--dark);
+      background: var(--grey-100);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    /* Header */
+    .newsletter-header {
+      text-align: center;
+      padding: 48px 24px 40px;
+      background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+      color: var(--white);
+      border-radius: var(--radius);
+      margin-bottom: 32px;
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .newsletter-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 16px;
+      opacity: 0.9;
+      margin-bottom: 16px;
+    }
+    .intro {
+      font-size: 15px;
+      max-width: 560px;
+      margin: 0 auto;
+      opacity: 0.85;
+    }
+
+    /* Sections */
+    .section {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+    .section h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--grey-200);
+    }
+    .section-icon {
+      margin-right: 8px;
+    }
+
+    /* Featured Cards */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .featured-card {
+      background: var(--grey-100);
+      border-radius: 10px;
+      padding: 24px;
+      border: 1px solid var(--grey-200);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .featured-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--grey-600);
+      margin-bottom: 10px;
+    }
+    .card-team {
+      background: var(--teal);
+      color: var(--white);
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .featured-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+    .card-desc {
+      font-size: 14px;
+      color: var(--grey-600);
+      margin-bottom: 12px;
+    }
+    .card-detail {
+      font-size: 14px;
+      color: var(--dark);
+      padding-top: 12px;
+      border-top: 1px solid var(--grey-200);
+      margin-top: 8px;
+    }
+    .card-detail p { margin-bottom: 10px; }
+    .card-link {
+      display: inline-block;
+      color: var(--teal-dark);
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .card-link:hover { text-decoration: underline; }
+    .expand-btn {
+      background: none;
+      border: 1px solid var(--grey-200);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--teal-dark);
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .expand-btn:hover { background: var(--grey-200); }
+    .chevron {
+      display: inline-block;
+      font-size: 10px;
+      margin-left: 4px;
+      transition: transform 0.2s;
+    }
+
+    /* Listed Section */
+    .listed-list {
+      list-style: none;
+      padding: 0;
+    }
+    .listed-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--grey-200);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .listed-list li:last-child { border-bottom: none; }
+    .listed-desc { color: var(--grey-600); }
+    .listed-author { color: var(--grey-400); font-size: 13px; }
+    .inline-link {
+      color: var(--teal-dark);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .inline-link:hover { text-decoration: underline; }
+
+    /* Customer Corner */
+    .customer-corner {
+      background: linear-gradient(135deg, #FFF8E1 0%, var(--white) 100%);
+    }
+
+    /* Appendix */
+    .appendix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .appendix-table th {
+      text-align: left;
+      padding: 10px 12px;
+      background: var(--grey-100);
+      border-bottom: 2px solid var(--grey-200);
+      font-weight: 700;
+      color: var(--grey-600);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    .appendix-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--grey-200);
+      vertical-align: top;
+    }
+    .priority-1 { color: var(--teal-dark); font-weight: 700; }
+    .priority-2 { color: var(--grey-600); }
+
+    /* Footer */
+    .newsletter-footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      color: var(--grey-600);
+    }
+    .newsletter-footer a { color: var(--teal-dark); text-decoration: none; }
+    .newsletter-footer a:hover { text-decoration: underline; }
+
+    /* Print / PDF styles */
+    @media print {
+      body { background: white; }
+      .container { max-width: 100%; padding: 0; }
+      .section { box-shadow: none; break-inside: avoid; }
+      .expand-btn { display: none; }
+      .card-detail { display: block !important; }
+      .featured-card { break-inside: avoid; }
+      .newsletter-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    @media (max-width: 600px) {
+      .featured-grid { grid-template-columns: 1fr; }
+      .newsletter-header h1 { font-size: 24px; }
+      .container { padding: 16px; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header class="newsletter-header">
+      <div class="header-badge">Q1 2026</div>
+      <h1>Research &amp; Insights Newsletter</h1>
+      <p class="subtitle">Q1 2026 | January - March</p>
+      <p class="intro">Welcome to the quarterly Research &amp; Insights newsletter.
+        Here's a look at the key outputs and insights from across the team.</p>
+    </header>
+
+    <section class="section featured-section">
+      <h2><span class="section-icon">&#9733;</span> Featured Research</h2>
+      <div class="featured-grid">
+        
+      <div class="featured-card">
+        <div class="card-meta">
+          <span class="card-author">Jake Williams &middot; Completed March 2026</span>
+        </div>
+        <h3>Student Immersion Research</h3>
+        <p class="card-desc">Deep-dive into student ordering behaviour revealing key drivers of adoption and frequency among 18-24 year olds</p>
+        
+        <div class="card-detail" id="detail-4424749648" style="display:none;">
+          <p>Deep-dive into student ordering behaviour revealing key drivers of adoption and frequency among 18-24 year olds</p>
+          <a href="https://docs.google.com/document/d/example1" class="card-link" target="_blank">View full output &rarr;</a>
+        </div>
+        <button class="expand-btn" onclick="toggleDetail('detail-4424749648', this)" aria-expanded="false">
+          Read more <span class="chevron">&#9660;</span>
+        </button>
+      </div>
+      <div class="featured-card">
+        <div class="card-meta">
+          <span class="card-author">Holly Ohanian &middot; Completed March 2026</span>
+        </div>
+        <h3>YouGov Brand Tracker Q1 2026</h3>
+        <p class="card-desc">Quarterly brand health metrics showing Deliveroo awareness growth in key demographics versus competitors</p>
+        
+        <div class="card-detail" id="detail-4424750128" style="display:none;">
+          <p>Quarterly brand health metrics showing Deliveroo awareness growth in key demographics versus competitors</p>
+          <a href="https://docs.google.com/document/d/example3" class="card-link" target="_blank">View full output &rarr;</a>
+        </div>
+        <button class="expand-btn" onclick="toggleDetail('detail-4424750128', this)" aria-expanded="false">
+          Read more <span class="chevron">&#9660;</span>
+        </button>
+      </div>
+      <div class="featured-card">
+        <div class="card-meta">
+          <span class="card-author">Andrea Aggio &middot; Completed January 2026</span>
+        </div>
+        <h3>Plus Membership Deep-Dive</h3>
+        <p class="card-desc">Plus members order 3.2x more frequently and show 40% higher retention — growth opportunity in student segment</p>
+        
+        <div class="card-detail" id="detail-4424751136" style="display:none;">
+          <p>Plus members order 3.2x more frequently and show 40% higher retention — growth opportunity in student segment</p>
+          <a href="https://docs.google.com/presentation/d/example4" class="card-link" target="_blank">View full output &rarr;</a>
+        </div>
+        <button class="expand-btn" onclick="toggleDetail('detail-4424751136', this)" aria-expanded="false">
+          Read more <span class="chevron">&#9660;</span>
+        </button>
+      </div>
+      <div class="featured-card">
+        <div class="card-meta">
+          <span class="card-author">Sannah Siddique &middot; Completed March 2026</span>
+        </div>
+        <h3>French Market Consumer Preferences</h3>
+        <p class="card-desc">French consumers strongly prefer evening delivery slots and prioritise restaurant quality over speed</p>
+        
+        <div class="card-detail" id="detail-4424749600" style="display:none;">
+          <p>French consumers strongly prefer evening delivery slots and prioritise restaurant quality over speed</p>
+          <a href="https://docs.google.com/document/d/example7" class="card-link" target="_blank">View full output &rarr;</a>
+        </div>
+        <button class="expand-btn" onclick="toggleDetail('detail-4424749600', this)" aria-expanded="false">
+          Read more <span class="chevron">&#9660;</span>
+        </button>
+      </div>
+      </div>
+    </section>
+
+    <section class="section listed-section">
+      <h2><span class="section-icon">&#9776;</span> More from R&amp;I</h2>
+      <ul class="listed-list">
+          <li>
+            <strong>Partner NPS Segmentation Analysis</strong>
+            <span class="listed-desc">&mdash; Segmentation of partner satisfaction scores identifying three distinct partner archetypes with different needs</span>
+            <span class="listed-author">(Simon Jones)</span>
+             <a href="https://docs.google.com/presentation/d/example2" class="inline-link" target="_blank">View &rarr;</a>
+          </li>
+          <li>
+            <strong>Medallia VoC Monthly Digest</strong>
+            <span class="listed-desc">&mdash; Customer satisfaction stable at 4.2/5 with delivery speed complaints down 12% month-on-month</span>
+            <span class="listed-author">(Molly McCormick)</span>
+             <a href="https://docs.google.com/document/d/example5" class="inline-link" target="_blank">View &rarr;</a>
+          </li>
+          <li>
+            <strong>Competitor Landscape February 2026</strong>
+            <span class="listed-desc">&mdash; Just Eat gaining share in suburban areas while Uber Eats focuses on grocery vertical expansion</span>
+            <span class="listed-author">(Bea Jones)</span>
+             <a href="https://docs.google.com/document/d/example6" class="inline-link" target="_blank">View &rarr;</a>
+          </li>
+      </ul>
+    </section>
+
+    <section class="section customer-corner">
+      <h2><span class="section-icon">&#128100;</span> Customer Corner</h2>
+      
+      <div class="cc-section">
+        <div class="cc-label">Meet the Customer</div>
+        <div class="cc-card">
+          <div class="cc-header">
+            <div class="cc-identity">
+              <h3 class="cc-name">Maria J.</h3>
+              <p class="cc-tagline">30 · London, SE5</p>
+              <p class="cc-headline">Long-term Plus subscriber who values convenience, broad restaurant selection, and credits — but wants Deliveroo to raise the bar on delivery quality and customer support.</p>
+            </div>
+          </div>
+          <div class="cc-stats"><div class="cc-stat"><span class="cc-stat-val">Feb 2017</span><span class="cc-stat-lbl">Customer since</span></div><div class="cc-stat"><span class="cc-stat-val">46</span><span class="cc-stat-lbl">Lifetime orders</span></div><div class="cc-stat"><span class="cc-stat-val">Plus Silver</span><span class="cc-stat-lbl">Plus plan</span></div><div class="cc-stat"><span class="cc-stat-val">Evenings (6–9pm)</span><span class="cc-stat-lbl">Peak ordering</span></div></div>
+          <blockquote class="cc-quote"><span class="cc-quote-mark">&ldquo;</span>I&#x27;d pay more for my membership if I knew support would actually have my back when things go wrong.<span class="cc-quote-mark">&rdquo;</span><span class="cc-quote-ctx">On whether improved support reliability would increase willingness to pay</span></blockquote>
+          <div class="cc-insight"><span class="cc-insight-tag">Deliveroo Plus &amp; CX Quality</span><p class="cc-insight-text">Maria is a loyal Plus Silver member who&#x27;s been ordering for almost a decade. She uses Deliveroo for everything from grocery top-ups to late-night treats and social occasions. Her main frustrations? Cold food arrivals, checkout defaulting to substitutes instead of cancellations, and customer support closing cases without proper review.</p></div>
+          <div class="cc-data-grid">
+            <div class="cc-favs"><h4 class="cc-sub">Top restaurants</h4><div class="cc-fav"><span class="cc-fav-rank">1</span><div class="cc-fav-body"><span class="cc-fav-name">Creams - Ealing</span><div class="cc-fav-bar-bg"><div class="cc-fav-bar" style="width:100%"></div></div></div><span class="cc-fav-cnt">5</span></div><div class="cc-fav"><span class="cc-fav-rank">2</span><div class="cc-fav-body"><span class="cc-fav-name">Kin - Foley Street</span><div class="cc-fav-bar-bg"><div class="cc-fav-bar" style="width:60%"></div></div></div><span class="cc-fav-cnt">3</span></div><div class="cc-fav"><span class="cc-fav-rank">3</span><div class="cc-fav-body"><span class="cc-fav-name">L&#x27;oro Di Napoli</span><div class="cc-fav-bar-bg"><div class="cc-fav-bar" style="width:40%"></div></div></div><span class="cc-fav-cnt">2</span></div><div class="cc-fav"><span class="cc-fav-rank">4</span><div class="cc-fav-body"><span class="cc-fav-name">Santa Maria Pizzeria - Ealing</span><div class="cc-fav-bar-bg"><div class="cc-fav-bar" style="width:40%"></div></div></div><span class="cc-fav-cnt">2</span></div><div class="cc-fav"><span class="cc-fav-rank">5</span><div class="cc-fav-body"><span class="cc-fav-name">Oowee Vegan - Brixton</span><div class="cc-fav-bar-bg"><div class="cc-fav-bar" style="width:40%"></div></div></div><span class="cc-fav-cnt">2</span></div></div>
+            <div class="cc-data-right">
+              <div class="cc-timeline"><h4 class="cc-sub">Recent orders</h4><div class="cc-tl-item"><span class="cc-tl-dot"></span><span class="cc-tl-date">11 Mar</span><span class="cc-tl-rest">Kin - Foley Street</span></div><div class="cc-tl-item"><span class="cc-tl-dot"></span><span class="cc-tl-date">8 Mar</span><span class="cc-tl-rest">Kin - Foley Street</span></div><div class="cc-tl-item"><span class="cc-tl-dot"></span><span class="cc-tl-date">5 Mar</span><span class="cc-tl-rest">Sainsbury&#x27;s - Elephant &amp; Castle</span></div><div class="cc-tl-item"><span class="cc-tl-dot"></span><span class="cc-tl-date">4 Mar</span><span class="cc-tl-rest">Acai Girls - Victoria</span></div><div class="cc-tl-item"><span class="cc-tl-dot"></span><span class="cc-tl-date">3 Mar</span><span class="cc-tl-rest">German Doner Kebab</span></div></div>
+              <p class="cc-ord-insight">Maria&#x27;s ordering has surged recently — 5 orders in March alone after a quieter winter. Her current favourite, Kin on Foley Street, has become a twice-a-week habit.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <style>
+        .cc-section {
+          margin: 40px 0;
+        }
+        .cc-label {
+          font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif;
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          color: #00CCBC;
+          margin-bottom: 12px;
+        }
+        .cc-card {
+          background: #FAFBFB;
+          border: 1px solid #E8EAEB;
+          border-radius: 4px;
+          padding: 32px;
+        }
+        .cc-header {
+          margin-bottom: 24px;
+        }
+        .cc-name {
+          font-size: 24px;
+          font-weight: 700;
+          color: #2E3333;
+          margin: 0 0 4px 0;
+          line-height: 1.2;
+        }
+        .cc-tagline {
+          font-size: 13px;
+          color: #858B8B;
+          margin: 0 0 8px 0;
+          font-weight: 500;
+        }
+        .cc-headline {
+          font-size: 15px;
+          color: #585E5E;
+          margin: 0;
+          line-height: 1.5;
+        }
+        .cc-stats {
+          display: flex;
+          gap: 0;
+          border-top: 1px solid #E8EAEB;
+          border-bottom: 1px solid #E8EAEB;
+          margin-bottom: 24px;
+        }
+        .cc-stat {
+          flex: 1;
+          padding: 16px 0;
+          text-align: center;
+          border-right: 1px solid #E8EAEB;
+        }
+        .cc-stat:last-child { border-right: none; }
+        .cc-stat-val {
+          display: block;
+          font-size: 16px;
+          font-weight: 700;
+          color: #2E3333;
+        }
+        .cc-stat-lbl {
+          display: block;
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: #858B8B;
+          margin-top: 4px;
+        }
+        .cc-quote {
+          margin: 0 0 24px 0;
+          padding: 20px 24px;
+          background: #f0faf9;
+          border-left: 3px solid #00CCBC;
+          border-radius: 0 4px 4px 0;
+          font-size: 15px;
+          line-height: 1.7;
+          color: #2E3333;
+          font-style: italic;
+          position: relative;
+        }
+        .cc-quote-mark {
+          color: #00CCBC;
+          font-size: 20px;
+          font-style: normal;
+          font-weight: 700;
+        }
+        .cc-quote-ctx {
+          display: block;
+          font-style: normal;
+          font-size: 12px;
+          color: #858B8B;
+          margin-top: 8px;
+        }
+        .cc-insight {
+          background: #2E3333;
+          color: #F5F6F6;
+          padding: 20px 24px;
+          border-radius: 4px;
+          margin-bottom: 24px;
+        }
+        .cc-insight-tag {
+          display: inline-block;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: #00CCBC;
+          background: rgba(0,204,188,0.12);
+          padding: 3px 8px;
+          border-radius: 2px;
+          margin-bottom: 10px;
+        }
+        .cc-insight-text {
+          font-size: 14px;
+          line-height: 1.65;
+          margin: 0;
+          color: #D4D6D6;
+        }
+        .cc-sub {
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          color: #858B8B;
+          margin: 0 0 12px 0;
+        }
+        .cc-data-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 32px;
+        }
+        .cc-favs { }
+        .cc-fav {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 6px 0;
+        }
+        .cc-fav-rank {
+          font-size: 11px;
+          font-weight: 700;
+          color: #858B8B;
+          width: 16px;
+          text-align: right;
+          flex-shrink: 0;
+        }
+        .cc-fav-body { flex: 1; min-width: 0; }
+        .cc-fav-name {
+          font-size: 13px;
+          font-weight: 600;
+          color: #2E3333;
+          display: block;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .cc-fav-bar-bg {
+          height: 3px;
+          background: #E8EAEB;
+          border-radius: 2px;
+          margin-top: 4px;
+        }
+        .cc-fav-bar {
+          height: 100%;
+          background: #00CCBC;
+          border-radius: 2px;
+        }
+        .cc-fav-cnt {
+          font-size: 12px;
+          font-weight: 600;
+          color: #858B8B;
+          flex-shrink: 0;
+        }
+        .cc-data-right { }
+        .cc-timeline { }
+        .cc-tl-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 5px 0;
+          position: relative;
+        }
+        .cc-tl-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #00CCBC;
+          flex-shrink: 0;
+        }
+        .cc-tl-date {
+          font-size: 12px;
+          color: #858B8B;
+          width: 56px;
+          flex-shrink: 0;
+          font-variant-numeric: tabular-nums;
+        }
+        .cc-tl-rest {
+          font-size: 13px;
+          color: #2E3333;
+          font-weight: 500;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .cc-ord-insight {
+          font-size: 13px;
+          line-height: 1.6;
+          color: #585E5E;
+          margin: 16px 0 0 0;
+          padding-top: 12px;
+          border-top: 1px solid #E8EAEB;
+        }
+      </style>
+    </section>
+
+    <section class="section appendix-section">
+      <h2><span class="section-icon">&#128218;</span> Appendix — All Research Outputs</h2>
+      <table class="appendix-table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Contributor</th>
+            <th>End Date</th>
+            <th>Priority</th>
+            <th>Links</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>Plus Membership Deep-Dive</td>
+          <td>Andrea Aggio</td>
+          <td>January 2026</td>
+          <td class="priority-1">P1</td>
+          <td><a href="https://docs.google.com/presentation/d/example4" target="_blank">Link</a></td>
+        </tr>
+        <tr>
+          <td>Competitor Landscape February 2026</td>
+          <td>Bea Jones</td>
+          <td>February 2026</td>
+          <td class="priority-2">P2</td>
+          <td><a href="https://docs.google.com/document/d/example6" target="_blank">Link</a></td>
+        </tr>
+        <tr>
+          <td>YouGov Brand Tracker Q1 2026</td>
+          <td>Holly Ohanian</td>
+          <td>March 2026</td>
+          <td class="priority-1">P1</td>
+          <td><a href="https://docs.google.com/document/d/example3" target="_blank">Link</a></td>
+        </tr>
+        <tr>
+          <td>Student Immersion Research</td>
+          <td>Jake Williams</td>
+          <td>March 2026</td>
+          <td class="priority-1">P1</td>
+          <td><a href="https://docs.google.com/document/d/example1" target="_blank">Link</a></td>
+        </tr>
+        <tr>
+          <td>Medallia VoC Monthly Digest</td>
+          <td>Molly McCormick</td>
+          <td>February 2026</td>
+          <td class="priority-2">P2</td>
+          <td><a href="https://docs.google.com/document/d/example5" target="_blank">Link</a></td>
+        </tr>
+        <tr>
+          <td>French Market Consumer Preferences</td>
+          <td>Sannah Siddique</td>
+          <td>March 2026</td>
+          <td class="priority-1">P1</td>
+          <td><a href="https://docs.google.com/document/d/example7" target="_blank">Link</a></td>
+        </tr>
+        <tr>
+          <td>Partner NPS Segmentation Analysis</td>
+          <td>Simon Jones</td>
+          <td>February 2026</td>
+          <td class="priority-2">P2</td>
+          <td><a href="https://docs.google.com/presentation/d/example2" target="_blank">Link</a></td>
+        </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer class="newsletter-footer">
+      <p>This newsletter was generated on 16 March 2026 from the
+        <a href="https://docs.google.com/spreadsheets/d/Q1">R&amp;I Output Tracker</a>.</p>
+      <p>Questions or feedback? Reach out to the Research &amp; Insights team.</p>
+    </footer>
+  </div>
+  <script>
+    function toggleDetail(id, btn) {
+      var el = document.getElementById(id);
+      var expanded = btn.getAttribute('aria-expanded') === 'true';
+      el.style.display = expanded ? 'none' : 'block';
+      btn.setAttribute('aria-expanded', !expanded);
+      btn.querySelector('.chevron').style.transform = expanded ? '' : 'rotate(180deg)';
+    }
+  </script>
+</body>
+</html>

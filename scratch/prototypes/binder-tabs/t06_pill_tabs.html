@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T06 — Pill-ish Tabs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(40% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --paper: oklch(99.5% 0.002 70);
+      --border-light: oklch(92% 0.006 250);
+      --warm-bg: oklch(97% 0.006 70);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .app { height: 100vh; display: flex; flex-direction: column; }
+
+    .header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 48px;
+      border-bottom: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+    .brand {
+      font-size: 13px; font-weight: 700; color: var(--ink);
+    }
+    .brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+
+    .tabs {
+      display: flex; gap: 4px; list-style: none;
+      background: oklch(95% 0.005 250); border-radius: 10px; padding: 4px;
+    }
+    .tabs li a {
+      display: block; padding: 7px 20px; font-size: 12px; font-weight: 500;
+      color: var(--ink-3); text-decoration: none; border-radius: 7px;
+      transition: all 0.15s;
+    }
+    .tabs li a:hover { color: var(--ink-2); }
+    .tabs li.active a {
+      background: var(--paper); color: var(--ink); font-weight: 600;
+      box-shadow: 0 1px 3px oklch(0% 0 0 / 0.06);
+    }
+
+    .content-area {
+      flex: 1; overflow-y: auto; padding: 40px 56px;
+    }
+    .content { max-width: 940px; margin: 0 auto; }
+
+    .intro-row {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .intro-row h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+    .intro-row .meta {
+      font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-3);
+    }
+
+    .headlines-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .headline-card {
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 28px; border: 1px solid var(--border-light); border-radius: 10px;
+      text-decoration: none; color: var(--ink);
+      transition: border-color 0.2s, transform 0.15s;
+      min-height: 170px; cursor: pointer;
+    }
+    .headline-card:hover { border-color: var(--teal); transform: translateY(-2px); }
+
+    .headline-card .tag {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 10px;
+    }
+    .headline-card h2 {
+      font-size: 18px; font-weight: 700; line-height: 1.25;
+      letter-spacing: -0.015em; flex: 1;
+    }
+    .headline-card .card-bottom {
+      display: flex; align-items: flex-end; justify-content: space-between; margin-top: 16px;
+    }
+    .headline-card .author { font-size: 11px; color: var(--ink-3); }
+
+    .stat-block { text-align: right; }
+    .stat-block .stat-val {
+      font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500;
+      color: var(--teal); letter-spacing: -0.03em; line-height: 1;
+    }
+    .stat-block .stat-label { font-size: 10px; color: var(--ink-3); margin-top: 3px; }
+
+    .headline-card.hero {
+      grid-column: 1 / -1; flex-direction: row; align-items: center;
+      gap: 40px; min-height: auto; padding: 36px 40px;
+      background: var(--teal-soft); border-color: oklch(89% 0.04 178);
+    }
+    .headline-card.hero:hover { border-color: var(--teal); }
+    .headline-card.hero .hero-text { flex: 1; }
+    .headline-card.hero h2 { font-size: 22px; margin-bottom: 8px; }
+    .headline-card.hero p { font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+    .headline-card.hero .hero-stat { text-align: right; flex-shrink: 0; }
+    .headline-card.hero .hero-stat .stat-val { font-size: 44px; display: block; }
+    .headline-card.hero .hero-stat .stat-label { font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+
+    .more-section {
+      margin-top: 16px; padding: 20px 28px; background: var(--warm-bg);
+      border-radius: 8px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .more-section p { font-size: 13px; color: var(--ink-2); }
+    .more-section p strong { color: var(--ink); }
+    .more-link { font-size: 12px; font-weight: 600; color: var(--teal); text-decoration: none; }
+    .more-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="brand">R&I Newsletter<span>Q1 2026</span></div>
+      <ul class="tabs">
+        <li class="active"><a href="#">Headlines</a></li>
+        <li><a href="#">Featured Research</a></li>
+        <li><a href="#">More from R&I</a></li>
+        <li><a href="#">Meet the Customer</a></li>
+        <li><a href="#">Appendix</a></li>
+      </ul>
+    </div>
+
+    <div class="content-area">
+      <div class="content">
+        <div class="intro-row">
+          <h1>This quarter's headlines</h1>
+          <div class="meta">Dec 2025 – Mar 2026 · 7 outputs</div>
+        </div>
+        <div class="headlines-grid">
+          <a href="#" class="headline-card hero">
+            <div class="hero-text">
+              <div class="tag">Student Research</div>
+              <h2>Students order differently — and more often than we thought</h2>
+              <p>Social ordering with flatmates accounts for 34% of student transactions — a behaviour nearly absent in the general population.</p>
+            </div>
+            <div class="hero-stat">
+              <span class="stat-val">3.2×</span>
+              <span class="stat-label">order frequency</span>
+            </div>
+          </a>
+          <a href="#" class="headline-card">
+            <div class="tag">Brand Health</div>
+            <h2>Deliveroo awareness growing in key demographics</h2>
+            <div class="card-bottom">
+              <span class="author">Holly Ohanian</span>
+              <div class="stat-block"><div class="stat-val">↑ 8%</div><div class="stat-label">awareness gain</div></div>
+            </div>
+          </a>
+          <a href="#" class="headline-card">
+            <div class="tag">Membership</div>
+            <h2>Plus members order 3.2× more and retain 40% better</h2>
+            <div class="card-bottom">
+              <span class="author">Andrea Aggio</span>
+              <div class="stat-block"><div class="stat-val">40%</div><div class="stat-label">higher retention</div></div>
+            </div>
+          </a>
+          <a href="#" class="headline-card">
+            <div class="tag">International</div>
+            <h2>French consumers prefer evening delivery and restaurant quality over speed</h2>
+            <div class="card-bottom">
+              <span class="author">Sannah Siddique</span>
+              <div class="stat-block"><div class="stat-val">78%</div><div class="stat-label">prefer quality</div></div>
+            </div>
+          </a>
+          <a href="#" class="headline-card">
+            <div class="tag">Competitor</div>
+            <h2>Just Eat gaining share in suburban areas while Uber Eats pushes grocery</h2>
+            <div class="card-bottom">
+              <span class="author">Bea Jones</span>
+            </div>
+          </a>
+        </div>
+        <div class="more-section">
+          <p><strong>Meet the Customer</strong> — Maria J., Plus Silver, 46 lifetime orders</p>
+          <a href="#" class="more-link">Read her story →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

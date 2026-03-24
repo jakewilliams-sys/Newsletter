@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H09 — Stacked Sections</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(95% 0.025 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(42% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+      --warm: oklch(96% 0.015 70);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 52px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .topbar-brand { font-size: 13px; font-weight: 700; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+
+    .main { flex: 1; overflow-y: auto; }
+
+    /* Section bands */
+    .band {
+      padding: 40px 72px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 200px 1fr auto;
+      gap: 40px;
+      align-items: center;
+      text-decoration: none;
+      color: var(--ink);
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+
+    .band:hover { background: oklch(97.5% 0.005 250); }
+
+    .band-label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .band-label .band-num {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 36px;
+      font-weight: 400;
+      color: var(--ink);
+      letter-spacing: -0.04em;
+      margin-bottom: 4px;
+      line-height: 1;
+      opacity: 0.15;
+    }
+
+    .band h2 {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      margin-bottom: 6px;
+    }
+
+    .band p {
+      font-size: 14px;
+      color: var(--ink-2);
+      line-height: 1.5;
+      max-width: 500px;
+    }
+
+    .band .band-stat {
+      font-family: 'DM Mono', monospace;
+      font-size: 36px;
+      font-weight: 400;
+      color: var(--teal);
+      letter-spacing: -0.04em;
+    }
+
+    .band .band-arrow {
+      font-size: 24px;
+      color: var(--ink-3);
+      transition: transform 0.2s, color 0.15s;
+    }
+
+    .band:hover .band-arrow {
+      transform: translateX(6px);
+      color: var(--teal);
+    }
+
+    .band.warm { background: var(--warm); }
+    .band.warm:hover { background: oklch(94.5% 0.02 70); }
+
+    .band.teal-bg { background: var(--teal-soft); }
+    .band.teal-bg:hover { background: oklch(93% 0.035 178); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026 · Dec – Mar</span></div>
+    </header>
+    <main class="main">
+      <a href="#" class="band teal-bg">
+        <div class="band-label"><span class="band-num">01</span>Students</div>
+        <div>
+          <h2>Students order differently — and more often than we thought</h2>
+          <p>Social basket-splitting accounts for 34% of student transactions. A behaviour absent in the general population.</p>
+        </div>
+        <div class="band-stat">3.2×</div>
+      </a>
+      <a href="#" class="band">
+        <div class="band-label"><span class="band-num">02</span>Brand</div>
+        <div>
+          <h2>Deliveroo awareness growing in key demographics</h2>
+          <p>Quarterly brand health metrics show gains versus competitors in target segments.</p>
+        </div>
+        <div class="band-stat">↑ 8%</div>
+      </a>
+      <a href="#" class="band">
+        <div class="band-label"><span class="band-num">03</span>Membership</div>
+        <div>
+          <h2>Plus members retain 40% better and order 3.2× more</h2>
+          <p>Growth opportunity in the student segment where Plus adoption is already 2.1× higher.</p>
+        </div>
+        <div class="band-stat">40%</div>
+      </a>
+      <a href="#" class="band">
+        <div class="band-label"><span class="band-num">04</span>International</div>
+        <div>
+          <h2>French consumers prefer evening delivery and quality</h2>
+          <p>A distinct market profile from the UK — speed ranks behind restaurant quality.</p>
+        </div>
+        <div class="band-stat">78%</div>
+      </a>
+      <a href="#" class="band warm">
+        <div class="band-label"><span class="band-num">05</span>Customer</div>
+        <div>
+          <h2>Meet Maria J. — Plus Silver, 46 lifetime orders</h2>
+          <p>"I'd pay more for my membership if I knew support would actually have my back when things go wrong."</p>
+        </div>
+        <div class="band-arrow">→</div>
+      </a>
+    </main>
+  </div>
+</body>
+</html>

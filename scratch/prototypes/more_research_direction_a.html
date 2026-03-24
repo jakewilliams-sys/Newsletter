@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>More Research — Direction A: Horizontal Rows</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --teal-mid: oklch(82% 0.08 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(40% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --ink-4: oklch(74% 0.01 250);
+      --surface: oklch(98.5% 0.003 250);
+      --surface-raised: oklch(99.2% 0.002 250);
+      --border: oklch(91% 0.008 250);
+      --border-light: oklch(94% 0.005 250);
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    .topbar {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 0 48px; height: 64px;
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      background: var(--surface-raised); z-index: 200; position: relative;
+    }
+    .topbar-brand { font-size: 14px; font-weight: 700; justify-self: start; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 8px; font-size: 13px; }
+    .pill-nav {
+      display: flex; gap: 6px; padding: 6px;
+      background: oklch(96% 0.005 250); border-radius: 999px;
+      border: 1px solid var(--border); justify-self: center;
+    }
+    .pill-nav a {
+      display: block; padding: 10px 20px; font-size: 13px; font-weight: 500;
+      color: var(--ink-2); text-decoration: none; border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .pill-nav a:hover { color: var(--ink); background: oklch(94% 0.01 250); }
+    .pill-nav a.active { background: var(--teal); color: white; font-weight: 600; }
+
+    .main { flex: 1; overflow-y: auto; overflow-x: hidden; position: relative; }
+    .content { max-width: 960px; margin: 0 auto; padding: 40px 48px; }
+
+    .overview-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .overview-header h1 { font-size: clamp(22px, 2.5vw, 28px); font-weight: 700; letter-spacing: -0.025em; }
+    .overview-meta { font-size: 13px; color: var(--ink-3); }
+
+    .direction-label {
+      display: inline-block; padding: 6px 14px; border-radius: 999px; font-size: 11px;
+      font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      background: oklch(68% 0.14 178 / 0.1); color: var(--teal); margin-bottom: 24px;
+    }
+
+    /* ─── Direction A: Horizontal Rows ─── */
+    .research-list { display: flex; flex-direction: column; gap: 0; }
+
+    .research-row {
+      display: grid;
+      grid-template-columns: 88px 1fr auto;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .research-row:first-child { border-top: 1px solid var(--border-light); }
+    .research-row:hover { background: oklch(97% 0.005 250); }
+    .research-row:hover .row-title { color: var(--teal); }
+
+    .row-tag {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--teal);
+      padding: 5px 10px; background: var(--teal-soft); border-radius: 4px;
+      text-align: center; white-space: nowrap;
+    }
+    .row-middle { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .row-title {
+      font-size: 16px; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em;
+      transition: color 0.15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .row-author { font-size: 12px; color: var(--ink-3); }
+    .row-stat {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+      flex-shrink: 0; padding-left: 16px;
+    }
+    .row-stat-value {
+      font-family: 'DM Mono', monospace; font-weight: 500; font-size: 24px;
+      letter-spacing: -0.04em; line-height: 1; color: var(--teal);
+    }
+    .row-stat-label { font-size: 10px; color: var(--ink-4); text-align: right; max-width: 120px; }
+
+    .row-arrow {
+      width: 20px; height: 20px; color: var(--ink-4); flex-shrink: 0;
+      transition: transform 0.2s var(--ease-out-quart), color 0.15s;
+    }
+    .research-row:hover .row-arrow { transform: translateX(3px); color: var(--teal); }
+
+    .research-row { opacity: 0; transform: translateY(8px); }
+    .research-row.entered {
+      opacity: 1; transform: translateY(0);
+      transition: opacity 0.4s var(--ease-out-quart), transform 0.4s var(--ease-out-quart);
+    }
+
+    /* ─── Backdrop ─── */
+    #backdrop {
+      position: fixed; inset: 0; z-index: 250;
+      background: oklch(18% 0.01 250 / 0);
+      pointer-events: none;
+      transition: background 0.45s var(--ease-out-quart);
+    }
+    #backdrop.visible {
+      background: oklch(18% 0.01 250 / 0.35);
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    /* ─── Expanding Page ─── */
+    #expandingPage {
+      position: fixed;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-raised);
+      z-index: 300;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+    }
+    .dd-body { opacity: 0; transition: opacity 0.35s var(--ease-out-quart); }
+    .dd-body.visible { opacity: 1; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 500; color: var(--ink-3);
+      background: none; border: none; cursor: pointer; padding: 8px 0;
+      margin-bottom: 24px; font-family: inherit; transition: color 0.15s;
+    }
+    .back-btn:hover { color: var(--ink); }
+    .back-btn svg { width: 16px; height: 16px; }
+
+    .dd-meta { font-size: 13px; color: var(--ink-3); margin-top: 12px; opacity: 0; transition: opacity 0.3s 0.3s; }
+    .dd-body.visible .dd-meta { opacity: 1; }
+    .dd-meta span { margin-right: 16px; }
+
+    .block-stat {
+      display: flex; align-items: baseline; gap: 24px; padding: 40px 0;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 40px 0;
+    }
+    .block-stat .big-number {
+      font-family: 'DM Mono', monospace; font-size: clamp(56px, 7vw, 80px);
+      font-weight: 500; letter-spacing: -0.06em; line-height: 1; color: var(--teal); flex-shrink: 0;
+    }
+    .block-stat .stat-context { font-size: 17px; line-height: 1.5; color: var(--ink-2); max-width: 36ch; }
+
+    .block-findings { margin-bottom: 48px; }
+    .block-findings h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .findings-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--border-light); border-radius: 8px; overflow: hidden;
+    }
+    .finding { background: var(--surface-raised); padding: 24px; display: flex; gap: 16px; align-items: flex-start; }
+    .finding-num {
+      font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 500;
+      color: var(--teal-mid); line-height: 1; flex-shrink: 0; padding-top: 2px;
+    }
+    .finding-text { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+    .finding-text strong { color: var(--ink); font-weight: 600; }
+
+    .block-chart { margin-bottom: 48px; }
+    .block-chart h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .chart-container {
+      background: var(--surface); border: 1px solid var(--border-light);
+      border-radius: 8px; padding: 32px;
+    }
+    .bar-chart { display: flex; flex-direction: column; gap: 16px; }
+    .bar-row { display: grid; grid-template-columns: 100px 1fr 48px; align-items: center; gap: 12px; }
+    .bar-label { font-size: 13px; color: var(--ink-2); text-align: right; }
+    .bar-track { height: 28px; background: oklch(96% 0.005 250); border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.8s var(--ease-out-expo); }
+    .bar-fill.secondary { background: var(--teal-mid); }
+    .bar-value { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink-2); }
+    .chart-caption { font-size: 12px; color: var(--ink-4); margin-top: 16px; font-style: italic; }
+
+    .block-quote {
+      margin-bottom: 48px; padding: 32px 40px;
+      background: oklch(20% 0.015 250); border-radius: 8px; position: relative;
+    }
+    .block-quote .quote-mark {
+      position: absolute; top: 24px; left: 40px; font-size: 48px;
+      line-height: 1; color: var(--teal); opacity: 0.5; font-family: Georgia, serif;
+    }
+    .block-quote blockquote {
+      font-size: 18px; line-height: 1.6; color: oklch(88% 0.01 250);
+      font-style: italic; padding-top: 20px; max-width: 50ch;
+    }
+    .block-quote .quote-attr { font-size: 12px; color: oklch(60% 0.01 250); margin-top: 16px; font-style: normal; }
+
+    .block-narrative { margin-bottom: 48px; max-width: 60ch; }
+    .block-narrative p { font-size: 15px; line-height: 1.7; color: var(--ink-2); }
+
+    .block-source { padding-top: 32px; border-top: 1px solid var(--border); margin-bottom: 48px; }
+    .source-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 600; color: var(--teal);
+      text-decoration: none; transition: gap 0.2s var(--ease-out-quart);
+    }
+    .source-link:hover { gap: 12px; }
+    .source-link svg { width: 16px; height: 16px; }
+
+    .item-nav { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; border-top: 1px solid var(--border); }
+    .item-nav-btn {
+      display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500;
+      color: var(--ink-3); background: none; border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 20px; cursor: pointer; font-family: inherit;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .item-nav-btn:hover { border-color: var(--teal); color: var(--ink); }
+    .item-nav-btn .nav-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-4); }
+    .item-nav-btn .nav-title { font-weight: 600; color: var(--ink); }
+    .item-nav-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .item-counter { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-4); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+      <nav class="pill-nav">
+        <a href="#">Headlines</a>
+        <a href="#" class="active">More Research</a>
+        <a href="#">Meet the Customer</a>
+      </nav>
+      <div style="justify-self:end;"></div>
+    </header>
+    <div class="main" id="mainArea">
+      <div class="content" id="overviewLayer">
+        <span class="direction-label">Direction A — Horizontal Rows</span>
+        <div class="overview-header">
+          <h1>More research</h1>
+          <span class="overview-meta">Dec 2025 – Mar 2026 · 3 outputs</span>
+        </div>
+        <div class="research-list" id="researchList">
+          <div class="research-row" data-index="0" onclick="expandRow(0)">
+            <span class="row-tag">Partnerships</span>
+            <div class="row-middle">
+              <span class="row-title">Partner NPS reveals three distinct archetypes with different needs</span>
+              <span class="row-author">Simon Jones · February 2026</span>
+            </div>
+            <div class="row-stat">
+              <span class="row-stat-value">3</span>
+              <span class="row-stat-label">partner archetypes</span>
+            </div>
+            <svg class="row-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+          </div>
+          <div class="research-row" data-index="1" onclick="expandRow(1)">
+            <span class="row-tag">VoC</span>
+            <div class="row-middle">
+              <span class="row-title">Customer satisfaction holds at 4.2/5 — delivery speed complaints down 12%</span>
+              <span class="row-author">Molly McCormick · February 2026</span>
+            </div>
+            <div class="row-stat">
+              <span class="row-stat-value">4.2</span>
+              <span class="row-stat-label">satisfaction score</span>
+            </div>
+            <svg class="row-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+          </div>
+          <div class="research-row" data-index="2" onclick="expandRow(2)">
+            <span class="row-tag">Competitor</span>
+            <div class="row-middle">
+              <span class="row-title">Just Eat gaining suburban share while Uber Eats pivots to grocery</span>
+              <span class="row-author">Bea Jones · February 2026</span>
+            </div>
+            <div class="row-stat">
+              <span class="row-stat-value">↑ 4%</span>
+              <span class="row-stat-label">JE suburban share</span>
+            </div>
+            <svg class="row-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="backdrop" onclick="collapseCard()"></div>
+  <div id="expandingPage"></div>
+
+<script>
+const items = [
+  { tag:'Partnerships', title:'Partner NPS reveals three distinct archetypes with different needs', author:'Simon Jones', date:'February 2026', statValue:'3',
+    statContext:'Partner satisfaction analysis identified three distinct archetypes — Growth Seekers, Stability Anchors, and Brand Builders — each requiring fundamentally different engagement strategies.',
+    findings:[ {text:'<strong>Growth Seekers (38%)</strong> prioritise order volume above all else. They want better placement, larger delivery radius, and promotional visibility.'}, {text:'<strong>Stability Anchors (35%)</strong> value consistency. Predictable order flow, reliable riders, and minimal operational disruption matter most.'}, {text:'<strong>Brand Builders (27%)</strong> see Deliveroo as a brand extension. They want co-marketing, quality photography, and premium positioning.'}, {text:'<strong>One-size-fits-all is failing.</strong> Partners in the wrong engagement track show NPS scores 22 points lower than those matched to their archetype.'} ],
+    chart:{ title:'Partner NPS by archetype alignment', bars:[ {label:'Aligned',value:74,display:'+52',primary:true},{label:'Misaligned',value:38,display:'+30'},{label:'Overall',value:56,display:'+41',primary:true} ], caption:'NPS scores, partner survey Q4 2025. n=1,840 active partners.' },
+    quote:{text:'I don\'t need more orders — I need the right orders. The lunch rush already overwhelms my kitchen. I want weekend visibility.',attr:'Restaurant partner, Independent Italian, South London'},
+    narrative:'The segmentation reveals that partner satisfaction is less about what we offer and more about whether we offer the right things to the right partners. A personalised engagement model could lift overall NPS by an estimated 15 points.',
+    sourceUrl:'https://docs.google.com/presentation/d/example2' },
+  { tag:'VoC', title:'Customer satisfaction holds at 4.2/5 — delivery speed complaints down 12%', author:'Molly McCormick', date:'February 2026', statValue:'4.2/5',
+    statContext:'Overall satisfaction remains stable at 4.2 out of 5, with delivery speed complaints declining 12% month-on-month — the third consecutive monthly improvement.',
+    findings:[ {text:'<strong>Speed complaints dropping.</strong> Delivery time satisfaction up 12% MoM, driven by improved rider allocation in high-density zones.'}, {text:'<strong>Order accuracy is the new friction point.</strong> Missing items now account for 34% of all complaints, overtaking delivery speed for the first time.'}, {text:'<strong>App experience scores rising.</strong> Post-redesign app satisfaction up 8 points, with search and checkout cited as key improvements.'}, {text:'<strong>Customer service remains a pain point.</strong> Resolution time satisfaction sits at 3.1/5 — the lowest-scoring category for the fourth consecutive month.'} ],
+    chart:{ title:'Satisfaction trend by category (6-month)', bars:[ {label:'Overall',value:84,display:'4.2',primary:true},{label:'Delivery speed',value:78,display:'3.9',primary:true},{label:'Order accuracy',value:66,display:'3.3'},{label:'Customer service',value:62,display:'3.1'} ], caption:'Medallia VoC rolling monthly average, Sept 2025–Feb 2026. n=12,400/month.' },
+    quote:{text:'The delivery is quick now, which is great. But last week half my order was missing and it took 40 minutes to get through to someone.',attr:'Medallia verbatim, Plus Gold member, Leeds'},
+    narrative:'The VoC data tells a shifting story: speed is improving but accuracy is emerging as the new battleground. The compounding effect of unresolved accuracy issues on retention makes this the priority for Q2.',
+    sourceUrl:'https://docs.google.com/document/d/example5' },
+  { tag:'Competitor', title:'Just Eat gaining suburban share while Uber Eats pivots to grocery', author:'Bea Jones', date:'February 2026', statValue:'↑ 4%',
+    statContext:'Just Eat grew suburban market share by 4 percentage points in Q4 2025, while Uber Eats invested heavily in grocery vertical expansion — signalling divergent competitive strategies.',
+    findings:[ {text:'<strong>Just Eat owns the suburbs.</strong> Their suburban order share reached 58% — up 4 points QoQ — driven by aggressive partner acquisition in smaller towns.'}, {text:'<strong>Uber Eats betting on grocery.</strong> Grocery now represents 18% of Uber Eats UK orders, up from 11% a year ago. They\'re pursuing a fundamentally different growth vector.'}, {text:'<strong>Deliveroo leads in urban quality perception.</strong> In metro areas, Deliveroo leads "best restaurant quality" perception by 14 points — but this advantage doesn\'t extend to suburbs.'}, {text:'<strong>Price wars cooling off.</strong> All three platforms reduced promotional spend by 15–20% QoQ, suggesting a shift from acquisition to retention strategies.'} ],
+    chart:{ title:'Market share by geography (UK, Q4 2025)', bars:[ {label:'Deliveroo (urban)',value:72,display:'38%',primary:true},{label:'Deliveroo (suburban)',value:42,display:'22%'},{label:'Just Eat (urban)',value:56,display:'29%'},{label:'Just Eat (suburban)',value:88,display:'58%'} ], caption:'Estimated order share, internal competitive intelligence. Urban = top 15 UK metros.' },
+    quote:{text:'In Manchester centre, everyone orders Deliveroo. Drive 20 minutes to Stockport and it\'s all Just Eat. Different worlds.',attr:'Regional operations manager, internal interview'},
+    narrative:'The competitive landscape is fragmenting by geography and vertical. Deliveroo\'s urban quality moat is strong, but suburban expansion requires a different playbook — one that competes on breadth of selection rather than curation.',
+    sourceUrl:'https://docs.google.com/document/d/example6' }
+];
+
+let currentIndex = -1, isExpanded = false, isAnimating = false;
+
+function initRows() {
+  document.querySelectorAll('.research-row').forEach((r, i) => {
+    setTimeout(() => r.classList.add('entered'), 100 + i * 80);
+  });
+}
+
+function expandRow(index) {
+  if (isAnimating || isExpanded) return;
+  isAnimating = true;
+  currentIndex = index;
+
+  const row = document.querySelector(`.research-row[data-index="${index}"]`);
+  const page = document.getElementById('expandingPage');
+  const item = items[index];
+  const cr = row.getBoundingClientRect();
+
+  page.innerHTML = `
+    <div class="ep-tag" style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:10px;
+      transition:font-size 0.55s var(--ease-out-expo),margin-bottom 0.55s var(--ease-out-expo);">${item.tag}</div>
+    <div class="ep-title" style="font-weight:700;line-height:1.3;letter-spacing:-0.01em;color:var(--ink);font-size:16px;
+      transition:font-size 0.55s var(--ease-out-expo),letter-spacing 0.55s var(--ease-out-expo),line-height 0.55s var(--ease-out-expo),max-width 0.55s var(--ease-out-expo);">${item.title}</div>
+    <div class="dd-body" id="ddBody"></div>
+  `;
+
+  page.style.cssText = `
+    position:fixed; display:flex; flex-direction:column; z-index:300;
+    top:${cr.top}px; left:${cr.left}px; width:${cr.width}px; height:${cr.height}px;
+    padding:24px; background:var(--surface-raised);
+    border:1px solid var(--border); border-radius:8px;
+    overflow:hidden;
+    transition-property:top,left,width,height,padding,background,border-color,border-radius,box-shadow;
+    transition-duration:0.55s; transition-timing-function:var(--ease-out-expo);
+  `;
+
+  row.style.opacity = '0';
+  document.getElementById('backdrop').classList.add('visible');
+
+  const vpW = window.innerWidth;
+  const vpH = window.innerHeight;
+  const targetW = Math.min(1060, vpW - 48);
+  const targetL = (vpW - targetW) / 2;
+
+  requestAnimationFrame(() => { requestAnimationFrame(() => {
+    page.style.top = '16px';
+    page.style.left = targetL + 'px';
+    page.style.width = targetW + 'px';
+    page.style.height = (vpH - 32) + 'px';
+    page.style.padding = '40px 48px';
+    page.style.borderRadius = '12px';
+    page.style.boxShadow = '0 24px 80px oklch(18% 0.01 250 / 0.18), 0 8px 24px oklch(18% 0.01 250 / 0.08)';
+
+    page.querySelector('.ep-title').style.fontSize = 'clamp(28px, 3.5vw, 38px)';
+    page.querySelector('.ep-title').style.letterSpacing = '-0.03em';
+    page.querySelector('.ep-title').style.lineHeight = '1.15';
+    page.querySelector('.ep-title').style.maxWidth = '22ch';
+    page.querySelector('.ep-tag').style.fontSize = '11px';
+    page.querySelector('.ep-tag').style.marginBottom = '12px';
+
+    setTimeout(() => {
+      page.style.overflowY = 'auto';
+      const body = document.getElementById('ddBody');
+      body.innerHTML = buildDeepDiveBody(index);
+      requestAnimationFrame(() => {
+        body.classList.add('visible');
+        setTimeout(() => animateBars(), 300);
+      });
+      isExpanded = true;
+      isAnimating = false;
+    }, 580);
+  }); });
+}
+
+function collapseCard() {
+  if (isAnimating || !isExpanded) return;
+  isAnimating = true;
+
+  const page = document.getElementById('expandingPage');
+  const row = document.querySelector(`.research-row[data-index="${currentIndex}"]`);
+  const item = items[currentIndex];
+  const body = document.getElementById('ddBody');
+  body.classList.remove('visible');
+  document.getElementById('backdrop').classList.remove('visible');
+
+  const cr = row.getBoundingClientRect();
+  const vpW = window.innerWidth;
+  const vpH = window.innerHeight;
+  const targetW = Math.min(1060, vpW - 48);
+  const targetL = (vpW - targetW) / 2;
+
+  page.innerHTML = `
+    <div class="ep-tag" style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:12px;
+      transition:font-size 0.55s var(--ease-out-expo),margin-bottom 0.55s var(--ease-out-expo);">${item.tag}</div>
+    <div class="ep-title" style="font-weight:700;line-height:1.15;letter-spacing:-0.03em;color:var(--ink);font-size:clamp(28px,3.5vw,38px);max-width:22ch;
+      transition:font-size 0.55s var(--ease-out-expo),letter-spacing 0.55s var(--ease-out-expo),line-height 0.55s var(--ease-out-expo),max-width 0.55s var(--ease-out-expo);">${item.title}</div>
+  `;
+
+  page.style.cssText = `
+    position:fixed; display:flex; flex-direction:column; z-index:300;
+    top:16px; left:${targetL}px; width:${targetW}px; height:${vpH - 32}px;
+    padding:40px 48px; background:var(--surface-raised);
+    border:1px solid var(--border); border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 24px 80px oklch(18% 0.01 250 / 0.18), 0 8px 24px oklch(18% 0.01 250 / 0.08);
+    transition-property:top,left,width,height,padding,background,border-color,border-radius,box-shadow;
+    transition-duration:0.55s; transition-timing-function:var(--ease-out-expo);
+  `;
+
+  requestAnimationFrame(() => { requestAnimationFrame(() => {
+    page.style.top = cr.top + 'px';
+    page.style.left = cr.left + 'px';
+    page.style.width = cr.width + 'px';
+    page.style.height = cr.height + 'px';
+    page.style.padding = '24px';
+    page.style.borderRadius = '8px';
+    page.style.boxShadow = '0 0 0 transparent';
+
+    page.querySelector('.ep-title').style.fontSize = '16px';
+    page.querySelector('.ep-title').style.letterSpacing = '-0.01em';
+    page.querySelector('.ep-title').style.lineHeight = '1.3';
+    page.querySelector('.ep-title').style.maxWidth = 'none';
+    page.querySelector('.ep-tag').style.fontSize = '10px';
+    page.querySelector('.ep-tag').style.marginBottom = '10px';
+
+    setTimeout(() => {
+      page.style.display = 'none';
+      row.style.opacity = '';
+      isExpanded = false;
+      isAnimating = false;
+      currentIndex = -1;
+    }, 580);
+  }); });
+}
+
+function navigateItem(dir) {
+  if (isAnimating) return;
+  isAnimating = true;
+  const body = document.getElementById('ddBody');
+  body.style.transition = 'transform 0.35s var(--ease-in-out), opacity 0.35s var(--ease-in-out)';
+  body.style.transform = dir === 'next' ? 'translateX(-50px)' : 'translateX(50px)';
+  body.style.opacity = '0';
+  setTimeout(() => {
+    currentIndex = dir === 'next' ? (currentIndex + 1) % items.length : (currentIndex - 1 + items.length) % items.length;
+    const item = items[currentIndex];
+    const page = document.getElementById('expandingPage');
+    page.querySelector('.ep-tag').textContent = item.tag;
+    page.querySelector('.ep-title').textContent = item.title;
+    body.innerHTML = buildDeepDiveBody(currentIndex);
+    body.style.transform = dir === 'next' ? 'translateX(50px)' : 'translateX(-50px)';
+    document.getElementById('expandingPage').scrollTop = 0;
+    requestAnimationFrame(() => {
+      body.style.transform = 'translateX(0)';
+      body.style.opacity = '1';
+      body.classList.add('visible');
+      setTimeout(() => animateBars(), 200);
+      isAnimating = false;
+    });
+  }, 380);
+}
+
+function animateBars() {
+  document.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.width; });
+}
+
+function buildDeepDiveBody(index) {
+  const item = items[index];
+  const prevI = (index - 1 + items.length) % items.length;
+  const nextI = (index + 1) % items.length;
+  return `
+    <button class="back-btn" onclick="collapseCard()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+      Back to more research
+    </button>
+    <div class="dd-meta"><span>${item.author}</span><span>${item.date}</span></div>
+    <div class="block-stat">
+      <span class="big-number">${item.statValue}</span>
+      <p class="stat-context">${item.statContext}</p>
+    </div>
+    <div class="block-findings">
+      <h3>Key findings</h3>
+      <div class="findings-grid">
+        ${item.findings.map((f,i) => `<div class="finding"><span class="finding-num">${String(i+1).padStart(2,'0')}</span><span class="finding-text">${f.text}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="block-chart">
+      <h3>${item.chart.title}</h3>
+      <div class="chart-container">
+        <div class="bar-chart">
+          ${item.chart.bars.map(b => `<div class="bar-row"><span class="bar-label">${b.label}</span><div class="bar-track"><div class="bar-fill ${b.primary?'':'secondary'}" style="width:0%" data-width="${b.value}%"></div></div><span class="bar-value">${b.display}</span></div>`).join('')}
+        </div>
+        <p class="chart-caption">${item.chart.caption}</p>
+      </div>
+    </div>
+    <div class="block-quote">
+      <span class="quote-mark">&ldquo;</span>
+      <blockquote>${item.quote.text}</blockquote>
+      <p class="quote-attr">${item.quote.attr}</p>
+    </div>
+    <div class="block-narrative"><p>${item.narrative}</p></div>
+    <div class="block-source">
+      <a href="${item.sourceUrl}" class="source-link" target="_blank">Read the full report
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </a>
+    </div>
+    <div class="item-nav">
+      <button class="item-nav-btn" onclick="navigateItem('prev')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+        <div class="nav-text"><span class="nav-label">Previous</span><br><span class="nav-title">${items[prevI].title.substring(0,40)}…</span></div>
+      </button>
+      <span class="item-counter">${index+1} / ${items.length}</span>
+      <button class="item-nav-btn" onclick="navigateItem('next')">
+        <div class="nav-text"><span class="nav-label">Next</span><br><span class="nav-title">${items[nextI].title.substring(0,40)}…</span></div>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', initRows);
+</script>
+</body>
+</html>

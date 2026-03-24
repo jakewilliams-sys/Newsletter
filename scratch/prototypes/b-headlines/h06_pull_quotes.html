@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H06 — Pull Quote Headlines</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(95% 0.025 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(42% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 52px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .topbar-brand { font-size: 13px; font-weight: 700; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+
+    .main {
+      flex: 1; overflow-y: auto;
+      padding: 56px 72px;
+    }
+
+    .content { max-width: 760px; margin: 0 auto; }
+
+    .page-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 48px;
+    }
+
+    .page-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .page-header .quarter {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+
+    .quote-headline {
+      padding: 36px 0;
+      border-top: 1px solid var(--border);
+      display: block;
+      text-decoration: none;
+      color: var(--ink);
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .quote-headline:last-of-type { border-bottom: 1px solid var(--border); }
+    .quote-headline:hover { opacity: 0.65; }
+
+    .quote-headline .qh-finding {
+      font-family: 'Newsreader', serif;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 400;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+
+    .quote-headline .qh-finding .qh-stat {
+      font-family: 'DM Mono', monospace;
+      color: var(--teal);
+      font-weight: 500;
+    }
+
+    .quote-headline .qh-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+
+    .quote-headline .qh-tag {
+      background: var(--teal-soft);
+      color: var(--teal);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 3px;
+    }
+
+    .customer-band {
+      margin-top: 40px;
+      padding: 32px 36px;
+      background: var(--teal-soft);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .customer-band:hover { background: oklch(92% 0.04 178); }
+
+    .customer-band .cb-text h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .customer-band .cb-text p {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+
+    .customer-band .cb-arrow {
+      font-size: 20px;
+      color: var(--teal);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+    </header>
+    <main class="main">
+      <div class="content">
+        <div class="page-header">
+          <h1>This quarter's headlines</h1>
+          <div class="quarter">Dec 2025 – Mar 2026</div>
+        </div>
+
+        <a href="#" class="quote-headline">
+          <div class="qh-finding">Students order <span class="qh-stat">3.2×</span> more frequently — and <span class="qh-stat">34%</span> of their orders are social, splitting baskets with flatmates</div>
+          <div class="qh-meta">
+            <span class="qh-tag">Students</span>
+            Jake Williams · Student Immersion Research
+          </div>
+        </a>
+
+        <a href="#" class="quote-headline">
+          <div class="qh-finding">Plus members retain <span class="qh-stat">40%</span> better and order <span class="qh-stat">3.2×</span> more — the student segment is the biggest growth lever</div>
+          <div class="qh-meta">
+            <span class="qh-tag">Membership</span>
+            Andrea Aggio · Plus Deep-Dive
+          </div>
+        </a>
+
+        <a href="#" class="quote-headline">
+          <div class="qh-finding">Deliveroo brand awareness up <span class="qh-stat">↑ 8%</span> in target demographics — gaining ground versus competitors</div>
+          <div class="qh-meta">
+            <span class="qh-tag">Brand</span>
+            Holly Ohanian · YouGov Tracker Q1
+          </div>
+        </a>
+
+        <a href="#" class="quote-headline">
+          <div class="qh-finding">French consumers prefer evening slots and prioritise restaurant quality — speed ranks below <span class="qh-stat">78%</span> choosing quality first</div>
+          <div class="qh-meta">
+            <span class="qh-tag">International</span>
+            Sannah Siddique · French Market
+          </div>
+        </a>
+
+        <a href="#" class="customer-band">
+          <div class="cb-text">
+            <h3>Meet the Customer — Maria J.</h3>
+            <p>"I'd pay more for my membership if I knew support would actually have my back."</p>
+          </div>
+          <div class="cb-arrow">→</div>
+        </a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

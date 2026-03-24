@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H08 — Asymmetric Feature</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(42% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 52px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .topbar-brand { font-size: 13px; font-weight: 700; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+    .tabs { display: flex; list-style: none; }
+    .tabs li a {
+      display: block; padding: 14px 18px; font-size: 12.5px; font-weight: 500;
+      color: var(--ink-3); text-decoration: none; border-bottom: 2px solid transparent;
+    }
+    .tabs li.active a { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }
+
+    .main { flex: 1; overflow-y: auto; padding: 48px; }
+    .content { max-width: 1000px; margin: 0 auto; }
+
+    .feature-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 12px;
+    }
+
+    /* Large feature */
+    .feature-large {
+      grid-row: 1 / 3;
+      background: var(--teal-soft);
+      border: 1px solid oklch(89% 0.04 178);
+      border-radius: 12px;
+      padding: 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 360px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: transform 0.15s;
+      cursor: pointer;
+    }
+
+    .feature-large:hover { transform: translateY(-2px); }
+
+    .feature-large .f-tag {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .feature-large h2 {
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-top: 20px;
+      max-width: 420px;
+    }
+
+    .feature-large p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink-2);
+      max-width: 400px;
+      margin-top: 12px;
+    }
+
+    .feature-large .f-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 28px;
+    }
+
+    .feature-large .f-stat-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: -0.03em;
+    }
+
+    .feature-large .f-stat-label {
+      font-size: 11px;
+      color: var(--ink-3);
+      margin-top: 2px;
+    }
+
+    /* Small features */
+    .feature-small {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      color: var(--ink);
+      transition: border-color 0.2s, transform 0.15s;
+      cursor: pointer;
+    }
+
+    .feature-small:hover {
+      border-color: var(--teal);
+      transform: translateY(-2px);
+    }
+
+    .feature-small .f-tag {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-3); margin-bottom: 10px;
+    }
+
+    .feature-small h3 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    .feature-small .f-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .feature-small .f-author {
+      font-size: 11px;
+      color: var(--ink-3);
+    }
+
+    .feature-small .f-stat {
+      font-family: 'DM Mono', monospace;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: -0.03em;
+    }
+
+    .more-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .more-item {
+      padding: 20px 24px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .more-item:hover { border-color: var(--teal); }
+
+    .more-item .m-tag {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--ink-3); margin-bottom: 6px;
+    }
+
+    .more-item h4 {
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+      <ul class="tabs">
+        <li class="active"><a href="#">Headlines</a></li>
+        <li><a href="#">Meet the Customer</a></li>
+        <li><a href="#">Appendix</a></li>
+      </ul>
+    </header>
+    <main class="main">
+      <div class="content">
+        <div class="feature-layout">
+          <a href="#" class="feature-large">
+            <div class="f-tag">Lead Finding</div>
+            <div>
+              <h2>Students order differently — and more often than we thought</h2>
+              <p>Social ordering with flatmates accounts for 34% of student transactions, redefining how we think about student growth strategy.</p>
+              <div class="f-stats">
+                <div>
+                  <div class="f-stat-val">3.2×</div>
+                  <div class="f-stat-label">Order frequency</div>
+                </div>
+                <div>
+                  <div class="f-stat-val">34%</div>
+                  <div class="f-stat-label">Social orders</div>
+                </div>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="feature-small">
+            <div>
+              <div class="f-tag">Brand</div>
+              <h3>Awareness growing in key demographics versus competitors</h3>
+            </div>
+            <div class="f-bottom">
+              <span class="f-author">Holly Ohanian</span>
+              <span class="f-stat">↑ 8%</span>
+            </div>
+          </a>
+          <a href="#" class="feature-small">
+            <div>
+              <div class="f-tag">Membership</div>
+              <h3>Plus members retain 40% better with 3.2× order frequency</h3>
+            </div>
+            <div class="f-bottom">
+              <span class="f-author">Andrea Aggio</span>
+              <span class="f-stat">40%</span>
+            </div>
+          </a>
+        </div>
+        <div class="more-row">
+          <a href="#" class="more-item">
+            <div class="m-tag">International</div>
+            <h4>French consumers prefer evening and quality</h4>
+          </a>
+          <a href="#" class="more-item">
+            <div class="m-tag">Competitor</div>
+            <h4>Just Eat gaining suburban share</h4>
+          </a>
+          <a href="#" class="more-item">
+            <div class="m-tag">Customer</div>
+            <h4>Meet Maria J. — Plus Silver, 46 orders</h4>
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V07 — Horizontal Cards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --ink: oklch(20% 0.01 250);
+      --ink-2: oklch(42% 0.01 250);
+      --ink-3: oklch(58% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+      --warm: oklch(95.5% 0.018 70);
+      --cool: oklch(95.5% 0.015 250);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 52px; border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .topbar-brand { font-size: 13px; font-weight: 700; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+    .tabs { display: flex; list-style: none; }
+    .tabs li a {
+      display: block; padding: 14px 18px; font-size: 12.5px; font-weight: 500;
+      color: var(--ink-3); text-decoration: none; border-bottom: 2px solid transparent;
+    }
+    .tabs li.active a { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }
+
+    .main {
+      flex: 1; overflow-y: auto;
+      padding: 48px 48px 48px;
+    }
+
+    .hero-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      padding: 0 8px;
+    }
+
+    .hero-text h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 6px;
+    }
+
+    .hero-text p {
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+
+    .hero-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-3);
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    /* Horizontal scroll area */
+    .card-scroll {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding: 8px 8px 20px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .card-scroll::-webkit-scrollbar { height: 4px; }
+    .card-scroll::-webkit-scrollbar-track { background: var(--border); border-radius: 2px; }
+    .card-scroll::-webkit-scrollbar-thumb { background: var(--ink-3); border-radius: 2px; }
+
+    .preview-card {
+      flex: 0 0 320px;
+      scroll-snap-align: start;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .preview-card:hover {
+      border-color: var(--teal);
+      transform: translateY(-3px);
+    }
+
+    .preview-card.teal-bg { background: var(--teal-soft); border-color: oklch(88% 0.05 178); }
+    .preview-card.warm-bg { background: var(--warm); border-color: oklch(90% 0.02 70); }
+    .preview-card.cool-bg { background: var(--cool); border-color: oklch(90% 0.015 250); }
+
+    .card-eyebrow {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    .card-insight {
+      font-size: 13.5px;
+      color: var(--ink-2);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .preview-card.teal-bg .card-footer,
+    .preview-card.warm-bg .card-footer,
+    .preview-card.cool-bg .card-footer {
+      border-top-color: oklch(87% 0.02 178);
+    }
+
+    .card-author { font-size: 12px; color: var(--ink-3); }
+
+    .card-stat {
+      font-family: 'DM Mono', monospace;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: -0.03em;
+    }
+
+    .scroll-hint {
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-3);
+      margin-top: 8px;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+      <ul class="tabs">
+        <li class="active"><a href="#">Featured</a></li>
+        <li><a href="#">More from R&I</a></li>
+        <li><a href="#">Meet the Customer</a></li>
+        <li><a href="#">Appendix</a></li>
+      </ul>
+    </header>
+    <main class="main">
+      <div class="hero-row">
+        <div class="hero-text">
+          <h1>Featured Research</h1>
+          <p>Four deep-dives from across the R&I team this quarter</p>
+        </div>
+        <div class="hero-badge">Dec 2025 – Mar 2026</div>
+      </div>
+      <div class="card-scroll">
+        <a href="#" class="preview-card teal-bg">
+          <div class="card-eyebrow">Student Research</div>
+          <div class="card-title">Students order differently — and more often than we thought</div>
+          <div class="card-insight">Social ordering with flatmates accounts for 34% of student transactions</div>
+          <div class="card-footer">
+            <span class="card-author">Jake Williams</span>
+            <span class="card-stat">3.2×</span>
+          </div>
+        </a>
+        <a href="#" class="preview-card warm-bg">
+          <div class="card-eyebrow">Brand Health</div>
+          <div class="card-title">Deliveroo awareness growing in key demographics</div>
+          <div class="card-insight">Quarterly brand metrics show gains versus competitors in target segments</div>
+          <div class="card-footer">
+            <span class="card-author">Holly Ohanian</span>
+            <span class="card-stat">↑ 8%</span>
+          </div>
+        </a>
+        <a href="#" class="preview-card">
+          <div class="card-eyebrow">Membership</div>
+          <div class="card-title">Plus members order 3.2× more and retain 40% better</div>
+          <div class="card-insight">Growth opportunity in student segment where Plus adoption is already 2.1× higher</div>
+          <div class="card-footer">
+            <span class="card-author">Andrea Aggio</span>
+            <span class="card-stat">40%</span>
+          </div>
+        </a>
+        <a href="#" class="preview-card cool-bg">
+          <div class="card-eyebrow">International</div>
+          <div class="card-title">French consumers prefer evening slots and restaurant quality</div>
+          <div class="card-insight">Speed matters less than quality in the French market — a distinct profile from the UK</div>
+          <div class="card-footer">
+            <span class="card-author">Sannah Siddique</span>
+            <span class="card-stat">78%</span>
+          </div>
+        </a>
+      </div>
+      <div class="scroll-hint">Scroll to see all featured research →</div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H02 — Bold Findings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(40% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 52px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .topbar-brand { font-size: 13px; font-weight: 700; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+
+    .main {
+      flex: 1; overflow-y: auto;
+      padding: 48px 72px;
+      max-width: 800px;
+    }
+
+    .quarter {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; color: var(--ink-3);
+      margin-bottom: 40px;
+    }
+    .quarter .teal { color: var(--teal); }
+
+    .finding {
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+      display: block;
+      text-decoration: none;
+      color: var(--ink);
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .finding:hover { opacity: 0.7; }
+
+    .finding-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 32px;
+    }
+
+    .finding-stat {
+      font-family: 'DM Mono', monospace;
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--teal);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      flex-shrink: 0;
+      width: 80px;
+      text-align: right;
+      padding-top: 4px;
+    }
+
+    .finding h2 {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .finding p {
+      font-size: 14px;
+      color: var(--ink-2);
+      line-height: 1.55;
+    }
+
+    .finding .meta {
+      font-size: 11px;
+      color: var(--ink-3);
+      margin-top: 8px;
+    }
+
+    .finding:last-child {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .customer-teaser {
+      margin-top: 40px;
+      padding: 28px 32px;
+      border-left: 3px solid var(--teal);
+      background: oklch(97% 0.005 250);
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      color: var(--ink);
+      transition: background 0.15s;
+    }
+
+    .customer-teaser:hover { background: oklch(96% 0.01 178); }
+
+    .customer-teaser .label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+
+    .customer-teaser h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .customer-teaser p {
+      font-size: 13px;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+    </header>
+    <main class="main">
+      <div class="quarter"><span class="teal">●</span> Dec 2025 – Mar 2026</div>
+
+      <a href="#" class="finding">
+        <div class="finding-row">
+          <div class="finding-stat">3.2×</div>
+          <div>
+            <h2>Students order more often — and differently — than we thought</h2>
+            <p>Social ordering with flatmates accounts for 34% of student transactions, a behaviour nearly absent in the general population.</p>
+            <div class="meta">Jake Williams · Student Immersion Research</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="finding">
+        <div class="finding-row">
+          <div class="finding-stat">40%</div>
+          <div>
+            <h2>Plus members retain significantly better and order 3.2× more frequently</h2>
+            <p>Growth opportunity in the student segment where Plus adoption is already 2.1× higher than average.</p>
+            <div class="meta">Andrea Aggio · Plus Membership Deep-Dive</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="finding">
+        <div class="finding-row">
+          <div class="finding-stat">↑ 8%</div>
+          <div>
+            <h2>Deliveroo awareness growing in key demographics versus competitors</h2>
+            <p>Quarterly brand health metrics show sustained gains in the segments that matter most.</p>
+            <div class="meta">Holly Ohanian · YouGov Brand Tracker Q1</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="finding">
+        <div class="finding-row">
+          <div class="finding-stat">78%</div>
+          <div>
+            <h2>French consumers strongly prefer evening delivery and restaurant quality over speed</h2>
+            <p>A distinct market profile from the UK with implications for how we position in France.</p>
+            <div class="meta">Sannah Siddique · French Market Consumer Preferences</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="customer-teaser">
+        <div class="label">Meet the Customer</div>
+        <h3>Maria J. — Plus Silver, 46 orders, strong opinions on delivery quality</h3>
+        <p>"I'd pay more for my membership if I knew support would actually have my back when things go wrong."</p>
+      </a>
+    </main>
+  </div>
+</body>
+</html>

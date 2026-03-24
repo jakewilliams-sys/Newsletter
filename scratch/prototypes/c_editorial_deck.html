@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direction C — The Editorial Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(72% 0.14 178);
+      --teal-dim: oklch(55% 0.10 178);
+      --dark: oklch(14% 0.015 220);
+      --dark-surface: oklch(18% 0.012 220);
+      --dark-border: oklch(25% 0.01 220);
+      --dark-text: oklch(88% 0.01 220);
+      --dark-text-secondary: oklch(65% 0.01 220);
+      --light-surface: oklch(97% 0.005 75);
+      --light-ink: oklch(22% 0.01 60);
+      --light-ink-secondary: oklch(48% 0.01 60);
+      --light-border: oklch(90% 0.008 60);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      height: 100vh;
+      background: var(--dark);
+    }
+
+    .app {
+      height: 100vh;
+      display: flex;
+    }
+
+    /* Vertical dot nav */
+    .dotnav {
+      position: fixed;
+      right: 32px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 100;
+    }
+
+    .dotnav-item {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid var(--dark-text-secondary);
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .dotnav-item:hover {
+      border-color: var(--teal);
+      transform: scale(1.3);
+    }
+
+    .dotnav-item.active {
+      background: var(--teal);
+      border-color: var(--teal);
+    }
+
+    .dotnav-label {
+      position: absolute;
+      right: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--dark-text-secondary);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+
+    .dotnav-item-wrap {
+      position: relative;
+    }
+
+    .dotnav-item-wrap:hover .dotnav-label {
+      opacity: 1;
+    }
+
+    /* Sections container */
+    .sections {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* Section: Hero (dark) */
+    .section-hero {
+      height: 100vh;
+      background: var(--dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 120px;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      font-size: clamp(42px, 5.5vw, 72px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      color: var(--dark-text);
+      max-width: 720px;
+      margin-bottom: 28px;
+    }
+
+    .hero-subtitle {
+      font-family: 'Newsreader', serif;
+      font-size: 19px;
+      font-style: italic;
+      line-height: 1.6;
+      color: var(--dark-text-secondary);
+      max-width: 480px;
+      margin-bottom: 48px;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 32px;
+    }
+
+    .hero-meta-item {
+      font-size: 12px;
+      color: var(--dark-text-secondary);
+      letter-spacing: 0.04em;
+    }
+
+    .hero-meta-item strong {
+      color: var(--dark-text);
+      font-weight: 600;
+    }
+
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 120px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--dark-text-secondary);
+      opacity: 0.6;
+    }
+
+    .scroll-line {
+      width: 32px;
+      height: 1px;
+      background: var(--dark-text-secondary);
+    }
+
+    /* Decorative teal line */
+    .hero-accent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent 20%, var(--teal) 50%, transparent 80%);
+    }
+
+    /* Section: Content preview (light) */
+    .section-content {
+      height: 100vh;
+      background: var(--light-surface);
+      display: none;
+      padding: 72px 120px;
+      position: relative;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      height: 100%;
+      align-content: center;
+    }
+
+    .content-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .content-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal-dim);
+      margin-bottom: 16px;
+    }
+
+    .content-title {
+      font-size: clamp(28px, 3vw, 36px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+      color: var(--light-ink);
+      margin-bottom: 20px;
+    }
+
+    .content-body {
+      font-family: 'Newsreader', serif;
+      font-size: 16.5px;
+      line-height: 1.75;
+      color: var(--light-ink-secondary);
+      margin-bottom: 28px;
+    }
+
+    .content-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal-dim);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .content-link:hover { text-decoration: underline; }
+
+    .content-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .stat-card {
+      padding: 28px 32px;
+      border: 1px solid var(--light-border);
+      border-radius: 6px;
+    }
+
+    .stat-card-value {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--light-ink);
+      margin-bottom: 6px;
+    }
+
+    .stat-card-label {
+      font-size: 13px;
+      color: var(--light-ink-secondary);
+      line-height: 1.4;
+    }
+
+    .stat-card.highlight {
+      background: var(--dark);
+      border-color: var(--dark);
+    }
+
+    .stat-card.highlight .stat-card-value {
+      color: var(--teal);
+    }
+
+    .stat-card.highlight .stat-card-label {
+      color: var(--dark-text-secondary);
+    }
+
+    /* Transition button */
+    .view-toggle {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 24px;
+      border: 1px solid var(--dark-border);
+      border-radius: 20px;
+      background: var(--dark-surface);
+      color: var(--dark-text-secondary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      z-index: 100;
+    }
+
+    .view-toggle:hover {
+      border-color: var(--teal);
+      color: var(--dark-text);
+    }
+
+    .view-toggle.light {
+      background: var(--light-surface);
+      border-color: var(--light-border);
+      color: var(--light-ink-secondary);
+    }
+
+    .view-toggle.light:hover {
+      border-color: var(--teal-dim);
+      color: var(--light-ink);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <nav class="dotnav">
+      <div class="dotnav-item-wrap">
+        <div class="dotnav-item active" data-section="hero"></div>
+        <span class="dotnav-label">Overview</span>
+      </div>
+      <div class="dotnav-item-wrap">
+        <div class="dotnav-item" data-section="content"></div>
+        <span class="dotnav-label">Featured</span>
+      </div>
+      <div class="dotnav-item-wrap">
+        <div class="dotnav-item"></div>
+        <span class="dotnav-label">More R&I</span>
+      </div>
+      <div class="dotnav-item-wrap">
+        <div class="dotnav-item"></div>
+        <span class="dotnav-label">Customer</span>
+      </div>
+      <div class="dotnav-item-wrap">
+        <div class="dotnav-item"></div>
+        <span class="dotnav-label">Appendix</span>
+      </div>
+    </nav>
+
+    <div class="sections">
+      <!-- Dark hero section -->
+      <section class="section-hero" id="hero">
+        <div class="hero-accent"></div>
+        <div class="hero-eyebrow">Research & Insights</div>
+        <h1 class="hero-title">What we learned<br>this quarter</h1>
+        <p class="hero-subtitle">
+          Seven pieces of research from across the R&I team — from student
+          behaviour to partner satisfaction, brand health to competitive
+          intelligence.
+        </p>
+        <div class="hero-meta">
+          <div class="hero-meta-item"><strong>Q1 2026</strong> · December – March</div>
+          <div class="hero-meta-item"><strong>7</strong> research outputs</div>
+          <div class="hero-meta-item"><strong>4</strong> featured deep-dives</div>
+        </div>
+        <div class="hero-scroll-hint">
+          <span class="scroll-line"></span>
+          Click below to explore
+        </div>
+      </section>
+
+      <!-- Light content section (hidden until toggled) -->
+      <section class="section-content" id="content">
+        <div class="content-grid">
+          <div class="content-left">
+            <div class="content-label">Featured Research</div>
+            <h2 class="content-title">Students order differently — and more often than we thought</h2>
+            <p class="content-body">
+              A deep-dive into student ordering behaviour reveals key drivers
+              of adoption and frequency among 18–24 year olds. The biggest
+              surprise: social ordering — splitting a basket with flatmates —
+              accounts for 34% of student transactions, a behaviour nearly
+              absent in the general population.
+            </p>
+            <a href="#" class="content-link">View full output →</a>
+          </div>
+          <div class="content-right">
+            <div class="stat-card highlight">
+              <div class="stat-card-value">3.2×</div>
+              <div class="stat-card-label">Higher order frequency vs. non-students</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-value">34%</div>
+              <div class="stat-card-label">Orders involve social basket-splitting</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-value">2.1×</div>
+              <div class="stat-card-label">Plus adoption rate in student segment</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <button class="view-toggle" id="toggleBtn" onclick="toggleView()">
+      See featured research →
+    </button>
+  </div>
+
+  <script>
+    let showingContent = false;
+
+    function toggleView() {
+      const hero = document.getElementById('hero');
+      const content = document.getElementById('content');
+      const btn = document.getElementById('toggleBtn');
+      const dots = document.querySelectorAll('.dotnav-item');
+
+      showingContent = !showingContent;
+
+      if (showingContent) {
+        hero.style.display = 'none';
+        content.style.display = 'block';
+        btn.textContent = '← Back to overview';
+        btn.classList.add('light');
+        dots[0].classList.remove('active');
+        dots[1].classList.add('active');
+        document.body.style.background = 'var(--light-surface)';
+      } else {
+        hero.style.display = 'flex';
+        content.style.display = 'none';
+        btn.textContent = 'See featured research →';
+        btn.classList.remove('light');
+        dots[1].classList.remove('active');
+        dots[0].classList.add('active');
+        document.body.style.background = 'var(--dark)';
+      }
+    }
+  </script>
+</body>
+</html>

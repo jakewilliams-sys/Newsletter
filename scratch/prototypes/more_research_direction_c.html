@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>More Research — Direction C: Compact Full-Width Cards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --teal-mid: oklch(82% 0.08 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(40% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --ink-4: oklch(74% 0.01 250);
+      --surface: oklch(98.5% 0.003 250);
+      --surface-raised: oklch(99.2% 0.002 250);
+      --border: oklch(91% 0.008 250);
+      --border-light: oklch(94% 0.005 250);
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    .topbar {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 0 48px; height: 64px;
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      background: var(--surface-raised); z-index: 200; position: relative;
+    }
+    .topbar-brand { font-size: 14px; font-weight: 700; justify-self: start; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 8px; font-size: 13px; }
+    .pill-nav {
+      display: flex; gap: 6px; padding: 6px;
+      background: oklch(96% 0.005 250); border-radius: 999px;
+      border: 1px solid var(--border); justify-self: center;
+    }
+    .pill-nav a {
+      display: block; padding: 10px 20px; font-size: 13px; font-weight: 500;
+      color: var(--ink-2); text-decoration: none; border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .pill-nav a:hover { color: var(--ink); background: oklch(94% 0.01 250); }
+    .pill-nav a.active { background: var(--teal); color: white; font-weight: 600; }
+
+    .main { flex: 1; overflow-y: auto; overflow-x: hidden; position: relative; }
+    .content { max-width: 960px; margin: 0 auto; padding: 40px 48px; }
+
+    .overview-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .overview-header h1 { font-size: clamp(22px, 2.5vw, 28px); font-weight: 700; letter-spacing: -0.025em; }
+    .overview-meta { font-size: 13px; color: var(--ink-3); }
+
+    .direction-label {
+      display: inline-block; padding: 6px 14px; border-radius: 999px; font-size: 11px;
+      font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      background: oklch(68% 0.14 178 / 0.1); color: var(--teal); margin-bottom: 24px;
+    }
+
+    /* ─── Direction C: Compact Full-Width Cards ─── */
+    .card-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .compact-card {
+      display: flex; align-items: stretch;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface-raised); cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .compact-card:hover { border-color: var(--teal); transform: translateY(-2px); }
+
+    .card-accent {
+      width: 4px; flex-shrink: 0; background: var(--teal);
+    }
+
+    .card-content {
+      flex: 1; display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 28px; gap: 24px;
+    }
+    .card-left { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    .cc-tag {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--teal);
+    }
+    .cc-title {
+      font-size: 17px; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em;
+      transition: color 0.15s;
+    }
+    .compact-card:hover .cc-title { color: var(--teal); }
+    .cc-meta {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 12px; color: var(--ink-3); margin-top: 2px;
+    }
+    .cc-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-4); }
+
+    .card-right {
+      display: flex; align-items: center; gap: 24px; flex-shrink: 0;
+    }
+    .cc-stat { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .cc-stat-value {
+      font-family: 'DM Mono', monospace; font-weight: 500; font-size: 26px;
+      letter-spacing: -0.04em; line-height: 1; color: var(--teal);
+    }
+    .cc-stat-label { font-size: 10px; color: var(--ink-4); text-align: right; max-width: 110px; }
+
+    .cc-arrow {
+      width: 20px; height: 20px; color: var(--ink-4); flex-shrink: 0;
+      transition: transform 0.2s var(--ease-out-quart), color 0.15s;
+    }
+    .compact-card:hover .cc-arrow { transform: translateX(3px); color: var(--teal); }
+
+    .compact-card { opacity: 0; transform: translateY(10px); }
+    .compact-card.entered {
+      opacity: 1; transform: translateY(0);
+      transition: opacity 0.45s var(--ease-out-quart), transform 0.45s var(--ease-out-quart);
+    }
+
+    /* ─── Backdrop ─── */
+    #backdrop {
+      position: fixed; inset: 0; z-index: 250;
+      background: oklch(18% 0.01 250 / 0);
+      pointer-events: none;
+      transition: background 0.45s var(--ease-out-quart);
+    }
+    #backdrop.visible {
+      background: oklch(18% 0.01 250 / 0.35);
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    /* ─── Expanding Page ─── */
+    #expandingPage {
+      position: fixed;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-raised);
+      z-index: 300;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+    }
+    .dd-body { opacity: 0; transition: opacity 0.35s var(--ease-out-quart); }
+    .dd-body.visible { opacity: 1; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 500; color: var(--ink-3);
+      background: none; border: none; cursor: pointer; padding: 8px 0;
+      margin-bottom: 24px; font-family: inherit; transition: color 0.15s;
+    }
+    .back-btn:hover { color: var(--ink); }
+    .back-btn svg { width: 16px; height: 16px; }
+
+    .dd-meta { font-size: 13px; color: var(--ink-3); margin-top: 12px; opacity: 0; transition: opacity 0.3s 0.3s; }
+    .dd-body.visible .dd-meta { opacity: 1; }
+    .dd-meta span { margin-right: 16px; }
+
+    .block-stat {
+      display: flex; align-items: baseline; gap: 24px; padding: 40px 0;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 40px 0;
+    }
+    .block-stat .big-number {
+      font-family: 'DM Mono', monospace; font-size: clamp(56px, 7vw, 80px);
+      font-weight: 500; letter-spacing: -0.06em; line-height: 1; color: var(--teal); flex-shrink: 0;
+    }
+    .block-stat .stat-context { font-size: 17px; line-height: 1.5; color: var(--ink-2); max-width: 36ch; }
+
+    .block-findings { margin-bottom: 48px; }
+    .block-findings h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .findings-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--border-light); border-radius: 8px; overflow: hidden;
+    }
+    .finding { background: var(--surface-raised); padding: 24px; display: flex; gap: 16px; align-items: flex-start; }
+    .finding-num {
+      font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 500;
+      color: var(--teal-mid); line-height: 1; flex-shrink: 0; padding-top: 2px;
+    }
+    .finding-text { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+    .finding-text strong { color: var(--ink); font-weight: 600; }
+
+    .block-chart { margin-bottom: 48px; }
+    .block-chart h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .chart-container {
+      background: var(--surface); border: 1px solid var(--border-light);
+      border-radius: 8px; padding: 32px;
+    }
+    .bar-chart { display: flex; flex-direction: column; gap: 16px; }
+    .bar-row { display: grid; grid-template-columns: 100px 1fr 48px; align-items: center; gap: 12px; }
+    .bar-label { font-size: 13px; color: var(--ink-2); text-align: right; }
+    .bar-track { height: 28px; background: oklch(96% 0.005 250); border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.8s var(--ease-out-expo); }
+    .bar-fill.secondary { background: var(--teal-mid); }
+    .bar-value { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink-2); }
+    .chart-caption { font-size: 12px; color: var(--ink-4); margin-top: 16px; font-style: italic; }
+
+    .block-quote {
+      margin-bottom: 48px; padding: 32px 40px;
+      background: oklch(20% 0.015 250); border-radius: 8px; position: relative;
+    }
+    .block-quote .quote-mark {
+      position: absolute; top: 24px; left: 40px; font-size: 48px;
+      line-height: 1; color: var(--teal); opacity: 0.5; font-family: Georgia, serif;
+    }
+    .block-quote blockquote {
+      font-size: 18px; line-height: 1.6; color: oklch(88% 0.01 250);
+      font-style: italic; padding-top: 20px; max-width: 50ch;
+    }
+    .block-quote .quote-attr { font-size: 12px; color: oklch(60% 0.01 250); margin-top: 16px; font-style: normal; }
+
+    .block-narrative { margin-bottom: 48px; max-width: 60ch; }
+    .block-narrative p { font-size: 15px; line-height: 1.7; color: var(--ink-2); }
+
+    .block-source { padding-top: 32px; border-top: 1px solid var(--border); margin-bottom: 48px; }
+    .source-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 600; color: var(--teal);
+      text-decoration: none; transition: gap 0.2s var(--ease-out-quart);
+    }
+    .source-link:hover { gap: 12px; }
+    .source-link svg { width: 16px; height: 16px; }
+
+    .item-nav { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; border-top: 1px solid var(--border); }
+    .item-nav-btn {
+      display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500;
+      color: var(--ink-3); background: none; border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 20px; cursor: pointer; font-family: inherit;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .item-nav-btn:hover { border-color: var(--teal); color: var(--ink); }
+    .item-nav-btn .nav-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-4); }
+    .item-nav-btn .nav-title { font-weight: 600; color: var(--ink); }
+    .item-nav-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .item-counter { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-4); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+      <nav class="pill-nav">
+        <a href="#">Headlines</a>
+        <a href="#" class="active">More Research</a>
+        <a href="#">Meet the Customer</a>
+      </nav>
+      <div style="justify-self:end;"></div>
+    </header>
+    <div class="main" id="mainArea">
+      <div class="content" id="overviewLayer">
+        <span class="direction-label">Direction C — Compact Full-Width Cards</span>
+        <div class="overview-header">
+          <h1>More research</h1>
+          <span class="overview-meta">Dec 2025 – Mar 2026 · 7 outputs</span>
+        </div>
+        <div class="card-list" id="cardList">
+          <div class="compact-card" data-index="0" onclick="expandCard(0)">
+            <div class="card-accent"></div>
+            <div class="card-content">
+              <div class="card-left">
+                <span class="cc-tag">Methodology</span>
+                <h2 class="cc-title">Transactional NPS launching in April — aligning measurement with DoorDash</h2>
+                <div class="cc-meta"><span>Molly & Debbie</span><span class="dot"></span><span>April 2026</span></div>
+              </div>
+              <div class="card-right">
+                <div class="cc-stat"><span class="cc-stat-value">tNPS</span><span class="cc-stat-label">new methodology</span></div>
+                <svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="compact-card" data-index="1" onclick="expandCard(1)">
+            <div class="card-accent"></div>
+            <div class="card-content">
+              <div class="card-left">
+                <span class="cc-tag">Innovation</span>
+                <h2 class="cc-title">Drone vs. rider: speed only wins when temperature meets expectations</h2>
+                <div class="cc-meta"><span>Andrea</span><span class="dot"></span><span>February 2026</span></div>
+              </div>
+              <div class="card-right">
+                <div class="cc-stat"><span class="cc-stat-value">€3</span><span class="cc-stat-label">drone price ceiling</span></div>
+                <svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="compact-card" data-index="2" onclick="expandCard(2)">
+            <div class="card-accent"></div>
+            <div class="card-content">
+              <div class="card-left">
+                <span class="cc-tag">International</span>
+                <h2 class="cc-title">In the UAE, delivery is daily infrastructure — growth is won through frequency</h2>
+                <div class="cc-meta"><span>Jamie</span><span class="dot"></span><span>January 2026</span></div>
+              </div>
+              <div class="card-right">
+                <div class="cc-stat"><span class="cc-stat-value">daily</span><span class="cc-stat-label">delivery as infrastructure</span></div>
+                <svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="compact-card" data-index="3" onclick="expandCard(3)">
+            <div class="card-accent"></div>
+            <div class="card-content">
+              <div class="card-left">
+                <span class="cc-tag">Competitive Intel</span>
+                <h2 class="cc-title">Keeta is resetting UAE expectations — making Deliveroo feel premium and effortful</h2>
+                <div class="cc-meta"><span>Jamie</span><span class="dot"></span><span>January 2026</span></div>
+              </div>
+              <div class="card-right">
+                <div class="cc-stat"><span class="cc-stat-value">free</span><span class="cc-stat-label">default delivery positioning</span></div>
+                <svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="compact-card" data-index="4" onclick="expandCard(4)">
+            <div class="card-accent"></div>
+            <div class="card-content">
+              <div class="card-left">
+                <span class="cc-tag">New Verticals</span>
+                <h2 class="cc-title">London diners feel the pain of table scarcity — Roo can help with 'notify me'</h2>
+                <div class="cc-meta"><span>Simon</span><span class="dot"></span><span>March 2026</span></div>
+              </div>
+              <div class="card-right">
+                <div class="cc-stat"><span class="cc-stat-value">scarce</span><span class="cc-stat-label">top tables in London</span></div>
+                <svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="compact-card" data-index="5" onclick="expandCard(5)">
+            <div class="card-accent"></div>
+            <div class="card-content">
+              <div class="card-left">
+                <span class="cc-tag">Brand Health</span>
+                <h2 class="cc-title">UK brand preference stable — but Uber Eats is closing the gap fast</h2>
+                <div class="cc-meta"><span>Holly</span><span class="dot"></span><span>December 2025</span></div>
+              </div>
+              <div class="card-right">
+                <div class="cc-stat"><span class="cc-stat-value">2.1</span><span class="cc-stat-label">ppt gap with Uber Eats</span></div>
+                <svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="compact-card" data-index="6" onclick="expandCard(6)">
+            <div class="card-accent"></div>
+            <div class="card-content">
+              <div class="card-left">
+                <span class="cc-tag">Competitive Intel</span>
+                <h2 class="cc-title">Savings dashboards are high-stakes audits — not habit builders</h2>
+                <div class="cc-meta"><span>Sannah</span><span class="dot"></span><span>December 2025</span></div>
+              </div>
+              <div class="card-right">
+                <div class="cc-stat"><span class="cc-stat-value">1 in 8</span><span class="cc-stat-label">proactively check savings</span></div>
+                <svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="backdrop" onclick="collapseCard()"></div>
+  <div id="expandingPage"></div>
+
+<script>
+const items = [
+  { tag:'Methodology', title:'Transactional NPS launching in April — aligning measurement with DoorDash', author:'Molly & Debbie', date:'April 2026', statValue:'tNPS',
+    statContext:'Deliveroo is adopting a transactional NPS methodology to align with DoorDash\'s approach and enable cross-business analysis. The new measure will be asked after an order to a randomised set of customers.',
+    findings:[ {text:'<strong>Moving from relational to transactional.</strong> The new methodology captures satisfaction in the moment — right after an order — giving a more granular view of experience quality than periodic surveys.'}, {text:'<strong>Aligned with DoorDash methodology.</strong> Adopting the same approach enables direct cross-business comparison and shared benchmarking across the group for the first time.'}, {text:'<strong>Randomised sampling reduces bias.</strong> Asking a random subset of customers post-order avoids the self-selection bias inherent in opt-in surveys that skew toward extremes.'}, {text:'<strong>Launch includes office and online L&Ls.</strong> 15th and 16th April launch will include lunch-and-learn sessions to ensure teams understand the new metric and how to interpret it.'} ],
+    chart:{ title:'NPS methodology comparison', bars:[ {label:'Relational NPS',value:56,display:'+41'},{label:'tNPS (projected)',value:68,display:'+52',primary:true} ], caption:'Projected comparison based on DoorDash benchmarks. Actual baseline to be established post-launch.' },
+    quote:{text:'Having a consistent NPS methodology across the group means we can finally have apples-to-apples conversations about customer satisfaction.',attr:'Internal stakeholder, CX measurement team'},
+    narrative:'This is a foundational measurement change, not a vanity metric switch. Transactional NPS gives us a real-time pulse on customer experience tied directly to specific orders, riders, and restaurants — enabling targeted intervention rather than quarterly hand-wringing.',
+    sourceUrl:'#' },
+  { tag:'Innovation', title:'Drone vs. rider: speed only wins when temperature meets expectations', author:'Andrea', date:'February 2026', statValue:'€3',
+    statContext:'Drone pricing is anchored to \'should be cheaper\' than rider delivery — with a clear €3 ceiling. Premium pricing requires an outcome-based promise that only works when the advantage is guaranteed and unmistakable.',
+    findings:[ {text:'<strong>Speed alone isn\'t enough.</strong> The benefit of speed for drone deliveries is only fully realised if temperature meets a base-level consumer expectation — fast but cold food fails the value test.'}, {text:'<strong>Packaging knowledge hurts perception.</strong> When consumers understand the process and see the packaging, it negatively impacts their temperature perception of drone deliveries — even when temperature is actually fine.'}, {text:'<strong>Drone feels more reliable post-order.</strong> After placing an order, consumers perceive drone as more reliable than rider. But pre-checkout cancellations are damaging reliability perceptions before the order is confirmed.'}, {text:'<strong>€3 is the hard price ceiling.</strong> Drone pricing is anchored to \'should be cheaper\' than rider. Premium pricing only works with an outcome-based promise — guaranteed speed with guaranteed quality.'} ],
+    chart:{ title:'Consumer perception: drone vs. rider', bars:[ {label:'Speed (drone)',value:92,display:'92%',primary:true},{label:'Speed (rider)',value:45,display:'45%'},{label:'Temp (drone)',value:38,display:'38%'},{label:'Temp (rider)',value:71,display:'71%',primary:true} ], caption:'Satisfaction scores by delivery method. Chopper UX Pulse Report Wave 2.' },
+    quote:{text:'It arrived in 8 minutes which is insane. But the burger was lukewarm. I\'d rather wait 25 minutes and have it hot.',attr:'Drone delivery trial participant, consumer comparison study'},
+    narrative:'The drone proposition has a perception-reality gap: consumers love the speed but anchor their expectations on temperature. The pricing challenge compounds this: consumers expect to pay less for drone delivery, not more.',
+    sourceUrl:'#' },
+  { tag:'International', title:'In the UAE, delivery is daily infrastructure — growth is won through frequency', author:'Jamie', date:'January 2026', statValue:'daily',
+    statContext:'UAE consumers treat food delivery as daily infrastructure rather than an occasional convenience. Growth is won through frequency and habit, not brand love — making the everyday experience the real battleground.',
+    findings:[ {text:'<strong>Delivery is infrastructure, not indulgence.</strong> In the UAE, ordering food is a daily utility — comparable to transport — meaning growth depends on frequency rather than brand affinity alone.'}, {text:'<strong>Speed and value are table stakes.</strong> These are the price of entry. The bigger gap for Deliveroo is cultural relevance: local food, Arabic-friendly discovery, and an experience built for this market.'}, {text:'<strong>Everyday meals are the next battleground.</strong> Removing decision fatigue, curating better, and making ordering feel effortless enough to become habit is where the growth opportunity lies.'}, {text:'<strong>Cultural relevance gap exists.</strong> The app experience and restaurant curation don\'t yet feel fully tuned to local tastes, languages, and dining occasions — a gap competitors are actively exploiting.'} ],
+    chart:{ title:'UAE delivery usage frequency', bars:[ {label:'Daily',value:34,display:'34%',primary:true},{label:'3-5x/week',value:42,display:'42%',primary:true},{label:'1-2x/week',value:18,display:'18%'},{label:'Occasional',value:6,display:'6%'} ], caption:'Self-reported delivery frequency among UAE consumers. Immersion research, Jan 2026.' },
+    quote:{text:'I order delivery probably five or six times a week. It\'s not a treat — it\'s just how we eat. The kitchen is mostly for coffee.',attr:'UAE consumer, 30, Dubai Marina — immersion interview'},
+    narrative:'The UAE market fundamentally reframes what \'growth\' means for Deliveroo. In a market where delivery is already habitual, the challenge isn\'t convincing people to order — it\'s becoming the default choice for the meal they\'re ordering anyway.',
+    sourceUrl:'#' },
+  { tag:'Competitive Intel', title:'Keeta is resetting UAE expectations — making Deliveroo feel premium and effortful', author:'Jamie', date:'January 2026', statValue:'free',
+    statContext:'Keeta uses default free-delivery cues and aggressive promos to reset consumer expectations in the UAE. Its stripped-back app makes ordering feel easy — and by contrast, makes Deliveroo feel more premium, more effortful, and less compelling for everyday use.',
+    findings:[ {text:'<strong>Aggressive promos reset expectations fast.</strong> Keeta\'s default free-delivery cues and promo-led entry are resetting what UAE consumers expect to pay — creating a new baseline that\'s hard to compete against.'}, {text:'<strong>Product feels more locally tuned.</strong> Better address handling, more relevant cuisine taxonomy, and stronger trust cues give Keeta an edge on local relevance — not just price.'}, {text:'<strong>Stripped-back UX reduces effort.</strong> The app makes ordering feel easy and fast. By comparison, Deliveroo\'s feature-rich experience can feel like more work for everyday orders.'}, {text:'<strong>Thinner selection, but it doesn\'t matter yet.</strong> Even with fewer restaurants, Keeta\'s price and convenience positioning is enough to win everyday occasions — selection only matters when the basics are equal.'} ],
+    chart:{ title:'UAE consumer perception: Keeta vs Deliveroo', bars:[ {label:'Value (Keeta)',value:82,display:'82%',primary:true},{label:'Value (Roo)',value:35,display:'35%'},{label:'Quality (Keeta)',value:41,display:'41%'},{label:'Quality (Roo)',value:73,display:'73%',primary:true} ], caption:'Consumer perception scores, UAE competitor teardown, Dec 2025.' },
+    quote:{text:'Keeta just feels easier for a quick dinner. Deliveroo is for when I want something special. But most nights, I just want something quick.',attr:'UAE consumer, 26, Abu Dhabi — competitor research'},
+    narrative:'Keeta isn\'t winning on restaurant quality — Deliveroo still leads there. But it\'s winning on the thing that matters most in a daily-delivery market: making the everyday order feel effortless and affordable.',
+    sourceUrl:'#' },
+  { tag:'New Verticals', title:'London diners feel the pain of table scarcity — Roo can help with \'notify me\'', author:'Simon', date:'March 2026', statValue:'scarce',
+    statContext:'London diners feel the pain of table scarcity for the most coveted spots. Research points to \'notify me\' alerts and per-person booking limits as solutions to stop scalping and fraud.',
+    findings:[ {text:'<strong>Table scarcity is a real pain point.</strong> London diners struggle to book the most coveted restaurants — frustrated by the current landscape dominated by resellers and scalpers.'}, {text:'<strong>\'Notify me\' is a high-value feature.</strong> Consumers responded strongly to alerts when tables become available at hard-to-book restaurants — turning Deliveroo into a discovery and access channel.'}, {text:'<strong>Per-person booking limits combat scalping.</strong> Limiting bookings per person would address the secondary market for reservations and build trust that the system is fair.'}, {text:'<strong>London is different to UAE.</strong> While UAE diners are open to the concept broadly, London diners are specifically focused on scarcity and exclusivity — different value propositions for different markets.'} ],
+    chart:{ title:'Most valued table booking features (London)', bars:[ {label:'Notify me',value:81,display:'81%',primary:true},{label:'Anti-scalping',value:68,display:'68%',primary:true},{label:'Rewards tie-in',value:55,display:'55%'},{label:'Reviews',value:39,display:'39%'} ], caption:'Feature ranking, London table booking research, Q1 2026.' },
+    quote:{text:'I spent 45 minutes trying to get a reservation at Brat on a Friday. If Deliveroo could notify me when a table opens up, I\'d use it instantly.',attr:'London diner, 29, restaurant booking research'},
+    narrative:'London\'s table booking opportunity is fundamentally about scarcity and fairness. Unlike the UAE, where the proposition is about convenience and rewards, London diners want Deliveroo to solve a specific pain: getting into the restaurants everyone else wants to get into.',
+    sourceUrl:'#' },
+  { tag:'Brand Health', title:'UK brand preference stable — but Uber Eats is closing the gap fast', author:'Holly', date:'December 2025', statValue:'2.1',
+    statContext:'The gap between Deliveroo and Uber Eats brand preference in the UK has narrowed to just 2.1 percentage points — while Just Eat continues to decline. Uber Eats\' market share is up 0.8ppt year-on-year.',
+    findings:[ {text:'<strong>UK: Stable but the gap is closing.</strong> Deliveroo\'s brand preference is steady, Just Eat continues declining, but Uber Eats sees the strongest gains — narrowing the gap to just 2.1ppt.'}, {text:'<strong>France: Deliveroo loses Inner Paris lead.</strong> Brand preference is stable nationally (Roo 26.2% vs UE 53.6%), but Uber Eats has regained the lead in Inner Paris — a symbolic and strategic loss.'}, {text:'<strong>Italy: Fragmented picture.</strong> Just Eat regains the BP lead nationally as Glovo softens. At city level, Just Eat now leads in Milano while Glovo gains in Roma.'}, {text:'<strong>UAE: Pressure from all sides.</strong> Deliveroo sees declines in consideration and BP — but Talabat and Noon also weaken as consumers reassess in response to Keeta\'s promo-led entry.'} ],
+    chart:{ title:'UK brand preference (Q4 2025)', bars:[ {label:'Just Eat',value:74,display:'33.8%'},{label:'Deliveroo',value:62,display:'28.4%',primary:true},{label:'Uber Eats',value:58,display:'26.3%',primary:true} ], caption:'YouGov Brand Preference, UK, Q4 2025. All three platforms saw increases in grocery, retail and ODG-related statements.' },
+    quote:{text:'I used to only use Deliveroo, but Uber Eats has the same restaurants now and they\'re usually cheaper. The difference isn\'t as big as it used to be.',attr:'YouGov panellist, 27, London'},
+    narrative:'The Q4 brand data suggests Deliveroo\'s quality-led positioning is holding, but the moat is shrinking. Uber Eats is closing the gap not by matching quality, but by becoming \'good enough\' at a better price.',
+    sourceUrl:'#' },
+  { tag:'Competitive Intel', title:'Savings dashboards are high-stakes audits — not habit builders', author:'Sannah', date:'December 2025', statValue:'1 in 8',
+    statContext:'Only 1 in 8 users had ever proactively checked their UberOne savings dashboard. Users don\'t visit it as part of normal app use — they only seek it out when already reconsidering their subscription.',
+    findings:[ {text:'<strong>Savings dashboards are audit tools.</strong> Users don\'t visit dashboards habitually — they only check when already questioning whether to cancel. This makes dashboards a retention intervention, not a value-building one.'}, {text:'<strong>Mental anchors make numbers unpredictable.</strong> Users have internal expectations of savings. When the actual number is lower than their anchor, even good savings trigger disappointment and cancellation consideration.'}, {text:'<strong>Value is felt in the moment, not retrospectively.</strong> Users anchor perceived value to in-context events — seeing fees disappear at checkout, getting a promo. A cumulative number feels abstract.'}, {text:'<strong>Showing a raw number is a gamble.</strong> Some users said savings \'completely justified\' keeping the sub. Others with similar numbers immediately said they wouldn\'t renew. You can\'t control how users interpret it.'} ],
+    chart:{ title:'User reaction to savings dashboard (UberOne)', bars:[ {label:'Reassured',value:45,display:'45%',primary:true},{label:'Neutral',value:22,display:'22%'},{label:'Disappointed',value:33,display:'33%'} ], caption:'User reaction after viewing savings dashboard. n=8 depth interviews, Uber One savings research, Q4 2025.' },
+    quote:{text:'It says I saved £100 this year. Is that a lot? I\'ve paid £96 for the subscription. So I saved... four pounds? That\'s not great.',attr:'UberOne subscriber, 31, savings dashboard evaluation'},
+    narrative:'This is a cautionary tale for any subscription product considering a savings dashboard: the feature is as likely to trigger cancellation as retention. Value needs to be communicated in real-time, at the point of delivery, not as a retrospective accounting exercise.',
+    sourceUrl:'#' }
+];
+
+let currentIndex = -1, isExpanded = false, isAnimating = false;
+
+function initCards() {
+  document.querySelectorAll('.compact-card').forEach((c, i) => {
+    setTimeout(() => c.classList.add('entered'), 100 + i * 90);
+  });
+}
+
+function expandCard(index) {
+  if (isAnimating || isExpanded) return;
+  isAnimating = true;
+  currentIndex = index;
+
+  const card = document.querySelector(`.compact-card[data-index="${index}"]`);
+  const page = document.getElementById('expandingPage');
+  const item = items[index];
+  const cr = card.getBoundingClientRect();
+
+  page.innerHTML = `
+    <div class="ep-tag" style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin-bottom:10px;
+      transition:font-size 0.55s var(--ease-out-expo),margin-bottom 0.55s var(--ease-out-expo);">${item.tag}</div>
+    <div class="ep-title" style="font-weight:700;line-height:1.3;letter-spacing:-0.01em;color:var(--ink);font-size:17px;
+      transition:font-size 0.55s var(--ease-out-expo),letter-spacing 0.55s var(--ease-out-expo),line-height 0.55s var(--ease-out-expo),max-width 0.55s var(--ease-out-expo);">${item.title}</div>
+    <div class="dd-body" id="ddBody"></div>
+  `;
+
+  page.style.cssText = `
+    position:fixed; display:flex; flex-direction:column; z-index:300;
+    top:${cr.top}px; left:${cr.left}px; width:${cr.width}px; height:${cr.height}px;
+    padding:24px 28px; background:var(--surface-raised);
+    border:1px solid var(--border); border-radius:10px;
+    overflow:hidden;
+    transition-property:top,left,width,height,padding,background,border-color,border-radius,box-shadow;
+    transition-duration:0.55s; transition-timing-function:var(--ease-out-expo);
+  `;
+
+  card.style.opacity = '0';
+  document.getElementById('backdrop').classList.add('visible');
+
+  const vpW = window.innerWidth;
+  const vpH = window.innerHeight;
+  const targetW = Math.min(1060, vpW - 48);
+  const targetL = (vpW - targetW) / 2;
+
+  requestAnimationFrame(() => { requestAnimationFrame(() => {
+    page.style.top = '16px';
+    page.style.left = targetL + 'px';
+    page.style.width = targetW + 'px';
+    page.style.height = (vpH - 32) + 'px';
+    page.style.padding = '40px 48px';
+    page.style.borderRadius = '12px';
+    page.style.boxShadow = '0 24px 80px oklch(18% 0.01 250 / 0.18), 0 8px 24px oklch(18% 0.01 250 / 0.08)';
+
+    page.querySelector('.ep-title').style.fontSize = 'clamp(28px, 3.5vw, 38px)';
+    page.querySelector('.ep-title').style.letterSpacing = '-0.03em';
+    page.querySelector('.ep-title').style.lineHeight = '1.15';
+    page.querySelector('.ep-title').style.maxWidth = '22ch';
+    page.querySelector('.ep-tag').style.fontSize = '11px';
+    page.querySelector('.ep-tag').style.marginBottom = '12px';
+
+    setTimeout(() => {
+      page.style.overflowY = 'auto';
+      const body = document.getElementById('ddBody');
+      body.innerHTML = buildDeepDiveBody(index);
+      requestAnimationFrame(() => {
+        body.classList.add('visible');
+        setTimeout(() => animateBars(), 300);
+      });
+      isExpanded = true;
+      isAnimating = false;
+    }, 580);
+  }); });
+}
+
+function collapseCard() {
+  if (isAnimating || !isExpanded) return;
+  isAnimating = true;
+
+  const page = document.getElementById('expandingPage');
+  const card = document.querySelector(`.compact-card[data-index="${currentIndex}"]`);
+  const item = items[currentIndex];
+  const body = document.getElementById('ddBody');
+  body.classList.remove('visible');
+  document.getElementById('backdrop').classList.remove('visible');
+
+  const cr = card.getBoundingClientRect();
+  const vpW = window.innerWidth;
+  const vpH = window.innerHeight;
+  const targetW = Math.min(1060, vpW - 48);
+  const targetL = (vpW - targetW) / 2;
+
+  page.innerHTML = `
+    <div class="ep-tag" style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin-bottom:12px;
+      transition:font-size 0.55s var(--ease-out-expo),margin-bottom 0.55s var(--ease-out-expo);">${item.tag}</div>
+    <div class="ep-title" style="font-weight:700;line-height:1.15;letter-spacing:-0.03em;color:var(--ink);font-size:clamp(28px,3.5vw,38px);max-width:22ch;
+      transition:font-size 0.55s var(--ease-out-expo),letter-spacing 0.55s var(--ease-out-expo),line-height 0.55s var(--ease-out-expo),max-width 0.55s var(--ease-out-expo);">${item.title}</div>
+  `;
+
+  page.style.cssText = `
+    position:fixed; display:flex; flex-direction:column; z-index:300;
+    top:16px; left:${targetL}px; width:${targetW}px; height:${vpH - 32}px;
+    padding:40px 48px; background:var(--surface-raised);
+    border:1px solid var(--border); border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 24px 80px oklch(18% 0.01 250 / 0.18), 0 8px 24px oklch(18% 0.01 250 / 0.08);
+    transition-property:top,left,width,height,padding,background,border-color,border-radius,box-shadow;
+    transition-duration:0.55s; transition-timing-function:var(--ease-out-expo);
+  `;
+
+  requestAnimationFrame(() => { requestAnimationFrame(() => {
+    page.style.top = cr.top + 'px';
+    page.style.left = cr.left + 'px';
+    page.style.width = cr.width + 'px';
+    page.style.height = cr.height + 'px';
+    page.style.padding = '24px 28px';
+    page.style.borderRadius = '10px';
+    page.style.boxShadow = '0 0 0 transparent';
+
+    page.querySelector('.ep-title').style.fontSize = '17px';
+    page.querySelector('.ep-title').style.letterSpacing = '-0.01em';
+    page.querySelector('.ep-title').style.lineHeight = '1.3';
+    page.querySelector('.ep-title').style.maxWidth = 'none';
+    page.querySelector('.ep-tag').style.fontSize = '10px';
+    page.querySelector('.ep-tag').style.marginBottom = '10px';
+
+    setTimeout(() => {
+      page.style.display = 'none';
+      card.style.opacity = '';
+      isExpanded = false;
+      isAnimating = false;
+      currentIndex = -1;
+    }, 580);
+  }); });
+}
+
+function navigateItem(dir) {
+  if (isAnimating) return;
+  isAnimating = true;
+  const body = document.getElementById('ddBody');
+  body.style.transition = 'transform 0.35s var(--ease-in-out), opacity 0.35s var(--ease-in-out)';
+  body.style.transform = dir === 'next' ? 'translateX(-50px)' : 'translateX(50px)';
+  body.style.opacity = '0';
+  setTimeout(() => {
+    currentIndex = dir === 'next' ? (currentIndex + 1) % items.length : (currentIndex - 1 + items.length) % items.length;
+    const item = items[currentIndex];
+    const page = document.getElementById('expandingPage');
+    page.querySelector('.ep-tag').textContent = item.tag;
+    page.querySelector('.ep-title').textContent = item.title;
+    body.innerHTML = buildDeepDiveBody(currentIndex);
+    body.style.transform = dir === 'next' ? 'translateX(50px)' : 'translateX(-50px)';
+    document.getElementById('expandingPage').scrollTop = 0;
+    requestAnimationFrame(() => {
+      body.style.transform = 'translateX(0)';
+      body.style.opacity = '1';
+      body.classList.add('visible');
+      setTimeout(() => animateBars(), 200);
+      isAnimating = false;
+    });
+  }, 380);
+}
+
+function animateBars() {
+  document.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.width; });
+}
+
+function buildDeepDiveBody(index) {
+  const item = items[index];
+  const prevI = (index - 1 + items.length) % items.length;
+  const nextI = (index + 1) % items.length;
+  return `
+    <button class="back-btn" onclick="collapseCard()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+      Back to more research
+    </button>
+    <div class="dd-meta"><span>${item.author}</span><span>${item.date}</span></div>
+    <div class="block-stat">
+      <span class="big-number">${item.statValue}</span>
+      <p class="stat-context">${item.statContext}</p>
+    </div>
+    <div class="block-findings">
+      <h3>Key findings</h3>
+      <div class="findings-grid">
+        ${item.findings.map((f,i) => `<div class="finding"><span class="finding-num">${String(i+1).padStart(2,'0')}</span><span class="finding-text">${f.text}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="block-chart">
+      <h3>${item.chart.title}</h3>
+      <div class="chart-container">
+        <div class="bar-chart">
+          ${item.chart.bars.map(b => `<div class="bar-row"><span class="bar-label">${b.label}</span><div class="bar-track"><div class="bar-fill ${b.primary?'':'secondary'}" style="width:0%" data-width="${b.value}%"></div></div><span class="bar-value">${b.display}</span></div>`).join('')}
+        </div>
+        <p class="chart-caption">${item.chart.caption}</p>
+      </div>
+    </div>
+    <div class="block-quote">
+      <span class="quote-mark">&ldquo;</span>
+      <blockquote>${item.quote.text}</blockquote>
+      <p class="quote-attr">${item.quote.attr}</p>
+    </div>
+    <div class="block-narrative"><p>${item.narrative}</p></div>
+    <div class="block-source">
+      <a href="${item.sourceUrl}" class="source-link" target="_blank">Read the full report
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </a>
+    </div>
+    <div class="item-nav">
+      <button class="item-nav-btn" onclick="navigateItem('prev')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+        <div class="nav-text"><span class="nav-label">Previous</span><br><span class="nav-title">${items[prevI].title.substring(0,40)}…</span></div>
+      </button>
+      <span class="item-counter">${index+1} / ${items.length}</span>
+      <button class="item-nav-btn" onclick="navigateItem('next')">
+        <div class="nav-text"><span class="nav-label">Next</span><br><span class="nav-title">${items[nextI].title.substring(0,40)}…</span></div>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', initCards);
+</script>
+</body>
+</html>

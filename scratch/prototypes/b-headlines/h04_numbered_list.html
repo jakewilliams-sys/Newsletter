@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H04 — Numbered Headlines</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(42% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page {
+      max-width: 640px;
+      width: 100%;
+      padding: 0 32px;
+    }
+
+    .brand-line {
+      font-size: 11px;
+      color: var(--ink-3);
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-line .dot { width: 5px; height: 5px; background: var(--teal); border-radius: 50%; }
+    .brand-line strong { color: var(--ink); }
+
+    .headlines {
+      list-style: none;
+    }
+
+    .headlines li {
+      border-top: 1px solid var(--border);
+    }
+    .headlines li:last-child { border-bottom: 1px solid var(--border); }
+
+    .headlines li a {
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 24px 8px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: opacity 0.15s;
+    }
+
+    .headlines li a:hover { opacity: 0.65; }
+
+    .h-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--ink-3);
+    }
+
+    .h-text h2 {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+      margin-bottom: 3px;
+    }
+
+    .h-text .h-source {
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+
+    .h-stat {
+      font-family: 'DM Mono', monospace;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: -0.03em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      margin-top: 36px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal);
+      text-decoration: none;
+    }
+    .footer-links a:hover { text-decoration: underline; }
+
+    .footer-links a.secondary {
+      color: var(--ink-3);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="brand-line">
+      <span class="dot"></span>
+      <strong>R&I</strong> · Q1 2026 · Dec – Mar
+    </div>
+    <ul class="headlines">
+      <li>
+        <a href="#">
+          <span class="h-num">01</span>
+          <div class="h-text">
+            <h2>Students order more often — and split baskets with flatmates</h2>
+            <span class="h-source">Jake Williams · Student Immersion</span>
+          </div>
+          <span class="h-stat">3.2×</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <span class="h-num">02</span>
+          <div class="h-text">
+            <h2>Plus members retain 40% better with 3.2× order frequency</h2>
+            <span class="h-source">Andrea Aggio · Membership Deep-Dive</span>
+          </div>
+          <span class="h-stat">40%</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <span class="h-num">03</span>
+          <div class="h-text">
+            <h2>Brand awareness growing against competitors in target demographics</h2>
+            <span class="h-source">Holly Ohanian · YouGov Tracker</span>
+          </div>
+          <span class="h-stat">↑ 8%</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <span class="h-num">04</span>
+          <div class="h-text">
+            <h2>French consumers prefer evening delivery and restaurant quality over speed</h2>
+            <span class="h-source">Sannah Siddique · French Market</span>
+          </div>
+          <span class="h-stat">78%</span>
+        </a>
+      </li>
+    </ul>
+    <div class="footer-links">
+      <a href="#">Meet the Customer →</a>
+      <a href="#" class="secondary">More from R&I</a>
+      <a href="#" class="secondary">Appendix</a>
+    </div>
+  </div>
+</body>
+</html>

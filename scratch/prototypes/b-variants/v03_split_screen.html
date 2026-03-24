@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V03 — Split Screen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --ink: oklch(20% 0.01 250);
+      --ink-2: oklch(42% 0.01 250);
+      --ink-3: oklch(58% 0.015 250);
+      --surface: oklch(98.5% 0.003 250);
+      --border: oklch(91% 0.008 250);
+      --warm: oklch(95.5% 0.018 70);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .app { height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+
+    /* Left panel — typography */
+    .left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px 64px;
+      border-right: 1px solid var(--border);
+    }
+
+    .brand {
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .hero-block { max-width: 440px; }
+
+    .quarter-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--ink-3);
+      margin-bottom: 20px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-title {
+      font-size: clamp(36px, 4vw, 50px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+
+    .hero-sub {
+      font-size: 15.5px;
+      line-height: 1.7;
+      color: var(--ink-2);
+      margin-bottom: 32px;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-links li a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink-2);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.15s;
+    }
+
+    .nav-links li a:hover { color: var(--ink); }
+
+    .nav-links li a .arrow {
+      font-size: 16px;
+      color: var(--ink-3);
+      transition: transform 0.2s;
+    }
+
+    .nav-links li a:hover .arrow { transform: translateX(4px); color: var(--teal); }
+
+    .footer-note {
+      font-size: 11px;
+      color: var(--ink-3);
+    }
+
+    /* Right panel — data */
+    .right {
+      background: var(--warm);
+      padding: 48px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .right-label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 8px;
+    }
+
+    .data-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .data-card-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 36px;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .data-card-body h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .data-card-body p {
+      font-size: 13px;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .data-card.featured {
+      background: var(--teal-soft);
+      border-color: oklch(88% 0.06 178);
+    }
+
+    .data-card-tag {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="left">
+      <div class="brand">Research & Insights</div>
+      <div class="hero-block">
+        <div class="quarter-label">Q1 2026 · Dec – Mar</div>
+        <h1 class="hero-title">What we learned this quarter</h1>
+        <p class="hero-sub">
+          Seven pieces of research from across the team covering student
+          behaviour, partner satisfaction, brand health, and competitive
+          intelligence.
+        </p>
+        <ul class="nav-links">
+          <li><a href="#">Featured Research <span class="arrow">→</span></a></li>
+          <li><a href="#">More from R&I <span class="arrow">→</span></a></li>
+          <li><a href="#">Meet the Customer <span class="arrow">→</span></a></li>
+          <li><a href="#">Appendix <span class="arrow">→</span></a></li>
+        </ul>
+      </div>
+      <div class="footer-note">Published April 2026</div>
+    </div>
+    <div class="right">
+      <div class="right-label">This quarter at a glance</div>
+      <div class="data-card featured">
+        <div class="data-card-number">3.2×</div>
+        <div class="data-card-body">
+          <div class="data-card-tag">Top finding</div>
+          <h3>Students order more frequently</h3>
+          <p>And 34% of their orders involve social basket-splitting with flatmates</p>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-number">4.2</div>
+        <div class="data-card-body">
+          <h3>Customer satisfaction steady</h3>
+          <p>Delivery speed complaints down 12% month-on-month</p>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-number">40%</div>
+        <div class="data-card-body">
+          <h3>Plus members retain better</h3>
+          <p>Higher retention with 3.2× order frequency</p>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-number">↑</div>
+        <div class="data-card-body">
+          <h3>Deliveroo awareness growing</h3>
+          <p>Brand health metrics up in key demographics vs competitors</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
