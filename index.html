@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R&I Newsletter — Q1 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: oklch(68% 0.14 178);
+      --teal-soft: oklch(94% 0.035 178);
+      --teal-mid: oklch(82% 0.08 178);
+      --ink: oklch(18% 0.01 250);
+      --ink-2: oklch(40% 0.01 250);
+      --ink-3: oklch(60% 0.015 250);
+      --ink-4: oklch(74% 0.01 250);
+      --surface: oklch(98.5% 0.003 250);
+      --surface-raised: oklch(99.2% 0.002 250);
+      --border: oklch(91% 0.008 250);
+      --border-light: oklch(94% 0.005 250);
+      --up: oklch(62% 0.12 155);
+      --up-soft: oklch(94% 0.03 155);
+      --down: oklch(65% 0.12 45);
+      --down-soft: oklch(94% 0.03 45);
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink); background: var(--surface);
+      -webkit-font-smoothing: antialiased;
+      height: 100vh; overflow: hidden;
+    }
+    .app { height: 100vh; overflow-y: auto; overflow-x: hidden; }
+
+    /* ═══════════════════════════════════════════════════ */
+    /* TOPBAR + PILL NAV                                  */
+    /* ═══════════════════════════════════════════════════ */
+    .topbar {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 0 48px; height: 64px;
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      background: var(--surface-raised); z-index: 200; position: sticky; top: 0;
+      transition: height 0.35s var(--ease-out-quart),
+                  background 0.35s var(--ease-out-quart),
+                  border-color 0.35s var(--ease-out-quart),
+                  box-shadow 0.35s var(--ease-out-quart);
+    }
+    .topbar.scrolled {
+      height: 52px;
+      background: transparent;
+      border-bottom-color: transparent;
+      box-shadow: none;
+    }
+    .topbar-brand {
+      font-size: 14px; font-weight: 700; justify-self: start;
+      transition: opacity 0.3s var(--ease-out-quart);
+    }
+    .topbar.scrolled .topbar-brand { opacity: 0; pointer-events: none; }
+    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 8px; font-size: 13px; }
+    .topbar-logo {
+      justify-self: end;
+      transition: opacity 0.3s var(--ease-out-quart);
+    }
+    .topbar.scrolled .topbar-logo { opacity: 0; pointer-events: none; }
+    .pill-nav {
+      display: flex; gap: 0; padding: 4px;
+      background: oklch(96% 0.005 250); border-radius: 999px;
+      border: 1px solid var(--border); justify-self: center;
+      position: relative;
+      box-shadow: 0 2px 8px oklch(0% 0 0 / 0.06), 0 1px 2px oklch(0% 0 0 / 0.04);
+      transition: background 0.35s var(--ease-out-quart),
+                  border-color 0.35s var(--ease-out-quart),
+                  box-shadow 0.35s var(--ease-out-quart);
+    }
+    .topbar.scrolled .pill-nav {
+      background: oklch(98% 0.003 250 / 0.7);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      border-color: oklch(91% 0.008 250 / 0.4);
+      box-shadow: 0 4px 16px oklch(0% 0 0 / 0.08), 0 1px 3px oklch(0% 0 0 / 0.05);
+    }
+    .pill-indicator {
+      position: absolute; top: 4px; left: 4px;
+      height: calc(100% - 8px); border-radius: 999px;
+      background: var(--teal);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 0;
+    }
+    .pill-nav button {
+      display: block; padding: 10px 20px; font-size: 13px; font-weight: 500;
+      color: var(--ink-2); background: none; border: none; border-radius: 999px;
+      cursor: pointer; font-family: inherit;
+      transition: color 0.3s;
+      position: relative; z-index: 1;
+    }
+    .pill-nav button:hover { color: var(--ink); }
+    .pill-nav button.active { color: white; font-weight: 600; }
+
+    /* ═══════════════════════════════════════════════════ */
+    /* MAIN + SECTIONS                                    */
+    /* ═══════════════════════════════════════════════════ */
+    .main { position: relative; min-height: calc(100vh - 64px); }
+    .section {
+      display: none;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    .section.active {
+      display: block;
+      animation: sectionIn 0.35s var(--ease-out-quart) forwards;
+    }
+    @keyframes sectionIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .content { max-width: 960px; margin: 0 auto; padding: 40px 48px; }
+
+    /* ═══════════════════════════════════════════════════ */
+    /* BACKDROP + EXPANDING PAGE (shared)                 */
+    /* ═══════════════════════════════════════════════════ */
+    #backdrop {
+      position: fixed; inset: 0; z-index: 250;
+      background: oklch(18% 0.01 250 / 0);
+      pointer-events: none;
+      transition: background 0.45s var(--ease-out-quart);
+    }
+    #backdrop.visible {
+      background: oklch(18% 0.01 250 / 0.35);
+      pointer-events: auto; cursor: pointer;
+    }
+    #expandingPage {
+      position: fixed;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface-raised); z-index: 300;
+      overflow: hidden; display: none; flex-direction: column;
+    }
+    #expandingPage .ep-tag {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 10px;
+      transition: font-size 0.55s var(--ease-out-expo), margin-bottom 0.55s var(--ease-out-expo);
+    }
+    #expandingPage .ep-title {
+      font-weight: 700; line-height: 1.25; letter-spacing: -0.015em; color: var(--ink);
+      transition: font-size 0.55s var(--ease-out-expo), letter-spacing 0.55s var(--ease-out-expo),
+                  line-height 0.55s var(--ease-out-expo), max-width 0.55s var(--ease-out-expo);
+    }
+
+    /* ═══════════════════════════════════════════════════ */
+    /* DEEP DIVE CONTENT (shared by Headlines + More)     */
+    /* ═══════════════════════════════════════════════════ */
+    .dd-body { opacity: 0; transition: opacity 0.35s var(--ease-out-quart); }
+    .dd-body.visible { opacity: 1; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 500; color: var(--ink-3);
+      background: none; border: none; cursor: pointer; padding: 8px 0;
+      margin-bottom: 24px; font-family: inherit; transition: color 0.15s;
+    }
+    .back-btn:hover { color: var(--ink); }
+    .back-btn svg { width: 16px; height: 16px; }
+    .dd-meta { font-size: 13px; color: var(--ink-3); margin-top: 12px; opacity: 0; transition: opacity 0.3s 0.3s; }
+    .dd-body.visible .dd-meta { opacity: 1; }
+    .dd-meta span { margin-right: 16px; }
+    .block-stat {
+      display: flex; align-items: baseline; gap: 24px; padding: 40px 0;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 40px 0;
+    }
+    .block-stat .big-number {
+      font-family: 'DM Mono', monospace; font-size: clamp(56px, 7vw, 80px);
+      font-weight: 500; letter-spacing: -0.06em; line-height: 1; color: var(--teal); flex-shrink: 0;
+    }
+    .block-stat .stat-context { font-size: 17px; line-height: 1.5; color: var(--ink-2); max-width: 36ch; }
+    .block-findings { margin-bottom: 48px; }
+    .block-findings h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .findings-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--border-light); border-radius: 8px; overflow: hidden;
+    }
+    .finding { background: var(--surface-raised); padding: 24px; display: flex; gap: 16px; align-items: flex-start; }
+    .finding-num {
+      font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 500;
+      color: var(--teal-mid); line-height: 1; flex-shrink: 0; padding-top: 2px;
+    }
+    .finding-text { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+    .finding-text strong { color: var(--ink); font-weight: 600; }
+    .block-chart { margin-bottom: 48px; }
+    .block-chart h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .chart-container {
+      background: var(--surface); border: 1px solid var(--border-light);
+      border-radius: 8px; padding: 32px;
+    }
+    .bar-chart { display: flex; flex-direction: column; gap: 16px; }
+    .bar-row { display: grid; grid-template-columns: 100px 1fr 48px; align-items: center; gap: 12px; }
+    .bar-label { font-size: 13px; color: var(--ink-2); text-align: right; }
+    .bar-track { height: 28px; background: oklch(96% 0.005 250); border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.8s var(--ease-out-expo); }
+    .bar-fill.secondary { background: var(--teal-mid); }
+    .bar-value { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink-2); }
+    .chart-caption { font-size: 12px; color: var(--ink-4); margin-top: 16px; font-style: italic; }
+    .block-quote {
+      margin-bottom: 48px; padding: 32px 40px;
+      background: oklch(20% 0.015 250); border-radius: 8px; position: relative;
+    }
+    .block-quote .quote-mark {
+      position: absolute; top: 24px; left: 40px; font-size: 48px;
+      line-height: 1; color: var(--teal); opacity: 0.5; font-family: Georgia, serif;
+    }
+    .block-quote blockquote {
+      font-size: 18px; line-height: 1.6; color: oklch(88% 0.01 250);
+      font-style: italic; padding-top: 20px; max-width: 50ch;
+    }
+    .block-quote .quote-attr { font-size: 12px; color: oklch(60% 0.01 250); margin-top: 16px; font-style: normal; }
+    .block-narrative { margin-bottom: 48px; max-width: 60ch; }
+    .block-narrative p { font-size: 15px; line-height: 1.7; color: var(--ink-2); }
+    .block-source { padding-top: 32px; border-top: 1px solid var(--border); margin-bottom: 48px; }
+    .source-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 600; color: var(--teal);
+      text-decoration: none; transition: gap 0.2s var(--ease-out-quart);
+    }
+    .source-link:hover { gap: 12px; }
+    .source-link svg { width: 16px; height: 16px; }
+
+    /* ── CUSTOM BLOCK: Intro ── */
+    .block-intro { margin-bottom: 48px; padding-bottom: 36px; border-bottom: 1px solid var(--border-light); }
+    .block-intro .intro-accent {
+      font-family: 'DM Mono', monospace; font-size: clamp(40px, 5vw, 56px);
+      font-weight: 500; letter-spacing: -0.05em; color: var(--teal);
+      line-height: 1; margin-bottom: 16px;
+    }
+    .block-intro p {
+      font-size: 17px; line-height: 1.7; color: var(--ink-2); max-width: 52ch;
+    }
+
+    /* ── CUSTOM BLOCK: Market cards ── */
+    .block-market-cards { margin-bottom: 48px; }
+    .block-market-cards h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .mc-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .market-card {
+      background: var(--surface-raised); padding: 28px;
+      display: flex; flex-direction: column;
+    }
+    .market-card .mc-name {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 14px;
+    }
+    .market-card .mc-stat {
+      font-family: 'DM Mono', monospace; font-size: 32px; font-weight: 500;
+      letter-spacing: -0.04em; color: var(--ink); line-height: 1; margin-bottom: 4px;
+    }
+    .market-card .mc-stat-label {
+      font-size: 11px; color: var(--ink-4); margin-bottom: 14px;
+    }
+    .market-card .mc-finding {
+      font-size: 13px; line-height: 1.6; color: var(--ink-2); flex: 1;
+    }
+    .market-card .mc-quote {
+      font-size: 12px; font-style: italic; color: var(--ink-3);
+      padding-left: 12px; border-left: 2px solid var(--teal-mid);
+      margin-top: 16px; line-height: 1.5;
+    }
+    .mc-highlight {
+      grid-column: 1 / -1; background: var(--teal-soft);
+      padding: 28px; display: flex; gap: 32px; align-items: flex-start;
+    }
+    .mc-highlight .mc-name { color: oklch(50% 0.12 178); }
+    .mc-highlight .mc-stat-group {
+      flex-shrink: 0; display: flex; flex-direction: column;
+    }
+    .mc-highlight .mc-body { flex: 1; min-width: 0; }
+    .mc-highlight .mc-finding { font-size: 14px; color: var(--ink-2); }
+    .mc-highlight .mc-quote { border-left-color: oklch(60% 0.1 178); }
+
+    /* ── CUSTOM BLOCK: Barriers strip ── */
+    .block-barriers { margin-bottom: 48px; }
+    .block-barriers h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .barriers-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      background: var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .barrier-cell { background: var(--surface-raised); padding: 24px 20px; }
+    .barrier-cell .bc-label {
+      font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.3;
+      margin-bottom: 12px;
+    }
+    .barrier-cell .bc-range {
+      font-family: 'DM Mono', monospace; font-size: 20px;
+      font-weight: 500; color: var(--teal); letter-spacing: -0.03em;
+      line-height: 1; margin-bottom: 6px;
+    }
+    .barrier-cell .bc-note {
+      font-size: 11px; color: var(--ink-4); line-height: 1.4;
+    }
+
+    /* ── CUSTOM BLOCK: Mirror (sign-up vs churn) ── */
+    .block-mirror { margin-bottom: 48px; }
+    .block-mirror h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .mirror-layout {
+      display: grid; grid-template-columns: 1fr 1px 1fr;
+      border: 1px solid var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .mirror-side { padding: 28px; }
+    .mirror-side.side-in { background: oklch(97% 0.015 155); }
+    .mirror-side.side-out { background: oklch(97% 0.015 45); }
+    .mirror-divider { background: var(--border-light); }
+    .mirror-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px;
+    }
+    .side-in .mirror-label { color: var(--up); }
+    .side-out .mirror-label { color: var(--down); }
+    .mirror-item { padding: 10px 0; }
+    .mirror-item:not(:last-child) { border-bottom: 1px solid oklch(92% 0.01 200 / 0.5); }
+    .mirror-item .mi-text {
+      font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 2px;
+    }
+    .mirror-item .mi-detail { font-size: 12px; color: var(--ink-3); }
+
+    /* ── CUSTOM BLOCK: Journey stages ── */
+    .block-journey { margin-bottom: 48px; }
+    .block-journey h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .journey-track {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+      border: 1px solid var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .journey-stage {
+      padding: 24px; position: relative;
+    }
+    .journey-stage + .journey-stage { border-left: 1px solid var(--border-light); }
+    .journey-stage .js-num {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      color: var(--ink-4); margin-bottom: 10px; display: block;
+    }
+    .journey-stage .js-label {
+      font-size: 13px; font-weight: 600; color: var(--ink);
+      margin-bottom: 14px; line-height: 1.3;
+    }
+    .journey-stage .js-stat {
+      font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500;
+      color: var(--teal); line-height: 1; margin-bottom: 4px; letter-spacing: -0.03em;
+    }
+    .journey-stage .js-stat-label {
+      font-size: 11px; color: var(--ink-4); margin-bottom: 12px;
+    }
+    .journey-stage .js-note {
+      font-size: 12px; color: var(--ink-3); line-height: 1.5;
+    }
+    .journey-stage.js-alert { background: oklch(97.5% 0.012 45); }
+    .journey-stage.js-alert .js-stat { color: var(--down); }
+    .journey-stage.js-positive { background: oklch(97.5% 0.012 155); }
+    .journey-stage.js-positive .js-stat { color: var(--up); }
+    .journey-stage.js-neutral { background: var(--surface-raised); }
+    .journey-connector {
+      position: absolute; right: -7px; top: 50%; z-index: 1;
+      width: 12px; height: 12px; background: var(--surface-raised);
+      border: 1px solid var(--border-light); border-radius: 50%;
+      transform: translateY(-50%);
+    }
+    .journey-stage.js-alert .journey-connector { background: oklch(97.5% 0.012 45); }
+    .journey-stage.js-positive .journey-connector { background: oklch(97.5% 0.012 155); }
+
+    /* ── CUSTOM BLOCK: Research question opening ── */
+    .block-question { margin-bottom: 48px; padding: 36px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .block-question .bq-text {
+      font-size: clamp(22px, 3vw, 30px); font-weight: 600; line-height: 1.25;
+      color: var(--ink); letter-spacing: -0.025em; max-width: 24ch;
+    }
+    .block-question .bq-context {
+      font-size: 14px; color: var(--ink-3); margin-top: 20px; line-height: 1.65; max-width: 52ch;
+    }
+
+    /* ── CUSTOM BLOCK: Cascade (breakpoint funnel) ── */
+    .block-cascade { margin-bottom: 48px; }
+    .block-cascade h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .cascade-steps {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .cascade-step {
+      padding: 28px; display: flex; flex-direction: column;
+    }
+    .cascade-step:nth-child(1) { background: oklch(98.5% 0.006 85); }
+    .cascade-step:nth-child(2) { background: oklch(98% 0.01 50); }
+    .cascade-step:nth-child(3) { background: oklch(97.5% 0.014 25); }
+    .cascade-step .cs-num {
+      font-family: 'DM Mono', monospace; font-size: 32px; font-weight: 500;
+      line-height: 1; margin-bottom: 16px;
+    }
+    .cascade-step:nth-child(1) .cs-num { color: oklch(65% 0.1 85); }
+    .cascade-step:nth-child(2) .cs-num { color: oklch(55% 0.12 50); }
+    .cascade-step:nth-child(3) .cs-num { color: oklch(45% 0.14 25); }
+    .cascade-step .cs-label {
+      font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 10px; line-height: 1.3;
+    }
+    .cascade-step .cs-mechanism {
+      font-size: 13px; color: var(--ink-2); line-height: 1.6; flex: 1;
+    }
+    .cascade-step .cs-quote-wrap {
+      margin-top: 16px; padding-top: 14px; border-top: 1px solid oklch(90% 0.01 200 / 0.4);
+    }
+    .cascade-step .cs-quote {
+      font-size: 12px; font-style: italic; color: var(--ink-3); line-height: 1.5;
+    }
+    .cascade-step .cs-attr {
+      font-size: 10px; color: var(--ink-4); margin-top: 6px; font-style: normal;
+      font-family: 'DM Mono', monospace; letter-spacing: 0.03em;
+    }
+
+    /* ── CUSTOM BLOCK: Contrast (polarised experience) ── */
+    .block-contrast { margin-bottom: 48px; }
+    .block-contrast h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .contrast-split {
+      display: grid; grid-template-columns: 2fr 3fr; gap: 0;
+      border: 1px solid var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .contrast-side { padding: 28px; }
+    .contrast-side.ct-smooth { background: oklch(97.5% 0.015 155); }
+    .contrast-side.ct-deviated { background: oklch(97.5% 0.012 45); }
+    .contrast-side .ct-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .ct-smooth .ct-label { color: var(--up); }
+    .ct-deviated .ct-label { color: var(--down); }
+    .contrast-side .ct-text {
+      font-size: 14px; color: var(--ink-2); line-height: 1.65;
+    }
+    .contrast-side .ct-stats {
+      margin-top: 16px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .contrast-side .ct-stat-row {
+      display: flex; gap: 10px; align-items: baseline;
+    }
+    .ct-stat-row .ct-stat-val {
+      font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500;
+      color: var(--down); white-space: nowrap; min-width: 52px;
+    }
+    .ct-stat-row .ct-stat-desc {
+      font-size: 12px; color: var(--ink-3); line-height: 1.45;
+    }
+    .contrast-context {
+      font-size: 13px; color: var(--ink-3); line-height: 1.6; margin-top: 16px;
+      padding-top: 16px; border-top: 1px solid var(--border-light);
+    }
+
+    /* ── CUSTOM BLOCK: Delta (before → after stats) ── */
+    .block-delta { margin-bottom: 48px; }
+    .block-delta h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .delta-cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px;
+      background: var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .delta-card { background: var(--surface-raised); padding: 28px; }
+    .delta-card .dc-shift {
+      display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px;
+    }
+    .delta-card .dc-from {
+      font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500;
+      color: var(--ink-4); line-height: 1;
+    }
+    .delta-card .dc-arrow {
+      font-size: 16px; color: var(--ink-4);
+    }
+    .delta-card .dc-to {
+      font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500;
+      color: var(--down); line-height: 1;
+    }
+    .delta-card .dc-label {
+      font-size: 13px; color: var(--ink-2); line-height: 1.5;
+    }
+
+    /* ── CUSTOM BLOCK: Deviations (compact issue list) ── */
+    .block-deviations { margin-bottom: 48px; }
+    .block-deviations h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .deviations-list {
+      display: flex; flex-direction: column;
+      border: 1px solid var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .deviation-item {
+      padding: 20px 24px; background: var(--surface-raised);
+      display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: start;
+    }
+    .deviation-item + .deviation-item { border-top: 1px solid var(--border-light); }
+    .deviation-item .dv-label {
+      font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 4px;
+    }
+    .deviation-item .dv-desc {
+      font-size: 13px; color: var(--ink-2); line-height: 1.55;
+    }
+    .deviation-item .dv-data {
+      font-family: 'DM Mono', monospace; font-size: 12px;
+      color: var(--down); white-space: nowrap; text-align: right;
+      padding-top: 2px; letter-spacing: 0.02em;
+    }
+
+    /* ── CUSTOM BLOCK: Ripple (cause → effects) ── */
+    .block-ripple { margin-bottom: 48px; }
+    .ripple-cause {
+      background: oklch(97% 0.015 25); padding: 22px 24px;
+      border-radius: 10px 10px 0 0;
+      border: 1px solid oklch(92% 0.02 25); border-bottom: none;
+    }
+    .ripple-cause .rc-label {
+      font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px;
+    }
+    .ripple-cause .rc-data {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      color: oklch(55% 0.1 25); letter-spacing: 0.03em;
+    }
+    .ripple-effects {
+      display: flex; flex-direction: column;
+      border: 1px solid var(--border-light); border-top: none;
+      border-radius: 0 0 10px 10px; overflow: hidden;
+    }
+    .ripple-effect {
+      background: var(--surface-raised); padding: 18px 24px;
+      display: grid; grid-template-columns: 140px 1fr; gap: 16px; align-items: baseline;
+    }
+    .ripple-effect + .ripple-effect { border-top: 1px solid var(--border-light); }
+    .ripple-effect .re-label {
+      font-size: 13px; font-weight: 600; color: var(--ink);
+    }
+    .ripple-effect .re-data {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      color: var(--teal); margin-top: 3px; letter-spacing: 0.02em;
+    }
+    .ripple-effect .re-desc {
+      font-size: 13px; color: var(--ink-2); line-height: 1.55;
+    }
+
+    /* ── CUSTOM BLOCK: Provocation (editorial typographic opener) ── */
+    .block-provocation { margin-bottom: 48px; padding: 40px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .block-provocation .pv-statement {
+      font-size: clamp(22px, 3.2vw, 32px); font-weight: 600; line-height: 1.3;
+      color: var(--ink); letter-spacing: -0.02em; max-width: 28ch; margin-bottom: 20px;
+    }
+    .block-provocation .pv-statement .pv-num {
+      font-family: 'DM Mono', monospace; color: var(--teal); font-weight: 500;
+    }
+    .block-provocation .pv-insight {
+      font-size: 14px; color: var(--ink-3); line-height: 1.65; max-width: 52ch;
+    }
+
+    /* ── CUSTOM BLOCK: Arena (competitive data strip) ── */
+    .block-arena { margin-bottom: 48px; }
+    .block-arena h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px;
+    }
+    .arena-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+      border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+    }
+    .arena-cell { padding: 20px; text-align: center; }
+    .arena-cell + .arena-cell { border-left: 1px solid var(--border-light); }
+    .arena-cell .ac-value {
+      font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500;
+      color: var(--ink); letter-spacing: -0.03em; line-height: 1; margin-bottom: 6px;
+    }
+    .arena-cell .ac-label {
+      font-size: 11px; color: var(--ink-3); line-height: 1.4;
+    }
+    .arena-context {
+      font-size: 13px; color: var(--ink-3); line-height: 1.6; margin-top: 14px;
+    }
+
+    /* ── CUSTOM BLOCK: Expectations (card grid) ── */
+    .block-expectations { margin-bottom: 48px; }
+    .block-expectations h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .exp-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .exp-card {
+      background: var(--surface-raised); padding: 24px;
+    }
+    .exp-card .ec-stat {
+      font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 500;
+      color: var(--teal); line-height: 1; margin-bottom: 12px;
+    }
+    .exp-card .ec-label {
+      font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 6px;
+    }
+    .exp-card .ec-desc {
+      font-size: 12px; color: var(--ink-3); line-height: 1.55;
+    }
+
+    /* ── CUSTOM BLOCK: Playbook (tinted multi-column recommendations) ── */
+    .block-playbook { margin-bottom: 48px; }
+    .block-playbook h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .playbook-cols {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .playbook-col { background: var(--surface-raised); padding: 24px; }
+    .playbook-col.pc-tint-teal { background: oklch(97.5% 0.015 178); }
+    .playbook-col.pc-tint-warm { background: oklch(97.5% 0.012 45); }
+    .playbook-col .pc-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal);
+      margin-bottom: 16px;
+    }
+    .playbook-col.pc-tint-warm .pc-label { color: var(--down); }
+    .playbook-col .pc-item {
+      font-size: 13px; color: var(--ink-2); line-height: 1.55; padding: 8px 0;
+    }
+    .playbook-col .pc-item + .pc-item { border-top: 1px solid var(--border-light); }
+    .playbook-col .pc-item strong { color: var(--ink); font-weight: 600; }
+
+    /* ── CUSTOM BLOCK: Gap (two metrics showing a disconnect) ── */
+    .block-gap { margin-bottom: 48px; }
+    .gap-pair {
+      display: grid; grid-template-columns: 1fr auto 1fr; gap: 28px; align-items: center;
+      padding: 32px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .gap-metric .gm-value {
+      font-family: 'DM Mono', monospace; font-size: clamp(32px, 4vw, 42px); font-weight: 500;
+      line-height: 1; margin-bottom: 8px; letter-spacing: -0.03em;
+    }
+    .gap-metric .gm-sublabel {
+      font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-4);
+      letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .gap-metric .gm-label { font-size: 14px; color: var(--ink-2); line-height: 1.5; max-width: 28ch; }
+    .gap-metric:first-child .gm-value { color: var(--up); }
+    .gap-metric:last-child .gm-value { color: var(--down); }
+    .gap-metric:last-child { text-align: right; }
+    .gap-metric:last-child .gm-label { margin-left: auto; }
+    .gap-vs {
+      font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-4);
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .gap-context {
+      font-size: 14px; color: var(--ink-3); line-height: 1.65; margin-top: 24px; max-width: 56ch;
+    }
+
+    /* ── CUSTOM BLOCK: Tension spectrum ── */
+    .block-tension { margin-bottom: 48px; }
+    .block-tension h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .tension-bar {
+      display: flex; height: 4px; border-radius: 2px; overflow: hidden; margin-bottom: 20px;
+    }
+    .tension-bar .tb-seg { flex: 1; }
+    .tension-bar .tb-seg.tb-warn-l { background: oklch(78% 0.08 50); }
+    .tension-bar .tb-seg.tb-good { background: var(--teal); }
+    .tension-bar .tb-seg.tb-warn-r { background: oklch(65% 0.1 25); }
+    .tension-zones { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+    .tension-zone { }
+    .tension-zone .tz-label { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+    .tension-zone.tz-good .tz-label { color: var(--teal); }
+    .tension-zone .tz-desc { font-size: 12px; color: var(--ink-3); line-height: 1.55; }
+    .tension-zone .tz-example {
+      font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-4);
+      margin-top: 8px; letter-spacing: 0.03em;
+    }
+
+    /* ── CUSTOM BLOCK: Verdict ── */
+    .block-verdict { margin-bottom: 48px; padding-left: 20px; border-left: 3px solid var(--teal); }
+    .block-verdict p { font-size: 16px; line-height: 1.65; color: var(--ink); }
+
+    /* ── CUSTOM BLOCK: Pain stack ── */
+    .block-pains { margin-bottom: 48px; }
+    .block-pains h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .pain-list {
+      display: flex; flex-direction: column; gap: 1px;
+      background: var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .pain-item {
+      background: var(--surface-raised); padding: 22px 24px;
+      display: grid; grid-template-columns: 36px 1fr auto;
+      gap: 16px; align-items: start;
+    }
+    .pain-item .pi-num {
+      font-family: 'DM Mono', monospace; font-size: 22px;
+      font-weight: 500; color: var(--teal-mid); line-height: 1; padding-top: 2px;
+    }
+    .pain-item .pi-title {
+      font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 4px;
+    }
+    .pain-item .pi-desc {
+      font-size: 13px; color: var(--ink-3); line-height: 1.55;
+    }
+    .pain-item .pi-stat {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      color: var(--ink-4); margin-top: 6px;
+    }
+    .pain-item .pi-tag {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 4px 10px; border-radius: 999px;
+      white-space: nowrap; align-self: center;
+    }
+    .pi-tag.tag-adoption { background: oklch(94% 0.03 45); color: oklch(50% 0.1 45); }
+    .pi-tag.tag-trust { background: oklch(94% 0.03 280); color: oklch(45% 0.1 280); }
+
+    /* ── CUSTOM BLOCK: Voice collage ── */
+    .block-voice { margin-bottom: 48px; }
+    .block-voice h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .voice-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px;
+      background: var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .voice-card {
+      background: var(--surface-raised); padding: 22px;
+    }
+    .voice-card.vc-wide { grid-column: span 2; }
+    .voice-card .vc-quote {
+      font-size: 14px; line-height: 1.55; color: var(--ink-2); font-style: italic;
+    }
+    .voice-card .vc-attr {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      color: var(--ink-4); margin-top: 10px; letter-spacing: 0.04em;
+    }
+
+    /* ── BESPOKE: Survey branch (m0 tNPS) ── */
+    .block-survey-branch { margin-bottom: 48px; }
+    .block-survey-branch h3 { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px; }
+    .sb-flow { display: flex; gap: 2px; margin-bottom: 2px; }
+    .sb-stage { flex: 1; background: var(--surface-raised); padding: 24px; position: relative; }
+    .sb-stage:first-child { border-radius: 10px 0 0 10px; }
+    .sb-stage:last-child { border-radius: 0 10px 10px 0; }
+    .sb-stage::after { content: '\2192'; position: absolute; right: -8px; top: 50%; transform: translateY(-50%); z-index: 1; color: var(--teal); font-size: 18px; font-weight: 700; }
+    .sb-stage:last-child::after { display: none; }
+    .sb-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--teal); font-weight: 600; letter-spacing: 0.06em; }
+    .sb-label { font-size: 15px; font-weight: 600; color: var(--ink); margin: 6px 0 4px; }
+    .sb-desc { font-size: 12px; color: var(--ink-3); line-height: 1.55; }
+    .sb-split { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .sb-branch { background: var(--surface-raised); padding: 24px; }
+    .sb-branch:first-child { border-radius: 0 0 0 10px; }
+    .sb-branch:last-child { border-radius: 0 0 10px 0; }
+    .sb-pct { font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 700; color: var(--teal); }
+    .sb-branch .sb-label { font-size: 14px; }
+    .sb-split-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-4); text-align: center; padding: 8px 0 4px; }
+
+    /* ── BESPOKE: Temperature compare (m1 Drone) ── */
+    .block-temp-compare { margin-bottom: 48px; }
+    .block-temp-compare h3 { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 24px; }
+    .tc-pair { display: flex; gap: 64px; align-items: flex-end; justify-content: center; padding: 32px 0; }
+    .tc-col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .tc-bar-wrap { width: 56px; position: relative; display: flex; flex-direction: column; justify-content: flex-end; }
+    .tc-fill { width: 100%; border-radius: 28px 28px 12px 12px; transition: height 1s cubic-bezier(0.22,1,0.36,1); }
+    .tc-fill.tc-warm { background: linear-gradient(to top, oklch(72% 0.16 45), oklch(84% 0.1 55)); }
+    .tc-fill.tc-cold { background: linear-gradient(to top, oklch(72% 0.1 230), oklch(84% 0.06 210)); }
+    .tc-value { font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 700; color: var(--ink); }
+    .tc-label { font-size: 13px; font-weight: 600; color: var(--ink); }
+    .tc-note { font-size: 12px; color: var(--ink-3); max-width: 120px; text-align: center; line-height: 1.4; }
+    .tc-context { font-size: 13px; color: var(--ink-3); margin-top: 20px; line-height: 1.6; text-align: center; }
+
+    /* ── BESPOKE: Mosaic (m2 UAE demographics) ── */
+    .block-mosaic { margin-bottom: 48px; }
+    .block-mosaic h3 { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px; }
+    .mosaic-grid { display: flex; gap: 1px; background: var(--border-light); border-radius: 10px; overflow: hidden; min-height: 180px; }
+    .mosaic-tile { padding: 24px; display: flex; flex-direction: column; justify-content: space-between; }
+    .mosaic-tile:nth-child(1) { flex: 6; background: oklch(96% 0.02 178); }
+    .mosaic-tile:nth-child(2) { flex: 2.3; background: oklch(96.5% 0.015 55); }
+    .mosaic-tile:nth-child(3) { flex: 1.2; background: oklch(97% 0.01 280); }
+    .mosaic-tile:nth-child(4) { flex: 0.6; background: oklch(97% 0.008 140); }
+    .mt-pct { font-family: 'DM Mono', monospace; font-size: clamp(20px, 3vw, 32px); font-weight: 700; color: var(--ink); }
+    .mt-label { font-size: 14px; font-weight: 600; color: var(--ink); margin-top: 4px; }
+    .mt-detail { font-size: 11px; color: var(--ink-3); margin-top: 6px; line-height: 1.45; }
+
+    /* ── BESPOKE: Teardown strip (m3 Keeta) ── */
+    .block-teardown { margin-bottom: 48px; }
+    .block-teardown h3 { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px; }
+    .td-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px; background: var(--border-light); border-radius: 10px; overflow: hidden; }
+    .td-card { background: var(--surface-raised); padding: 20px; }
+    .td-badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; }
+    .td-badge.td-ahead { background: oklch(92% 0.08 155); color: oklch(40% 0.15 155); }
+    .td-badge.td-behind { background: oklch(92% 0.08 25); color: oklch(40% 0.15 25); }
+    .td-badge.td-mixed { background: oklch(94% 0.06 85); color: oklch(45% 0.12 85); }
+    .td-surface { font-size: 13px; font-weight: 600; color: var(--ink); margin: 10px 0 6px; }
+    .td-note { font-size: 11px; color: var(--ink-3); line-height: 1.5; }
+
+    /* ── BESPOKE: Pain matrix (m4 SevenRooms) ── */
+    .block-pain-matrix { margin-bottom: 48px; }
+    .block-pain-matrix h3 { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px; }
+    .pm-table { width: 100%; border-collapse: separate; border-spacing: 1px; background: var(--border-light); border-radius: 10px; overflow: hidden; }
+    .pm-table th { background: var(--surface); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-4); padding: 14px 16px; text-align: left; }
+    .pm-table td { background: var(--surface-raised); padding: 16px; vertical-align: top; }
+    .pm-table td:first-child { font-size: 13px; font-weight: 600; color: var(--ink); background: var(--surface); min-width: 140px; }
+    .pm-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+    .pm-dot.pm-high { background: var(--teal); }
+    .pm-dot.pm-med { background: oklch(80% 0.06 178); }
+    .pm-dot.pm-low { background: oklch(88% 0.03 178); }
+    .pm-cell-text { font-size: 12px; color: var(--ink-3); line-height: 1.45; display: inline; vertical-align: middle; }
+
+    /* ── BESPOKE: Funnel compare (m5 Brand Preference) ── */
+    .block-funnel-compare { margin-bottom: 48px; }
+    .block-funnel-compare h3 { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 24px; }
+    .fc-row { display: grid; grid-template-columns: 100px 1fr 1fr 1fr; gap: 1px; align-items: center; background: var(--border-light); }
+    .fc-row:first-child { border-radius: 10px 10px 0 0; overflow: hidden; }
+    .fc-row:last-child { border-radius: 0 0 10px 10px; overflow: hidden; }
+    .fc-label { background: var(--surface); padding: 14px 16px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-4); }
+    .fc-cell { background: var(--surface-raised); padding: 12px 16px; }
+    .fc-bar { height: 24px; border-radius: 4px; display: flex; align-items: center; padding: 0 10px; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 600; min-width: fit-content; transition: width 0.8s ease; }
+    .fc-bar.fc-tint-teal { background: oklch(92% 0.05 178); color: var(--teal); }
+    .fc-bar.fc-tint-orange { background: oklch(93% 0.04 60); color: oklch(50% 0.14 60); }
+    .fc-bar.fc-tint-blue { background: oklch(93% 0.04 250); color: oklch(50% 0.12 250); }
+    .fc-header { font-size: 12px; font-weight: 600; color: var(--ink); padding: 14px 16px; background: var(--surface-raised); text-align: center; }
+
+    /* ── BESPOKE: Anchor scale (m6 UberOne Savings) ── */
+    .block-anchor-scale { margin-bottom: 48px; }
+    .block-anchor-scale h3 { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 24px; }
+    .as-track { position: relative; height: 12px; background: linear-gradient(to right, oklch(88% 0.1 155), oklch(95% 0.02 90) 50%, oklch(88% 0.1 25)); border-radius: 6px; margin: 48px 72px 140px; }
+    .as-marker { position: absolute; top: -40px; transform: translateX(-50%); text-align: center; width: 0; }
+    .as-dot { width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--border); position: absolute; top: 0; left: 0; transform: translateX(-50%); }
+    .as-dot.as-neg { background: oklch(65% 0.15 25); }
+    .as-dot.as-neu { background: oklch(70% 0.08 90); }
+    .as-dot.as-pos { background: oklch(60% 0.15 155); }
+    .as-amount { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; color: var(--ink); white-space: nowrap; position: absolute; top: 26px; left: 0; transform: translateX(-50%); }
+    .as-stem { width: 1px; height: 16px; background: var(--border); margin: 4px auto; }
+    .as-reaction { font-size: 10px; color: var(--ink-3); line-height: 1.4; width: max-content; max-width: 130px; position: absolute; top: 64px; left: 0; transform: translateX(-50%); text-align: center; white-space: normal; }
+    .as-end-min, .as-end-max { position: absolute; top: 50%; transform: translateY(-50%); font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600; color: var(--ink-3); white-space: nowrap; }
+    .as-end-min { right: calc(100% + 10px); }
+    .as-end-max { left: calc(100% + 10px); }
+    .as-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--ink-4); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 8px; padding: 0 72px; }
+
+    /* ── BESPOKE: Sannah h2 — touchpoint-audit ── */
+    .block-touchpoint-audit { margin-bottom: 48px; }
+    .block-touchpoint-audit h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .ta-grid {
+      display: flex; flex-direction: column; gap: 1px;
+      background: var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .ta-row {
+      display: grid;
+      grid-template-columns: minmax(130px, 170px) 108px 1fr;
+      gap: 16px; align-items: start;
+      background: var(--surface-raised); padding: 18px 22px;
+    }
+    @media (max-width: 640px) {
+      .ta-row { grid-template-columns: 1fr; gap: 10px; }
+    }
+    .ta-surface { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+    .ta-badge {
+      display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 4px 10px; border-radius: 4px; white-space: nowrap;
+    }
+    .ta-badge.ta-ignored { background: oklch(93% 0.04 250); color: oklch(42% 0.02 250); }
+    .ta-badge.ta-promise { background: oklch(92% 0.08 155); color: oklch(38% 0.14 155); }
+    .ta-badge.ta-friction { background: oklch(92% 0.08 25); color: oklch(40% 0.15 25); }
+    .ta-badge.ta-untapped { background: oklch(94% 0.07 280); color: oklch(42% 0.12 280); }
+    .ta-note { font-size: 12px; color: var(--ink-3); line-height: 1.55; }
+    .ta-footnote { font-size: 12px; color: var(--ink-4); margin-top: 14px; line-height: 1.5; font-style: italic; }
+    .ta-row.ta-t-friction { background: oklch(99.2% 0.004 25 / 0.45); }
+    .ta-row.ta-t-untapped { background: oklch(99% 0.006 280 / 0.35); }
+
+    /* ── BESPOKE: Alaa h1 — discovery-trio ── */
+    .block-discovery-trio { margin-bottom: 48px; }
+    .block-discovery-trio h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 10px;
+    }
+    .dt-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .dt-cell {
+      background: var(--surface-raised); padding: 22px 16px; text-align: center;
+    }
+    .dt-cell .dt-value {
+      font-family: 'DM Mono', monospace; font-size: clamp(26px, 3.2vw, 34px);
+      font-weight: 500; letter-spacing: -0.03em; line-height: 1; margin-bottom: 10px;
+    }
+    .dt-cell.dt-warn .dt-value { color: oklch(58% 0.14 145); }
+    .dt-cell.dt-neutral .dt-value { color: var(--ink); }
+    .dt-cell.dt-neg .dt-value { color: oklch(58% 0.12 25); }
+    .dt-cell .dt-label { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .dt-cell .dt-hint { font-size: 11px; color: var(--ink-3); line-height: 1.45; max-width: 28ch; margin: 0 auto; }
+    .dt-footnote {
+      font-size: 11px; color: var(--ink-4); line-height: 1.5; margin-top: 14px; max-width: 58ch; font-style: italic;
+    }
+
+    /* ── BESPOKE: Holly h0 — sample-stack ── */
+    .block-sample-stack { margin-bottom: 48px; }
+    .block-sample-stack h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .ss-rows {
+      display: flex; flex-direction: column;
+      border: 1px solid var(--border-light); border-radius: 10px; overflow: hidden;
+    }
+    .ss-row {
+      display: grid; grid-template-columns: 1fr auto; gap: 24px;
+      align-items: baseline; padding: 22px 24px; background: var(--surface-raised);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .ss-row:last-child { border-bottom: none; }
+    .ss-row .ss-label { font-size: 14px; font-weight: 600; color: var(--ink); }
+    .ss-row .ss-sub { font-size: 12px; color: var(--ink-3); margin-top: 4px; line-height: 1.45; }
+    .ss-row .ss-value {
+      font-family: 'DM Mono', monospace; font-size: clamp(28px, 4vw, 40px);
+      font-weight: 500; letter-spacing: -0.04em; color: var(--teal); line-height: 1;
+    }
+    .ss-footnote {
+      font-size: 12px; color: var(--ink-4); margin-top: 14px; line-height: 1.5; font-style: italic;
+    }
+
+    /* ── BESPOKE: Holly h0 — direct-breakdown ── */
+    .block-direct-breakdown { margin-bottom: 48px; }
+    .block-direct-breakdown h3 {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
+    }
+    .db-head { margin-bottom: 20px; }
+    .db-headline {
+      font-family: 'DM Mono', monospace; font-size: clamp(40px, 5vw, 52px);
+      font-weight: 500; letter-spacing: -0.04em; color: var(--teal); line-height: 1;
+    }
+    .db-headline-label { font-size: 15px; color: var(--ink-2); margin-top: 8px; max-width: 40ch; line-height: 1.45; }
+    .db-comments {
+      font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-4);
+      letter-spacing: 0.04em; margin-top: 12px;
+    }
+    .db-stack { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    .db-seg-row { display: grid; grid-template-columns: 44px 1fr 40px; align-items: center; gap: 12px; }
+    .db-seg-pct { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: var(--ink); }
+    .db-seg-track { height: 22px; background: oklch(96% 0.005 250); border-radius: 4px; overflow: hidden; }
+    .db-seg-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.8s var(--ease-out-expo); }
+    .db-seg-label { font-size: 13px; color: var(--ink-2); }
+    .db-note { font-size: 12px; color: var(--ink-4); margin-top: 16px; line-height: 1.5; font-style: italic; }
+
+    .item-nav { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; border-top: 1px solid var(--border); }
+    .item-nav-btn {
+      display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500;
+      color: var(--ink-3); background: none; border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 20px; cursor: pointer; font-family: inherit;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .item-nav-btn:hover { border-color: var(--teal); color: var(--ink); }
+    .item-nav-btn .nav-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-4); }
+    .item-nav-btn .nav-title { font-weight: 600; color: var(--ink); }
+    .item-nav-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .item-counter { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-4); }
+
+    /* ═══════════════════════════════════════════════════ */
+    /* HEADLINES SECTION                                  */
+    /* ═══════════════════════════════════════════════════ */
+    .overview-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 36px;
+    }
+    .overview-header-left { display: flex; flex-direction: column; gap: 6px; }
+    .overview-header h1 { font-size: clamp(22px, 2.5vw, 28px); font-weight: 700; letter-spacing: -0.025em; }
+    .overview-subtitle { font-size: 15px; color: var(--ink-3); line-height: 1.5; max-width: 50ch; }
+    .overview-meta { font-size: 13px; color: var(--ink-4); padding-top: 6px; }
+    .headlines-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .headline-card {
+      position: relative; display: flex; flex-direction: column;
+      justify-content: space-between; padding: 28px;
+      border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
+      min-height: 180px; background: var(--surface-raised);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s var(--ease-out-quart), opacity 0.3s var(--ease-out-quart);
+    }
+    .headline-card:hover { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal); transform: translateY(-2px) scale(1.015); }
+    .headline-card .tag {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 10px;
+    }
+    .headline-card h2 { font-size: 18px; font-weight: 700; line-height: 1.3; letter-spacing: -0.015em; flex: 1; }
+    .headline-card .card-bottom {
+      display: flex; align-items: flex-end; justify-content: space-between; margin-top: 16px; gap: 12px;
+    }
+    .headline-card .author { font-size: 12px; color: var(--ink-3); }
+    .stat-chip { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .stat-chip .stat-value {
+      font-family: 'DM Mono', monospace; font-weight: 500; font-size: 28px;
+      letter-spacing: -0.04em; line-height: 1; color: var(--teal);
+    }
+    .stat-chip .stat-label { font-size: 11px; color: var(--ink-3); text-align: right; max-width: 140px; }
+    .headline-card.hero {
+      grid-column: 1 / -1; flex-direction: row; align-items: center;
+      gap: 48px; min-height: auto; padding: 40px 48px;
+      background: var(--teal-soft); border-color: oklch(88% 0.05 178);
+    }
+    .headline-card.hero:hover { border-color: var(--teal); }
+    .headline-card.hero .hero-text { flex: 1; }
+    .headline-card.hero h2 { font-size: 22px; margin-bottom: 6px; }
+    .headline-card.hero .hero-desc { font-size: 14px; color: var(--ink-2); line-height: 1.55; }
+    .headline-card.hero .stat-chip .stat-value { font-size: 44px; letter-spacing: -0.05em; }
+    .headline-card.hero .stat-chip .stat-label { font-size: 12px; }
+    .headline-card { opacity: 0; transform: translateY(12px); }
+    .headline-card.entered {
+      opacity: 1; transform: translateY(0);
+      transition: opacity 0.5s var(--ease-out-quart), transform 0.5s var(--ease-out-quart),
+                  border-color 0.2s, box-shadow 0.2s;
+    }
+    .headline-card.entered:hover { transform: translateY(-2px) scale(1.015); }
+
+    /* ═══════════════════════════════════════════════════ */
+    /* MORE RESEARCH SECTION                              */
+    /* ═══════════════════════════════════════════════════ */
+    .card-list { display: flex; flex-direction: column; gap: 12px; }
+    .compact-card {
+      display: flex; align-items: stretch;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface-raised); cursor: pointer; overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s var(--ease-out-quart);
+    }
+    .compact-card:hover { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal); transform: translateY(-2px) scale(1.01); }
+    .card-accent { width: 4px; flex-shrink: 0; background: var(--teal); }
+    .card-content {
+      flex: 1; display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 28px; gap: 24px;
+    }
+    .card-left { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    .cc-tag {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--teal);
+    }
+    .cc-title {
+      font-size: 17px; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em;
+      transition: color 0.15s;
+    }
+    .compact-card:hover .cc-title { color: var(--teal); }
+    .cc-meta {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 12px; color: var(--ink-3); margin-top: 2px;
+    }
+    .cc-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-4); }
+    .card-right { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
+    .cc-stat { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .cc-stat-value {
+      font-family: 'DM Mono', monospace; font-weight: 500; font-size: 26px;
+      letter-spacing: -0.04em; line-height: 1; color: var(--teal);
+    }
+    .cc-stat-label { font-size: 10px; color: var(--ink-4); text-align: right; max-width: 110px; }
+    .cc-arrow {
+      width: 20px; height: 20px; color: var(--ink-4); flex-shrink: 0;
+      transition: transform 0.2s var(--ease-out-quart), color 0.15s;
+    }
+    .compact-card:hover .cc-arrow { transform: translateX(3px); color: var(--teal); }
+    .compact-card { opacity: 0; transform: translateY(10px); }
+    .compact-card.entered {
+      opacity: 1; transform: translateY(0);
+      transition: opacity 0.45s var(--ease-out-quart), transform 0.45s var(--ease-out-quart),
+                  border-color 0.2s, box-shadow 0.2s;
+    }
+    .compact-card.entered:hover { transform: translateY(-2px) scale(1.01); }
+
+    /* ═══════════════════════════════════════════════════ */
+    /* MEET THE CUSTOMER SECTION                          */
+    /* ═══════════════════════════════════════════════════ */
+    .story { max-width: 960px; margin: 0 auto; padding: 56px 48px 140px; }
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.7s var(--ease-out-quart), transform 0.7s var(--ease-out-quart);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .chapter { margin-bottom: 80px; }
+    .chapter-title {
+      font-size: clamp(28px, 3.5vw, 38px); font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.15; color: var(--ink);
+      margin-bottom: 20px;
+    }
+    .narrative {
+      font-size: 16px; line-height: 1.75; color: var(--ink-2); max-width: 62ch;
+      margin-bottom: 32px;
+    }
+    .narrative strong { color: var(--ink); font-weight: 600; }
+    .narrative em { font-style: italic; color: var(--ink); }
+    .name-reveal { margin-bottom: 72px; }
+    .name-reveal h1 {
+      font-size: clamp(48px, 6vw, 72px); font-weight: 700;
+      letter-spacing: -0.04em; line-height: 1; color: var(--ink); margin-bottom: 8px;
+    }
+    .name-reveal .subtitle { font-size: 16px; color: var(--ink-3); font-weight: 400; }
+    .name-reveal .subtitle strong { color: var(--teal); font-weight: 600; }
+    .profile-strip {
+      display: flex; gap: 32px; margin-top: 28px; padding: 20px 0;
+      border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
+    }
+    .profile-strip .detail { display: flex; flex-direction: column; gap: 3px; }
+    .profile-strip .detail-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-4);
+    }
+    .profile-strip .detail-value { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .plus-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;
+      background: oklch(68% 0.14 178 / 0.1); color: var(--teal);
+    }
+    .voice {
+      margin: 40px 0; padding: 28px 32px;
+      background: var(--surface-raised); border-radius: 12px;
+      border: 1px solid var(--border-light); position: relative;
+    }
+    .voice::before {
+      content: '\201C'; position: absolute; top: 12px; left: 20px;
+      font-size: 48px; line-height: 1; color: var(--teal-mid); font-family: Georgia, serif;
+    }
+    .voice blockquote {
+      font-size: 17px; line-height: 1.7; color: var(--ink);
+      font-style: italic; padding-left: 28px;
+    }
+    .voice .attr {
+      font-size: 12px; color: var(--ink-4); margin-top: 12px; font-style: normal; padding-left: 28px;
+    }
+    .evidence {
+      margin: 36px 0; padding: 32px 36px; background: var(--surface-raised);
+      border: 1px solid var(--border); border-radius: 12px;
+    }
+    .evidence-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-4);
+      margin-bottom: 16px;
+    }
+    .before-after {
+      display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px;
+      align-items: center; margin: 32px 0;
+    }
+    .ba-card { padding: 24px 28px; border-radius: 10px; text-align: center; }
+    .ba-card.before { background: var(--down-soft); border: 1px solid oklch(90% 0.04 45); }
+    .ba-card.after { background: var(--up-soft); border: 1px solid oklch(90% 0.04 155); }
+    .ba-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .ba-card.before .ba-label { color: var(--down); }
+    .ba-card.after .ba-label { color: var(--up); }
+    .ba-number {
+      font-family: 'DM Mono', monospace; font-size: 36px;
+      font-weight: 500; letter-spacing: -0.04em; color: var(--ink);
+    }
+    .ba-detail { font-size: 13px; color: var(--ink-3); margin-top: 6px; }
+    .ba-arrow { font-size: 24px; color: var(--ink-4); }
+    .trend {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500;
+      padding: 4px 12px; border-radius: 999px;
+    }
+    .trend.up { color: var(--up); background: var(--up-soft); }
+    .trend.down { color: var(--down); background: var(--down-soft); }
+    .heatmap {
+      display: grid; grid-template-columns: 56px repeat(7, 1fr); gap: 4px; font-size: 11px;
+    }
+    .heatmap-label {
+      display: flex; align-items: center; justify-content: flex-end;
+      padding-right: 8px; color: var(--ink-4); font-size: 11px;
+    }
+    .heatmap-day {
+      text-align: center; color: var(--ink-4); font-weight: 500;
+      padding-bottom: 4px; font-size: 10px; letter-spacing: 0.04em;
+    }
+    .heatmap-cell { aspect-ratio: 1; border-radius: 4px; }
+    .heatmap-cell.l0 { background: oklch(96% 0.005 250); }
+    .heatmap-cell.l1 { background: oklch(90% 0.04 178); }
+    .heatmap-cell.l2 { background: oklch(80% 0.08 178); }
+    .heatmap-cell.l3 { background: oklch(68% 0.14 178); }
+    .heatmap-cell.l4 { background: oklch(55% 0.14 178); }
+    .cuisine-row {
+      display: grid; grid-template-columns: 90px 1fr 48px;
+      align-items: center; gap: 16px; margin-bottom: 10px;
+    }
+    .cuisine-name { font-size: 14px; color: var(--ink-2); text-align: right; font-weight: 500; }
+    .cuisine-track { height: 28px; background: oklch(96% 0.005 250); border-radius: 4px; overflow: hidden; }
+    .cuisine-fill {
+      height: 100%; border-radius: 4px; transition: width 0.8s var(--ease-out-expo);
+    }
+    .cuisine-fill.c1 { background: var(--teal); }
+    .cuisine-fill.c2 { background: var(--teal-mid); }
+    .cuisine-fill.c3 { background: oklch(82% 0.06 178); }
+    .cuisine-fill.c4 { background: oklch(88% 0.04 178); }
+    .cuisine-pct { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-3); }
+    .sparkline-container { padding: 20px 0 8px; }
+    .sparkline-meta {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--ink-4); margin-top: 8px;
+    }
+    .spot-list { margin-top: 16px; }
+    .spot {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0; border-bottom: 1px solid var(--border-light);
+    }
+    .spot:first-child { border-top: 1px solid var(--border-light); }
+    .spot-rank {
+      font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-4); width: 24px;
+    }
+    .spot-info { display: flex; flex-direction: column; gap: 2px; flex: 1; margin-left: 8px; }
+    .spot-name { font-size: 15px; font-weight: 600; }
+    .spot-cuisine { font-size: 12px; color: var(--ink-3); }
+    .spot-orders { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink-3); }
+    .time-bars { display: flex; gap: 8px; height: 140px; margin-top: 12px; }
+    .time-bar {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: flex-end; gap: 6px;
+    }
+    .time-bar-fill {
+      width: 100%; border-radius: 4px 4px 0 0;
+      transition: height 0.6s var(--ease-out-expo);
+    }
+    .time-bar-fill.peak { background: var(--teal); }
+    .time-bar-fill.mid { background: var(--teal-mid); }
+    .time-bar-fill.low { background: oklch(90% 0.03 178); }
+    .time-bar-label { font-size: 10px; color: var(--ink-4); }
+    .time-callout { margin-top: 14px; font-size: 13px; color: var(--ink-3); }
+    .time-callout strong { color: var(--ink); font-weight: 600; }
+    .savings-row {
+      display: flex; align-items: baseline; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid var(--border-light); font-size: 14px;
+    }
+    .savings-row:last-child { border-bottom: none; font-weight: 600; }
+    .savings-row .savings-label { color: var(--ink-2); }
+    .savings-row .savings-value {
+      font-family: 'DM Mono', monospace; font-weight: 500; color: var(--ink);
+    }
+    .savings-row:last-child .savings-value { color: var(--up); font-size: 18px; }
+    .connection {
+      margin-top: 24px; padding: 32px 36px;
+      background: var(--teal-soft); border: 1px solid oklch(88% 0.05 178); border-radius: 12px;
+    }
+    .connection-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); margin-bottom: 12px;
+    }
+    .connection p { font-size: 15px; line-height: 1.65; color: var(--ink-2); margin-bottom: 16px; }
+    .connection a {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 14px; font-weight: 600; color: var(--teal);
+      text-decoration: none; transition: gap 0.2s var(--ease-out-quart);
+    }
+    .connection a:hover { gap: 10px; }
+    .connection a svg { width: 14px; height: 14px; }
+    .chapter-break {
+      display: flex; align-items: center; gap: 16px; margin: 72px 0 56px;
+    }
+    .chapter-break::before, .chapter-break::after {
+      content: ''; flex: 1; height: 1px; background: var(--border-light);
+    }
+    .chapter-break span {
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--ink-4);
+    }
+
+    /* ═══════════════════════════════════════════════════ */
+    /* EDITION MARKER + SECTION FOOTER                   */
+    /* ═══════════════════════════════════════════════════ */
+    .edition-marker {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-4);
+      margin-bottom: 24px;
+    }
+    .section-footer {
+      margin-top: 64px; padding: 32px 0; border-top: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .section-footer a {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 600; color: var(--teal);
+      text-decoration: none; cursor: pointer;
+      transition: gap 0.2s var(--ease-out-quart);
+    }
+    .section-footer a:hover { gap: 12px; }
+    .section-footer svg { width: 16px; height: 16px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.1s !important; }
+      .headline-card, .compact-card { opacity: 1; transform: none; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
+      <nav class="pill-nav" id="pillNav">
+        <div class="pill-indicator" id="pillIndicator"></div>
+        <button class="active" data-section="headlines" onclick="switchSection('headlines')">Headlines</button>
+        <button data-section="more-research" onclick="switchSection('more-research')">More Research</button>
+        <button data-section="meet-customer" onclick="switchSection('meet-customer')">Meet the Customer</button>
+      </nav>
+      <div class="topbar-logo">
+        <svg width="30" height="33" viewBox="0 0 525 568" fill="none">
+          <path fill="var(--teal)" fill-rule="evenodd" d="M208.48 281.03A0.79 0.79 0 00209.09 280.10L164.92 75.00A1.83 1.82 78.1 0 1 166.33 72.82L301.49 44.67Q305.07 43.92 305.84 47.49L349.35 248.70A0.28 0.27-42.6 0 0 349.88 248.72Q350.06 248.17 350.14 247.43Q362.93 127.94 375.55 8.42Q375.75 6.57 376.24 5.99Q377.05 5.03 378.26 5.15L516.98 19.70A1.92 1.92 0 01 518.69 21.81Q500.12 196.72 481.55 372.01Q480.34 383.49 475.61 394.01Q437.72 478.36 399.26 562.21A2.26 2.25-71.8 0 1 396.76 563.48L43.55 489.73A1.46 1.44 89.6 0 1 42.43 488.61L7.27 324.76A1.80 1.80 0 01 8.66 322.62L208.48 281.03Z M225.59 337.26C231.83 311.53 275.51 322.70 271.12 348.10C269.41 357.97 261.97 366.60 251.27 367.02C231.43 367.78 220.75 357.22 225.59 337.26Z M370.58 364.36A20.37 20.37 0 00 358.49 338.21L353.90 336.52A20.37 20.37 0 00 327.74 348.60L326.14 352.96A20.37 20.37 0 00 338.23 379.11L342.82 380.80A20.37 20.37 0 00 368.98 368.72L370.58 364.36Z"/>
+        </svg>
+      </div>
+    </header>
+
+    <div class="main" id="mainArea">
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- SECTION 1: HEADLINES                        -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="section active" id="section-headlines">
+        <div class="content">
+          <div class="edition-marker">R&I Newsletter · Issue 04 · Q1 2026</div>
+          <div class="overview-header">
+            <div class="overview-header-left">
+              <h1>This quarter's headlines</h1>
+              <p class="overview-subtitle">The studies shaping our thinking this quarter — hand-picked for their impact on strategy, product, and growth.</p>
+            </div>
+            <span class="overview-meta">Dec 2025 – Mar 2026 · 5 featured</span>
+          </div>
+          <div class="headlines-grid" id="headlinesGrid">
+            <div class="headline-card hero" data-section="headlines" data-index="0" onclick="expandCard('headlines',0)">
+              <div class="hero-text">
+                <div class="tag">Growth Strategy</div>
+                <h2>Coverage is the #1 barrier — and we need to break the 'treat' mindset</h2>
+                <p class="hero-desc">By Holly · Ongoing across 5 markets</p>
+              </div>
+              <span class="stat-chip">
+                <span class="stat-value">5</span>
+                <span class="stat-label">markets analysed for barriers to usage</span>
+              </span>
+            </div>
+            <div class="headline-card" data-section="headlines" data-index="1" onclick="expandCard('headlines',1)">
+              <div class="tag">Product Research</div>
+              <h2>MPO's 'one-stop shop' value is clear — but no one can find it</h2>
+              <div class="card-bottom">
+                <span class="author">Alaa</span>
+                <span class="stat-chip"><span class="stat-value">< 5%</span><span class="stat-label">organic discovery</span></span>
+              </div>
+            </div>
+            <div class="headline-card" data-section="headlines" data-index="2" onclick="expandCard('headlines',2)">
+              <div class="tag">Commercial</div>
+              <h2>Plus Gold isn't a pricing problem — it's timing, visibility, and clarity</h2>
+              <div class="card-bottom">
+                <span class="author">Sannah</span>
+                <span class="stat-chip"><span class="stat-value">3</span><span class="stat-label">acquisition breakpoints</span></span>
+              </div>
+            </div>
+            <div class="headline-card" data-section="headlines" data-index="3" onclick="expandCard('headlines',3)">
+              <div class="tag">Product / CX</div>
+              <h2>Grocery tracking works until it doesn't — substitutions are the #1 pain</h2>
+              <div class="card-bottom">
+                <span class="author">Elin</span>
+                <span class="stat-chip"><span class="stat-value">#1</span><span class="stat-label">pain point: substitutions</span></span>
+              </div>
+            </div>
+            <div class="headline-card" data-section="headlines" data-index="4" onclick="expandCard('headlines',4)">
+              <div class="tag">New Verticals</div>
+              <h2>UAE diners want Roo table bookings — but expect rewards and exclusives</h2>
+              <div class="card-bottom">
+                <span class="author">Simon</span>
+                <span class="stat-chip"><span class="stat-value">UAE</span><span class="stat-label">first market for table booking</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="section-footer">
+            <a onclick="switchSection('more-research')">Continue to More Research
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- SECTION 2: MORE RESEARCH                    -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="section" id="section-more-research">
+        <div class="content">
+          <div class="edition-marker">R&I Newsletter · Issue 04 · Q1 2026</div>
+          <div class="overview-header">
+            <div class="overview-header-left">
+              <h1>More research</h1>
+              <p class="overview-subtitle">Further outputs from the team — different spotlight, same depth. Dig into anything that catches your eye.</p>
+            </div>
+            <span class="overview-meta">Dec 2025 – Mar 2026 · 7 outputs</span>
+          </div>
+          <div class="card-list" id="cardList">
+            <div class="compact-card" data-section="more-research" data-index="0" onclick="expandCard('more-research',0)">
+              <div class="card-accent"></div>
+              <div class="card-content"><div class="card-left"><span class="cc-tag">Methodology</span><h2 class="cc-title">Transactional NPS launching in April — aligning measurement with DoorDash</h2><div class="cc-meta"><span>Molly & Debbie</span><span class="dot"></span><span>April 2026</span></div></div><div class="card-right"><div class="cc-stat"><span class="cc-stat-value">tNPS</span><span class="cc-stat-label">new methodology</span></div><svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg></div></div>
+            </div>
+            <div class="compact-card" data-section="more-research" data-index="1" onclick="expandCard('more-research',1)">
+              <div class="card-accent"></div>
+              <div class="card-content"><div class="card-left"><span class="cc-tag">Innovation</span><h2 class="cc-title">Drone vs. rider: speed only wins when temperature meets expectations</h2><div class="cc-meta"><span>Andrea</span><span class="dot"></span><span>February 2026</span></div></div><div class="card-right"><div class="cc-stat"><span class="cc-stat-value">€3</span><span class="cc-stat-label">drone price ceiling</span></div><svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg></div></div>
+            </div>
+            <div class="compact-card" data-section="more-research" data-index="2" onclick="expandCard('more-research',2)">
+              <div class="card-accent"></div>
+              <div class="card-content"><div class="card-left"><span class="cc-tag">International</span><h2 class="cc-title">In the UAE, delivery is daily infrastructure — growth is won through frequency</h2><div class="cc-meta"><span>Jamie</span><span class="dot"></span><span>January 2026</span></div></div><div class="card-right"><div class="cc-stat"><span class="cc-stat-value">daily</span><span class="cc-stat-label">delivery as infrastructure</span></div><svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg></div></div>
+            </div>
+            <div class="compact-card" data-section="more-research" data-index="3" onclick="expandCard('more-research',3)">
+              <div class="card-accent"></div>
+              <div class="card-content"><div class="card-left"><span class="cc-tag">Competitive Intel</span><h2 class="cc-title">Keeta is resetting UAE expectations — making Deliveroo feel premium and effortful</h2><div class="cc-meta"><span>Jamie</span><span class="dot"></span><span>January 2026</span></div></div><div class="card-right"><div class="cc-stat"><span class="cc-stat-value">free</span><span class="cc-stat-label">default delivery positioning</span></div><svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg></div></div>
+            </div>
+            <div class="compact-card" data-section="more-research" data-index="4" onclick="expandCard('more-research',4)">
+              <div class="card-accent"></div>
+              <div class="card-content"><div class="card-left"><span class="cc-tag">New Verticals</span><h2 class="cc-title">London diners feel the pain of table scarcity — Roo can help with 'notify me'</h2><div class="cc-meta"><span>Simon</span><span class="dot"></span><span>March 2026</span></div></div><div class="card-right"><div class="cc-stat"><span class="cc-stat-value">scarce</span><span class="cc-stat-label">top tables in London</span></div><svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg></div></div>
+            </div>
+            <div class="compact-card" data-section="more-research" data-index="5" onclick="expandCard('more-research',5)">
+              <div class="card-accent"></div>
+              <div class="card-content"><div class="card-left"><span class="cc-tag">Brand Health</span><h2 class="cc-title">UK brand preference stable — but Uber Eats is closing the gap fast</h2><div class="cc-meta"><span>Holly</span><span class="dot"></span><span>December 2025</span></div></div><div class="card-right"><div class="cc-stat"><span class="cc-stat-value">2.1</span><span class="cc-stat-label">ppt gap with Uber Eats</span></div><svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg></div></div>
+            </div>
+            <div class="compact-card" data-section="more-research" data-index="6" onclick="expandCard('more-research',6)">
+              <div class="card-accent"></div>
+              <div class="card-content"><div class="card-left"><span class="cc-tag">Competitive Intel</span><h2 class="cc-title">Savings dashboards are high-stakes audits — not habit builders</h2><div class="cc-meta"><span>Sannah</span><span class="dot"></span><span>December 2025</span></div></div><div class="card-right"><div class="cc-stat"><span class="cc-stat-value">1 in 8</span><span class="cc-stat-label">proactively check savings</span></div><svg class="cc-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg></div></div>
+            </div>
+          </div>
+          <div class="section-footer">
+            <a onclick="switchSection('meet-customer')">Continue to Meet the Customer
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- SECTION 3: MEET THE CUSTOMER                -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div class="section" id="section-meet-customer">
+        <div class="story">
+          <div class="edition-marker" style="margin-bottom:32px;">R&I Newsletter · Issue 04 · Q1 2026</div>
+          <div class="reveal name-reveal">
+            <h1>Maria</h1>
+            <p class="subtitle">London · Customer since March 2024 · <strong>Plus Gold</strong></p>
+            <div class="profile-strip">
+              <div class="detail"><span class="detail-label">Lifetime orders</span><span class="detail-value" data-count="247">0</span></div>
+              <div class="detail"><span class="detail-label">This quarter</span><span class="detail-value" data-count="52">0</span></div>
+              <div class="detail"><span class="detail-label">Avg basket</span><span class="detail-value">£23.40</span></div>
+              <div class="detail"><span class="detail-label">Top cuisine</span><span class="detail-value">Japanese</span></div>
+            </div>
+          </div>
+          <div class="reveal chapter">
+            <p class="narrative">We chose Maria because her story is one we're seeing more often in the data — but rarely get to hear in someone's own words. She's a <strong>high-frequency Plus Gold member</strong> who, on paper, looks like a retention success. Two hundred and forty-seven lifetime orders. Subscribed for two years. The kind of customer most teams would file under "healthy" and move on.</p>
+            <p class="narrative">But look closer and something interesting is happening. Her behaviour is <em>shifting</em>. Not in the way that triggers a churn alert — in a subtler, more human way. And it raises a question our Plus Gold research has been circling all quarter:</p>
+            <p class="narrative"><strong>What does loyalty actually look like when a customer grows up?</strong></p>
+          </div>
+          <div class="chapter-break reveal"><span>Chapter 1</span></div>
+          <div class="reveal chapter">
+            <div class="chapter-title">The evening ritual</div>
+            <p class="narrative">Maria's week has a rhythm. Most of it is quiet — a coffee here, an occasional lunch order. But every evening, somewhere between 7 and 11pm, something switches on. The kitchen stays dark. The app comes out.</p>
+            <p class="narrative">Look at the last four weeks of her ordering pattern. The evenings glow.</p>
+          </div>
+          <div class="reveal evidence">
+            <div class="evidence-label">Maria's ordering heatmap — last 4 weeks</div>
+            <div class="heatmap">
+              <div></div><div class="heatmap-day">Mon</div><div class="heatmap-day">Tue</div><div class="heatmap-day">Wed</div><div class="heatmap-day">Thu</div><div class="heatmap-day">Fri</div><div class="heatmap-day">Sat</div><div class="heatmap-day">Sun</div>
+              <div class="heatmap-label">Morning</div><div class="heatmap-cell l0"></div><div class="heatmap-cell l0"></div><div class="heatmap-cell l1"></div><div class="heatmap-cell l0"></div><div class="heatmap-cell l0"></div><div class="heatmap-cell l1"></div><div class="heatmap-cell l2"></div>
+              <div class="heatmap-label">Afternoon</div><div class="heatmap-cell l0"></div><div class="heatmap-cell l1"></div><div class="heatmap-cell l0"></div><div class="heatmap-cell l0"></div><div class="heatmap-cell l1"></div><div class="heatmap-cell l2"></div><div class="heatmap-cell l1"></div>
+              <div class="heatmap-label">Evening</div><div class="heatmap-cell l3"></div><div class="heatmap-cell l2"></div><div class="heatmap-cell l4"></div><div class="heatmap-cell l3"></div><div class="heatmap-cell l4"></div><div class="heatmap-cell l4"></div><div class="heatmap-cell l0"></div>
+            </div>
+          </div>
+          <div class="reveal"><p class="narrative">Sunday evening is the only gap — and she'll explain why in a moment. But first, look at what she's ordering.</p></div>
+          <div class="reveal evidence">
+            <div class="evidence-label">What Maria orders — cuisine split, 6 months</div>
+            <div class="cuisine-row"><span class="cuisine-name">Japanese</span><div class="cuisine-track"><div class="cuisine-fill c1" style="width:0%" data-width="72%"></div></div><span class="cuisine-pct">36%</span></div>
+            <div class="cuisine-row"><span class="cuisine-name">Italian</span><div class="cuisine-track"><div class="cuisine-fill c2" style="width:0%" data-width="44%"></div></div><span class="cuisine-pct">22%</span></div>
+            <div class="cuisine-row"><span class="cuisine-name">Thai</span><div class="cuisine-track"><div class="cuisine-fill c3" style="width:0%" data-width="30%"></div></div><span class="cuisine-pct">15%</span></div>
+            <div class="cuisine-row"><span class="cuisine-name">Burgers</span><div class="cuisine-track"><div class="cuisine-fill c4" style="width:0%" data-width="18%"></div></div><span class="cuisine-pct">9%</span></div>
+          </div>
+          <div class="reveal"><p class="narrative">Over a third of everything she orders is Japanese. And it's not spread across restaurants — it's almost entirely one place.</p></div>
+          <div class="reveal evidence">
+            <div class="evidence-label">Maria's most-ordered restaurants</div>
+            <div class="spot-list">
+              <div class="spot"><span class="spot-rank">01</span><div class="spot-info"><span class="spot-name">Kazu</span><span class="spot-cuisine">Japanese · Soho</span></div><span class="spot-orders">48 orders</span></div>
+              <div class="spot"><span class="spot-rank">02</span><div class="spot-info"><span class="spot-name">Flat Iron</span><span class="spot-cuisine">Steak · Shoreditch</span></div><span class="spot-orders">23 orders</span></div>
+              <div class="spot"><span class="spot-rank">03</span><div class="spot-info"><span class="spot-name">Rosa's Thai</span><span class="spot-cuisine">Thai · Spitalfields</span></div><span class="spot-orders">19 orders</span></div>
+            </div>
+          </div>
+          <div class="reveal voice"><blockquote>"Japanese is my comfort food. There's this one place — Kazu — I've ordered from them maybe 50 times. They know my order by now, I'm sure of it."</blockquote><p class="attr">— Maria</p></div>
+          <div class="reveal"><p class="narrative">Forty-eight orders from a single restaurant. That's not convenience — that's a <em>relationship</em>. Maria doesn't browse. She knows what she wants, and the platform's job is to get out of the way.</p></div>
+          <div class="chapter-break reveal"><span>Chapter 2</span></div>
+          <div class="reveal chapter">
+            <div class="chapter-title">Something changed</div>
+            <p class="narrative">Six months ago, Maria was ordering <strong>4.9 times a week</strong>. Nearly every day. That number has been falling steadily since — not dramatically, but consistently. The kind of drift that looks like noise week to week, but tells a clear story over months.</p>
+          </div>
+          <div class="reveal evidence">
+            <div class="evidence-label">Weekly order frequency — 6 month trend</div>
+            <div class="sparkline-container">
+              <svg id="sparkline" viewBox="0 0 500 100" style="width:100%;height:100px;">
+                <defs><linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="oklch(68% 0.14 178)" stop-opacity="0.15"/><stop offset="100%" stop-color="oklch(68% 0.14 178)" stop-opacity="0"/></linearGradient></defs>
+                <path id="sparkArea" fill="url(#sparkGrad)" opacity="0"/>
+                <path id="sparkLine" fill="none" stroke="oklch(68% 0.14 178)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
+              </svg>
+              <div class="sparkline-meta"><span>Oct 2025</span><span>Mar 2026</span></div>
+            </div>
+          </div>
+          <div class="reveal"><p class="narrative">If this were all you saw, you might flag her as at-risk. But the story has a twist.</p></div>
+          <div class="reveal before-after">
+            <div class="ba-card before"><div class="ba-label">6 months ago</div><div class="ba-number">4.9×</div><div class="ba-detail">orders per week</div><div class="ba-number" style="font-size:24px;margin-top:12px;">£21.30</div><div class="ba-detail">average basket</div></div>
+            <div class="ba-arrow">→</div>
+            <div class="ba-card after"><div class="ba-label">Now</div><div class="ba-number" data-count="4.1">0</div><div class="ba-detail">orders per week</div><div class="ba-number" style="font-size:24px;margin-top:12px;">£23.40</div><div class="ba-detail">average basket</div></div>
+          </div>
+          <div class="reveal"><p class="narrative"><strong>She's ordering less, but spending more each time.</strong> Her frequency dropped 16%, but her basket grew 10%. She's not disengaging — she's becoming more deliberate. Less impulse, more intent.</p></div>
+          <div class="reveal voice"><blockquote>"I used to order every single night. Now it's more like four times a week — I started cooking on Sundays and meal prepping. But when I do order, I order properly."</blockquote><p class="attr">— Maria</p></div>
+          <div class="reveal"><p class="narrative">That's the Sunday gap in the heatmap. She's not churning — she's <em>cooking</em>. And when she comes back to the app, the orders are bigger, more considered. This is what maturation looks like in a power user.</p></div>
+          <div class="reveal evidence">
+            <div class="evidence-label">When Maria orders</div>
+            <div class="time-bars">
+              <div class="time-bar"><div class="time-bar-fill low" data-height="12%" style="height:0%"></div><span class="time-bar-label">7–9</span></div>
+              <div class="time-bar"><div class="time-bar-fill low" data-height="8%" style="height:0%"></div><span class="time-bar-label">9–11</span></div>
+              <div class="time-bar"><div class="time-bar-fill mid" data-height="25%" style="height:0%"></div><span class="time-bar-label">11–13</span></div>
+              <div class="time-bar"><div class="time-bar-fill low" data-height="10%" style="height:0%"></div><span class="time-bar-label">13–15</span></div>
+              <div class="time-bar"><div class="time-bar-fill low" data-height="5%" style="height:0%"></div><span class="time-bar-label">15–17</span></div>
+              <div class="time-bar"><div class="time-bar-fill mid" data-height="35%" style="height:0%"></div><span class="time-bar-label">17–19</span></div>
+              <div class="time-bar"><div class="time-bar-fill peak" data-height="92%" style="height:0%"></div><span class="time-bar-label">19–21</span></div>
+              <div class="time-bar"><div class="time-bar-fill peak" data-height="78%" style="height:0%"></div><span class="time-bar-label">21–23</span></div>
+              <div class="time-bar"><div class="time-bar-fill mid" data-height="20%" style="height:0%"></div><span class="time-bar-label">23–1</span></div>
+            </div>
+            <p class="time-callout"><strong>73%</strong> of Maria's orders happen between 7pm and midnight. The app is her evening companion — not her lunch break.</p>
+          </div>
+          <div class="chapter-break reveal"><span>Chapter 3</span></div>
+          <div class="reveal chapter">
+            <div class="chapter-title">The moment she almost left</div>
+            <p class="narrative">Here's where Maria's story gets interesting for us. Last month, she opened the app settings and hovered over "Cancel subscription." She'd been paying £7.99 a month for Plus Gold and wondered, with fewer orders, whether it still made sense.</p>
+            <p class="narrative">This is the <em>evaluation moment</em> — the exact inflection point our Plus Gold acquisition research identified this quarter. The point where high-frequency users who've slowed down reassess whether the maths still works.</p>
+          </div>
+          <div class="reveal voice"><blockquote>"I almost cancelled Plus last month, honestly. Not because it's bad — I just wondered if I still order enough to justify it. Then I checked and I'd saved £34 that month. So, yeah. Staying."</blockquote><p class="attr">— Maria</p></div>
+          <div class="reveal"><p class="narrative">She checked. The savings were real. Here's what her quarter looks like:</p></div>
+          <div class="reveal evidence">
+            <div class="evidence-label">Plus Gold — Q1 2026 savings breakdown</div>
+            <div class="savings-row"><span class="savings-label">Delivery fee savings (52 orders)</span><span class="savings-value">£78.00</span></div>
+            <div class="savings-row"><span class="savings-label">Member pricing discounts</span><span class="savings-value">£11.40</span></div>
+            <div class="savings-row"><span class="savings-label">Subscription cost (3 months)</span><span class="savings-value">−£23.97</span></div>
+            <div class="savings-row"><span class="savings-label">Net saving this quarter</span><span class="savings-value">£65.43</span></div>
+          </div>
+          <div class="reveal"><p class="narrative">Even ordering less than she used to, Plus Gold saves Maria over £65 a quarter. The subscription pays for itself three times over. And that realisation — that <em>moment of checking</em> — is what kept her.</p></div>
+          <div class="reveal voice"><blockquote>"I don't think about delivery fees anymore. That's the whole point. I'll order a coffee and a pastry on a Saturday morning just because I can. I never would have done that before Plus."</blockquote><p class="attr">— Maria</p></div>
+          <div class="reveal"><p class="narrative">Plus Gold hasn't just removed a fee — it's removed a <em>decision</em>. The mental barrier of "is this order worth the delivery charge?" no longer exists. That's why she orders a coffee on Saturday morning. That's why a 4.1×/week customer is arguably more valuable than a 4.9× one — she's ordering across more occasions, with higher intent and lower friction.</p></div>
+          <div class="chapter-break reveal"><span>The bigger picture</span></div>
+          <div class="reveal chapter">
+            <div class="chapter-title">Why Maria matters</div>
+            <p class="narrative">Maria isn't an outlier. She's a pattern. Our Plus Gold acquisition barriers research found that <strong>high-frequency members who slow down are the most likely to hit the evaluation moment</strong> — and the ones who check their savings are the ones who stay.</p>
+            <p class="narrative">The question for us isn't "how do we stop Maria from slowing down" — it's "how do we make sure the value is visible when she looks for it." Right now, she had to find it herself. What if we showed her?</p>
+          </div>
+          <div class="reveal connection">
+            <div class="connection-label">Related research this quarter</div>
+            <p>Maria's story is the human evidence behind this quarter's Plus Gold deep-dive. The research quantifies the pattern — Maria shows us what it feels like from the other side.</p>
+            <a href="#">Read the Plus Gold acquisition barriers research <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+          </div>
+          <div class="section-footer reveal">
+            <a onclick="switchSection('headlines')">Back to Headlines
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="backdrop" onclick="collapseCard()"></div>
+  <div id="expandingPage"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════ */
+/* DATA                                                    */
+/* ═══════════════════════════════════════════════════════ */
+const headlineItems=[{tag:'Growth Strategy',title:"Coverage is the #1 barrier — and we need to break the 'treat' mindset",author:'Holly',date:'Ongoing',statValue:'7',statContext:'Seven markets analysed for barriers to category usage and Deliveroo adoption. Coverage emerges as the top barrier in European markets, while the UAE faces different challenges around premium/Western positioning and subscription-heavy competitors.',findings:[{text:'<strong>Coverage is the top category barrier in Europe.</strong> Especially in Ireland, Italy and France — where the category exists, the next challenge is moving away from the treat mindset and feelings of guilt around ordering.'},{text:'<strong>UAE is mature but not won.</strong> Fewest category rejectors, but Deliveroo is seen as premium and Western. Needs to become more relevant for everyday occasions and amongst Arab Expats and Local Emiratis.'},{text:'<strong>Four universal barriers persist.</strong> Prefer to pick up in person, home cooking preference, cost/price sensitivity, and quality concerns appear across all seven markets.'},{text:'<strong>Churn drivers are clear.</strong> Coverage, competitor preference, changed habits, price/high delivery fees, poor service, and limited restaurant selection — in that order.'}],chart:{title:'New customer sign-up drivers',bars:[{label:'Speed',value:82,display:'82%',primary:true},{label:'Promos',value:71,display:'71%',primary:true},{label:'Rx variety',value:65,display:'65%'},{label:'Exclusives',value:48,display:'48%'}],caption:'Top drivers for new customer sign-ups across markets. New Customer Workstream 2026.'},quote:{text:"I'd order more if there were more restaurants near me. Half the time I check and there's nothing I want within 30 minutes.",attr:'Category rejector, 29, Dublin — barriers research'},narrative:'The data paints a clear picture: coverage is the foundation everything else is built on. In markets where coverage exists, the next unlock is repositioning delivery from occasional treat to everyday habit.',sourceUrl:'https://docs.google.com/document/d/1gZFR6C05AFZouSmPiEkHoTPDHCBrEvbuHcGWGvYu0vY/edit',customBlocks:[
+{type:'provocation',statement:'<span class="pv-num">#1 churn driver in all 7 markets:</span> coverage \u2014 the restaurants people want aren\u2019t on the platform.',insight:'Speed and promos acquire; gaps retain. Geographic density and selection aren\u2019t \u201Cgrowth\u201D problems alone \u2014 they\u2019re why people leave. UAE is a different fight: lowest category rejection, but subs-heavy rivals and premium/Western positioning set the bar on everyday relevance.'},
+{type:'mirror',title:'The acquisition \u2194 churn mirror',leftLabel:'What brings them in',leftItems:[
+{text:'Speed',detail:'#1 sign-up driver in 5 of 7 markets (e.g. UAE 27%, Belgium 26%).'},
+{text:'Promos & discounts',detail:'#1 in UK (17%); first-order hooks everywhere.'},
+{text:'Restaurant selection',detail:'\u201CPlaces I like are on Deliveroo but not Just Eat\u201D \u2014 variety and exclusives.'}],
+rightLabel:'What pushes them away',rightItems:[
+{text:'Coverage gaps',detail:'#1 churn driver in every market studied \u2014 e.g. France 23.7%, Ireland 18.6%.'},
+{text:'Competitor lock-in',detail:'#1 in UAE (33.2%) and Singapore (30.5%).'},
+{text:'Changed habits',detail:'#1 in UK (31.3%) \u2014 post-pandemic cooking shift.'},
+{text:'Price & fees',detail:'Top churn themes in France (15.4%) and Belgium (11.5%).'},
+{text:'Thin selection',detail:'Not enough choice outside core zones \u2014 same problem, different wording.'}]},
+{type:'chart',title:'Where coverage hurts most (Europe)',bars:[
+{label:'Ireland',value:100,display:'30.7%',primary:true},
+{label:'Italy',value:93,display:'28.6%',primary:true},
+{label:'France',value:83,display:'25.6%',primary:true},
+{label:'UK',value:48,display:'14.7%',primary:true}],
+caption:'Share citing coverage / availability among category barriers (where applicable). New Customer Workstream 2026.'},
+{type:'voice',title:'In their words',quotes:[
+{text:'I\u2019d order more if there were more restaurants near me. Half the time I check and there\u2019s nothing I want within 30 minutes.',attr:'Category rejector, 29, Dublin',wide:true},
+{text:'Pas disponible dans mon village.',attr:'France \u2014 barriers research',wide:false},
+{text:'I signed up to UberOne \u2014 free delivery and discounts on food plus 1 year free Disney+.',attr:'Lapsed Deliveroo user, UK \u2014 YouGov churn research',wide:true}]},
+{type:'direct-breakdown',title:'UK \u2014 why people order direct (when they do)',headline:'8.6%',headlineLabel:'prefer to order direct from the restaurant',commentN:227,commentLabel:'coded comments mentioning direct ordering',segments:[
+{pct:40,label:'Cheaper direct'},
+{pct:24,label:'Restaurant keeps the sale'},
+{pct:15,label:'Local / relationship'},
+{pct:11,label:'Other / unspecified'}],
+note:'UK shows the lowest European coverage-barrier share above \u2014 direct ordering is the distinctive friction. Among those who go direct, four reasons explain most open-ended responses.'},
+{type:'verdict',text:'Treat coverage as a <strong>retention lever</strong>, not only an acquisition story: it\u2019s the top churn driver everywhere we measured. In Europe, Ireland, Italy and France carry the heaviest coverage weight \u2014 the next unlock is habit, not just maps (moving past \u201Ctreat\u201D and guilt). In the UK, win the <strong>direct channel</strong> argument where price and loyalty to locals matter. In UAE and Singapore, <strong>competitor preference and subs</strong> dominate churn \u2014 fight frequency and lock-in, not the same playbook as Dublin or Milan.'},
+{type:'source',url:'https://docs.google.com/document/d/1gZFR6C05AFZouSmPiEkHoTPDHCBrEvbuHcGWGvYu0vY/edit'}]},{tag:'Product Research',title:"MPO's 'one-stop shop' value is clear — but no one can find it",author:'Alaa',date:'December 2025',statValue:'< 5%',statContext:"MPO is rarely found organically by users — entry points are described as 'subtle and out of sight.' Yet once discovered, its core value of comparing prices, filling selection gaps, and bundling cross-vertical needs is strongly validated.",findings:[{text:"<strong>Core value strongly validated.</strong> Users see MPO as a 'one-stop shop' for comparing prices, filling selection gaps, and bundling diverse needs like retail and pharmacy items."},{text:"<strong>Discoverability is the #1 blocker.</strong> Entry points are 'subtle and out of sight' — MPO is rarely found organically."},{text:'<strong>Post-order tracking erodes trust.</strong> Seeing only the primary store in tracking undermines confidence in the bundled order.'},{text:"<strong>Fee scepticism outweighs savings messaging.</strong> 'No extra delivery fee' is overshadowed by user scepticism about 'other fees apply.'"}],chart:{title:'MPO adoption funnel',bars:[{label:'Saw feature',value:18,display:'18%'},{label:'Explored it',value:12,display:'12%'},{label:'Understood value',value:85,display:'85%',primary:true},{label:'Would reuse',value:78,display:'78%',primary:true}],caption:'Unmoderated test participants. "Understood value" and "Would reuse" measured among those who found the feature.'},quote:{text:"Oh wait, I can add from Boots too? That's actually amazing — I had no idea this was here. Why isn't this more obvious?",attr:'Unmoderated test participant, 34, MPO launch testing'},narrative:"MPO has a product-market fit problem in reverse: the product fits, but the market can't find it. The gap between discovery rate and value perception suggests that investment in discoverability is the highest-leverage next step.",sourceUrl:'https://docs.google.com/document/d/1eB5RYGmmJLncWmn69tCChhCoU5sabqfQwGShG3gn354/edit',customBlocks:[
+{type:'provocation',statement:'<span class="pv-num">4/11</span> found Multi-Product Order without prompting \u2014 and the only surfaces that broke through were a <strong>pop-up banner</strong> and a <strong>NEW</strong> tab label.',insight:'Restaurants and SKUs can be on the app and users still won\u2019t bundle: if browse and search don\u2019t surface MPO, the \u201Cone-stop shop\u201D never gets a chance to prove itself.'},
+{type:'discovery-trio',title:'Discovery split (n = 11)',footnote:'Among the four who found it alone, nothing else in the flow competed with the banner and the tab \u2014 everything else felt subtle or washed out.',items:[
+{value:'4/11',label:'Found organically',hint:'Without researcher prompting',tone:'warn'},
+{value:'7/11',label:'Needed prompting',hint:'Only after being directed to look',tone:'neutral'},
+{value:'1/11',label:'Never found it',hint:'Could not locate the feature',tone:'neg'}]},
+{type:'narrative',text:'The bottleneck isn\u2019t conviction at checkout \u2014 it\u2019s <strong>getting users into the feature at all</strong>. Until MPO is discoverable in navigation and search, every downstream metric is conditioning on a tiny slice who were nudged or lucky.'},
+{type:'contrast',title:'Same word, two different bundles',smooth:{label:'Multi-Product Order (MPO)',text:'A <strong>multi-store basket before checkout</strong> \u2014 compare prices, fill gaps, add pharmacy or hardware alongside grocery in one planned order.'},deviated:{label:'What 3/11 confused it with',text:'<strong>Joey-style post-checkout bundling</strong> \u2014 adding items after the fact. Same \u201Cbundle\u201D vocabulary, different place in the journey, which makes MPO harder to spot and name.',stats:[
+{value:'3/11',desc:'Mixed MPO up with Joey \u2014 not just a labelling nit'}]},context:'Disambiguation belongs in naming and entry points, not only in tracking screens.'},
+{type:'gap',left:{sublabel:'Confidence at checkout',value:'4.1/5',label:'Average among those who reached checkout with MPO'},right:{sublabel:'Organic discovery',value:'4/11',label:'Noticed MPO without prompting'},context:'Strong in-flow trust is real \u2014 but it benefits almost nobody if <strong>seven in eleven only saw the feature because a researcher pointed at it</strong>. Fee copy (\u201Cno extra delivery fee\u201D vs \u201Cother fees apply\u201D) then lands on a narrow base and still fuels \u201Ctoo good to be true\u201D scepticism.'},
+{type:'verdict',text:'MPO\u2019s problem is product\u2013market fit <strong>in reverse</strong>: the concept lands when people see it; the market mostly doesn\u2019t. Prioritise <strong>discoverability in browse and search</strong> and a clear <strong>MPO vs Joey</strong> story at entry. Fix <strong>post-order tracking</strong> so the bundle doesn\u2019t undermine the trust earned at checkout \u2014 split trackers and vague ETAs are where the one-stop promise frays after the sale.'},
+{type:'source',url:'https://docs.google.com/document/d/1eB5RYGmmJLncWmn69tCChhCoU5sabqfQwGShG3gn354/edit'}]},{tag:'Commercial',title:"Plus Gold isn't a pricing problem — it's timing, visibility, and clarity",author:'Sannah',date:'February 2026',statValue:'3',statContext:"Three consistent breakpoints in the Plus acquisition journey: it isn't seen, when seen it's ignorable, and at commitment the evaluation becomes effortful.",findings:[{text:"<strong>Plus isn't consistently seen.</strong> During ordering, users are highly task-focused. Low-salience banners are filtered out as background noise."},{text:"<strong>When seen, it's still ignorable.</strong> Visibility doesn't lead to engagement. If Plus feels optional, it's skipped."},{text:'<strong>Evaluation becomes effortful at commitment.</strong> Messaging increases cognitive load — foregrounding rules rather than making value clear.'},{text:'<strong>Basket/checkout is the strongest natural moment.</strong> Cost is already salient — but Plus integration needs to feel embedded, not bolted on.'}],chart:{title:'Plus acquisition journey breakpoints',bars:[{label:'Not seen',value:65,display:'65%'},{label:'Seen, skipped',value:22,display:'22%'},{label:'Explored, dropped',value:8,display:'8%'},{label:'Converted',value:5,display:'5%',primary:true}],caption:'User journey analysis, UAE Plus Gold acquisition barriers study, Q1 2026.'},quote:{text:"I know Plus exists but I've never really looked at it properly. Every time I see it I'm mid-order and I just want my food.",attr:'UAE consumer, 27, Plus non-subscriber'},narrative:"Plus may be good value — but many users aren't evaluating it in the right state of mind, at the right moment, or with enough clarity to feel confident choosing it. The fix isn't price adjustment; it's journey redesign.",sourceUrl:'https://docs.google.com/presentation/d/1pV5wPHAEdg_mQuZwzy8hnXa-dn4-3DHBR_JppCw6Or0/edit',customBlocks:[
+{type:'provocation',statement:'<span class="pv-num">65%</span> never register Plus in the journey; only <span class="pv-num">5%</span> convert. The drop happens <strong>before</strong> anyone weighs the fee.',insight:'Plus Gold stalls on <strong>salience and comprehension</strong>, not price. Users aren\u2019t refusing the maths \u2014 they\u2019re not seeing a clear, trustworthy bundle to evaluate.'},
+{type:'cascade',title:'Three breakpoints that compound',steps:[
+{label:'Visibility',mechanism:'UAE checkout is <strong>25\u201330% faster than UK</strong> \u2014 less dwell time for passive Plus placements. Low-salience surfaces read as promo noise.',quote:'I\u2019m just interested in ordering food. I just wanna place the order. I wanna eat now.',attr:'HF Classic customer'},
+{label:'Engagement',mechanism:'Passive touchpoints need an opt-in that pulls users <em>out</em> of the order. In task mode, <strong>seen \u2260 engaged</strong>.',quote:'I would never click on that! If it was like a pop-up and you actually have to click off of it, then it might force me to read it.',attr:'LF Classic customer'},
+{label:'Evaluation',mechanism:'Copy leads with rules and thresholds. Participants <strong>self-excluded</strong> before benefits landed \u2014 the bundle never got a fair hearing.',quote:'There\u2019s too many conditions, too many things to read. You don\u2019t think you\u2019re going to see the value.',attr:'HF Classic customer'}]},
+{type:'touchpoint-audit',title:'Touchpoint audit \u2014 what we watched in flow',touchpoints:[
+{surface:'Sticky upsell banner',badge:'ignored',verdict:'Ignored',note:'Task-focused ordering \u2014 easy to scroll past when the goal is \u201Cplace the order.\u201D'},
+{surface:'Basket / checkout modal',badge:'promise',verdict:'Best fit',note:'Fees are already salient; the order isn\u2019t final. Natural place to show <strong>what you get</strong> alongside the line item.'},
+{surface:'Full-screen interstitial',badge:'friction',verdict:'Frustrating',note:'Grabs attention but fights urgency \u2014 reads as a detour, not proof of value.',tone:'friction'},
+{surface:'Post-order',badge:'untapped',verdict:'Untapped',note:'Pressure drops while delivery-fee pain is fresh \u2014 strong window for <strong>retrospective</strong> value framing.',tone:'untapped'}],
+footnote:'Retrospective framing (\u201Cyou would have saved \u00A3X on your last 5 orders\u201D) tests better than thin per-order deltas once users can process the maths.'},
+{type:'contrast',title:'The \u201Celigible\u201D trap',smooth:{label:'What the copy is trying to do',text:'Signal when <strong>10% Credit Back</strong> applies using \u201Celigible orders\u201D and thresholds \u2014 compliance-forward, rule-accurate.'},deviated:{label:'What participants did',text:'Heard \u201Celigible\u201D as <strong>\u201Cprobably not for me\u201D</strong> and bounced before benefits landed.',stats:[
+{value:'Near-universal',desc:'Participants misunderstood or hesitated on \u201Celigible\u201D in Plus messaging (qual pattern across IDIs)'}]},context:'This is a separate problem from \u201Ctoo much text\u201D \u2014 it\u2019s the wrong <em>first</em> word for a subscription pitch in flow.'},
+{type:'chart',title:'Where users exit the Plus journey',bars:[
+{label:'Not seen',value:65,display:'65%'},
+{label:'Seen, skipped',value:22,display:'22%'},
+{label:'Explored, dropped',value:8,display:'8%'},
+{label:'Converted',value:5,display:'5%',primary:true}],
+caption:'Most leakage is <strong>pre-evaluation</strong> \u2014 not price objection at the paywall. UAE Plus Gold acquisition barriers study, Q1 2026.'},
+{type:'verdict',text:'The fix isn\u2019t a price cut \u2014 it\u2019s <strong>demonstrated value in the moments that already carry trust</strong>. Lead with outcomes (what you get) before rules; anchor Plus to <strong>basket/checkout</strong> and under-use <strong>post-order</strong> for retrospective savings on real orders. Show the bundle doing work \u2014 or users will keep reading \u201Celigible\u201D as \u201Cnot for me.\u201D'},
+{type:'source',url:'https://docs.google.com/presentation/d/1pV5wPHAEdg_mQuZwzy8hnXa-dn4-3DHBR_JppCw6Or0/edit'}]},{tag:'Product / CX',title:"Grocery tracking works until it doesn't — substitutions are the #1 pain",author:'Elin',date:'March 2026',statValue:'#1',statContext:'Substitutions are the #1 pain point in grocery delivery. Customers are spontaneously asking for control over replacements.',findings:[{text:'<strong>Tracking works until deviation.</strong> When confirmation stalls or an item is out of stock, the tracking experience fails to reassure.'},{text:'<strong>Substitutions are the #1 pain point.</strong> Customers consistently raise substitution handling as their biggest frustration.'},{text:'<strong>Customer-selected substitutes is the strongest lever.</strong> Giving customers control over replacements would transform the post-order experience.'},{text:'<strong>Operational transparency is needed.</strong> When orders deviate, customers need to see what\'s happening — not just a stalled progress bar.'}],chart:{title:'Top grocery post-order pain points',bars:[{label:'Substitutions',value:89,display:'89%',primary:true},{label:'ETA accuracy',value:62,display:'62%'},{label:'Order tracking',value:54,display:'54%'},{label:'Communication',value:41,display:'41%'}],caption:'Pain point frequency in grocery order tracking research, Q1 2026.'},quote:{text:"They substituted my almond milk for whole milk. I'm lactose intolerant. Just let me pick what I want instead.",attr:'Grocery customer, 31, post-order tracking research'},narrative:"The grocery tracking experience is a trust equation: when everything goes smoothly, it works. But the moment something deviates, the system provides no reassurance. Customer-controlled substitutions would address the #1 pain point.",sourceUrl:'https://docs.google.com/presentation/d/1zv0L_AyhK94sX2XNXwzElFgDOwU2uncZ0idkYSvvpkY/edit',customBlocks:[
+{type:'provocation',statement:'<span class="pv-num">15 of 16</span> UK grocery customers raised substitutions without being asked. When a bad swap is refunded, CSAT falls from <span class="pv-num">4.63</span> to <span class="pv-num">2.92</span> stars \u2014 and Care contact jumps from <span class="pv-num">2%</span> to <span class="pv-num">37%</span>.',insight:'Live tracking sells transparency. <strong>Silent swaps and fuzzy refunds</strong> break that promise: the journey feels reliable until the system goes quiet on what actually arrived.'},
+{type:'contrast',title:'The emotional peak vs. the trust gap',smooth:{label:'After rider assignment',text:'\u201COnce the rider\u2019s been assigned, I relax. Before that, it\u2019s anyone\u2019s guess.\u201D Someone is clearly on the hook \u2014 the trip feels legible again.'},deviated:{label:'Before that, or when something goes wrong',text:'Confirmation can stall with no explanation (one participant waited <strong>55 minutes</strong>). Stages like \u201Cchecking items\u201D and \u201Cpicking and packing\u201D read as fiction when they don\u2019t match reality \u2014 one customer called it \u201Ca lie.\u201D That mismatch erodes trust even when the order is fine.',stats:[
+{value:'28/204',desc:'diary entries on confirmation stalls'},
+{value:'46/204',desc:'entries flagged ETA uncertainty'},
+{value:'2.77%',desc:'order rejection rate (ops)'}]},context:'The rider moment is the high point; anxiety starts earlier and spikes again when deviations land without honest state.'},
+{type:'quote',text:'They substituted my almond milk for whole milk. I\u2019m lactose intolerant. Just let me pick what I want instead.',attr:'Grocery customer, UK post-order tracking research'},
+{type:'ripple',cause:'Substitution anxiety is the dominant pain \u2014 and it starts before anything goes wrong',causeData:'26% of diary entries \u2022 15/16 participants \u2022 unprompted',effects:[
+{label:'Basket suppression',data:'11/16 changed behaviour',desc:'Smaller baskets; avoiding fresh and seasonal items \u2014 more lines feel like more substitution risk.'},
+{label:'Platform switching',data:'Uber Eats has mid-pick approval',desc:'If pricing is equal, some said they\u2019d switch for substitute control alone.'},
+{label:'Store avoidance',data:'3/16 dropped a partner',desc:'Poor fulfilment pushed permanent avoidance (e.g. Morrisons).'},
+{label:'Safety risk',data:'3/16 have dietary needs',desc:'Wrong subs aren\u2019t just annoying \u2014 celiac, diabetes, vegetarianism.'}]},
+{type:'expectations',title:'Three asks \u2014 not just more pings',items:[
+{stat:'1',label:'Accuracy',desc:'Tracker copy and ETAs that match warehouse reality. Silence hurts; misleading stages hurt more.'},
+{stat:'2',label:'Advocacy',desc:'When something goes wrong, customers want the platform on their side \u2014 not watching them stew in limbo.'},
+{stat:'3',label:'Agency',desc:'Choice over substitutions. Customer-selected replacements are the closest match to what people are asking for.'}]},
+{type:'verdict',text:'Prioritise <strong>customer-selected substitutions</strong> to close the gap vs. competitors and match spontaneous demand (already live in UAE; UK launch priority). Pair with <strong>credible operational language</strong> at deviation \u2014 fewer wrong labels, more honest state. For rare late rejections, add <strong>reason, early warning, and a recovery gesture</strong>. More notifications only help when they\u2019re accurate; predictability is the outcome.'},
+{type:'source',url:'https://docs.google.com/presentation/d/1zv0L_AyhK94sX2XNXwzElFgDOwU2uncZ0idkYSvvpkY/edit'}]},{tag:'New Verticals',title:'UAE diners want Roo table bookings — but expect rewards and exclusives',author:'Simon',date:'February 2026',statValue:'UAE',statContext:'UAE diners are open to Deliveroo offering table bookings, but expectations are high: seamless UX, rewards integration, and exclusive access are non-negotiable.',findings:[{text:'<strong>Openness to table bookings is real.</strong> UAE diners responded positively — the brand\'s association with food makes it a natural extension.'},{text:'<strong>Seamless UX is a baseline expectation.</strong> Users expect the booking experience to be as smooth as ordering delivery.'},{text:'<strong>Rewards integration is expected.</strong> Diners want bookings to tie into existing Deliveroo rewards and Plus membership.'},{text:'<strong>Exclusive selection is the hook.</strong> Access to coveted tables would differentiate Roo from existing booking platforms.'}],chart:{title:'Table booking feature priorities (UAE diners)',bars:[{label:'Seamless UX',value:88,display:'88%',primary:true},{label:'Rewards',value:76,display:'76%',primary:true},{label:'Exclusives',value:71,display:'71%'},{label:'Reviews',value:45,display:'45%'}],caption:'Feature priority ranking, UAE restaurant booking research, Q1 2026.'},quote:{text:"If Deliveroo could get me a table at places that are always booked out, I'd use it every weekend.",attr:'UAE diner, 32, SevenRooms research participant'},narrative:"Table bookings represent a natural extension of Deliveroo's food ecosystem in the UAE. The research validates the concept but sets a high bar: this needs to feel premium, integrated, and rewarding.",sourceUrl:'https://docs.google.com/presentation/d/1vbS5S84w7pp2Yvggrna7Ui9vnjyLxrbc79m8dEvv-Oo/edit',customBlocks:[
+{type:'provocation',statement:'<span class="pv-num">72%</span> of UAE diners are interested in Deliveroo offering table bookings.',insight:'Demand is <strong>real</strong> \u2014 especially for hard-to-book restaurants and tying bookings to <strong>Plus / rewards</strong>. The winning shape here is <strong>discovery and premium access</strong>, not London\u2019s scarcity-and-fairness story.'},
+{type:'contrast',title:'Different market, different job',smooth:{label:'London (benchmark)',text:'Hot tables behave like <strong>ticketing</strong> \u2014 notify-me and anti-scalping sit at the emotional centre.'},deviated:{label:'UAE',text:'Openness is high and dine-out still mixes <strong>phone and walk-in</strong>. The hook is <strong>curated discovery</strong>, <strong>Roo-native rewards</strong>, and <strong>coveted-table access</strong> \u2014 not proving you beat scalpers.',stats:[
+{value:'51%',desc:'still book by phone (survey)'},
+{value:'79%',desc:'walk in at least sometimes'}]},context:'Same surface feature set; <strong>different primary pain</strong>. Don\u2019t import a London narrative wholesale.'},
+{type:'chart',title:'What diners want first (feature priorities)',bars:[
+{label:'Seamless UX',value:88,display:'88%',primary:true},
+{label:'Rewards integration',value:76,display:'76%',primary:true},
+{label:'Exclusive / hard-to-book access',value:71,display:'71%'},
+{label:'Integrated reviews',value:45,display:'45%'}],caption:'UAE restaurant booking research \u2014 feature priority ranking, Q1 2026.'},
+{type:'voice',title:'Why it lands',quotes:[
+{text:'If Deliveroo could get me a table at places that are always booked out, I\u2019d use it every weekend.',attr:'UAE diner, SevenRooms research',wide:true},
+{text:'I want to scroll through cuisines and vibes, not just restaurants.',attr:'Consumer IDI \u2014 discovery',wide:false},
+{text:'I already use Google and Instagram to decide where to eat \u2014 I don\u2019t need another review platform.',attr:'Consumer IDI \u2014 on reviews',wide:true}]},
+{type:'expectations',title:'Three numbers that set the model',items:[
+{stat:'72%',label:'Plus / rewards',desc:'Want bookings to <strong>earn or burn</strong> in-programme \u2014 not a bolt-on checkout.'},
+{stat:'68%',label:'\u201CNotify me\u201D',desc:'Alerts for always-booked venues \u2014 the <strong>hook</strong> alongside curation.'},
+{stat:'56%',label:'Premium access',desc:'Would pay for exclusive table access; everyone else needs <strong>rewards</strong> to leave phone / walk-in habits.'}]},
+{type:'verdict',text:'Ship <strong>Deliveroo-quality discovery + Plus integration</strong>, anchored on <strong>notify me</strong> for coveted venues \u2014 and frame vs <strong>Talabat / Careem</strong> on <strong>editorial selection and rewards</strong>, not catalogue breadth. Reviews score on a survey checkbox but qual rejects \u201Canother review app\u201D; lead with <strong>taste and trust cues</strong>. Contracts and policy must align <strong>merchant guaranteed covers</strong> with <strong>diner flexibility</strong> so Roo isn\u2019t referee in every dispute.'},
+{type:'source',url:'https://docs.google.com/presentation/d/1vbS5S84w7pp2Yvggrna7Ui9vnjyLxrbc79m8dEvv-Oo/edit'}]}];
+
+const moreResearchItems=[{tag:'Methodology',title:'Transactional NPS launching in April — aligning measurement with DoorDash',author:'Molly & Debbie',date:'April 2026',statValue:'tNPS',statContext:'Deliveroo is adopting a transactional NPS methodology to align with DoorDash\'s approach and enable cross-business analysis.',findings:[{text:'<strong>Moving from relational to transactional.</strong> The new methodology captures satisfaction right after an order.'},{text:'<strong>Aligned with DoorDash methodology.</strong> Enables direct cross-business comparison for the first time.'},{text:'<strong>Randomised sampling reduces bias.</strong> Avoids the self-selection bias inherent in opt-in surveys.'},{text:'<strong>Launch includes office and online L&Ls.</strong> 15th and 16th April sessions to ensure teams understand the new metric.'}],chart:{title:'NPS methodology comparison',bars:[{label:'Relational NPS',value:56,display:'+41'},{label:'tNPS (projected)',value:68,display:'+52',primary:true}],caption:'Projected comparison based on DoorDash benchmarks.'},quote:{text:'Having a consistent NPS methodology across the group means we can finally have apples-to-apples conversations about customer satisfaction.',attr:'Internal stakeholder, CX measurement team'},narrative:'This is a foundational measurement change. Transactional NPS gives us a real-time pulse on customer experience tied directly to specific orders.',sourceUrl:'https://docs.google.com/document/d/1plZPzT1pdV3EXlHhMD9Xb43M5nY4KaG_f3hqA-Z78XI/edit',customBlocks:[
+{type:'provocation',statement:'<span class="pv-num">~60%</span> of tNPS responses are detractors.',insight:'That is not a loyalty score in disguise \u2014 it is a <strong>frustration signal</strong> from the last trip. When the headline moves, assume <strong>operations first</strong>, not affection.'},
+{type:'narrative',text:'Open text and diagnostics cluster on fulfilment failure: <strong>late, wrong, or missing items</strong>. The metric is doing what transactional surveys do best \u2014 surfacing breakage \u2014 but that is not the same as measuring relationship health.'},
+{type:'direct-breakdown',title:'Who is driving the score?',headline:'~60%',headlineLabel:'of responses from detractors (0\u20136)',segments:[
+{pct:60,label:'Detractors (0\u20136)'},
+{pct:25,label:'Passives (7\u20138)'},
+{pct:15,label:'Promoters (9\u201310)'}],
+note:'Illustrative mix from transactional sampling. <strong>So what:</strong> critics are over-represented \u2014 tNPS behaves like a <strong>failure-recovery index</strong>, not a balanced read on love for the brand.'},
+{type:'narrative',text:'So is the methodology \u201Cwrong\u201D? Only if you misread it. <strong>Transactional NPS measures the order moment</strong>, not durable attachment. DoorDash alignment still buys comparability; the mistake is treating one headline number as a proxy for loyalty.'},
+{type:'survey-branch',title:'Three-stage survey structure',stages:[
+{label:'NPS Core',desc:'0\u201310 recommendation + open reason. Every respondent, every market. Stable cross-business KPI for DoorDash, Deliveroo, and Wolt.'},
+{label:'Order Satisfaction',desc:'Rated dimensions of the last order. <strong>Plus</strong> adds a member-specific item where applicable. <strong>Grocery</strong> and <strong>retail</strong> use vertical variants so the wording matches the trip type.'}],splitLabel:'Randomised 50/50 \u2014 one diagnostic module per respondent',branches:[
+{pct:'50%',label:'Module A \u2014 Discovery & selection',desc:'How customers find restaurants/items, compare options, and navigate choice \u2014 the \u201Cwhat did I pick and how did I find it\u201D path. Designed to evolve as discovery surfaces change.'},
+{pct:'50%',label:'Module B \u2014 Checkout & value',desc:'How customers experience fees, totals, promotions, and checkout clarity \u2014 the \u201Cwhat did I pay and was it fair\u201D path. Pairs with cost/value diagnostics without duplicating Plus subscription research.'}]},
+{type:'verdict',text:'Use tNPS as an <strong>operational pulse</strong> and diagnostic stack \u2014 not as a stand-in for relationship strength. Pair it with <strong>relational brand tracking</strong> where you need loyalty; read the headline for what it actually measures: <strong>did this order go wrong?</strong>'},
+{type:'source',url:'https://docs.google.com/document/d/1plZPzT1pdV3EXlHhMD9Xb43M5nY4KaG_f3hqA-Z78XI/edit'}]},{tag:'Innovation',title:'Drone vs. rider: speed only wins when temperature meets expectations',author:'Andrea',date:'February 2026',statValue:'€3',statContext:'Drone pricing is anchored to \'should be cheaper\' than rider delivery — with a clear €3 ceiling.',findings:[{text:'<strong>Speed alone isn\'t enough.</strong> Fast but cold food fails the value test.'},{text:'<strong>Packaging knowledge hurts perception.</strong> Understanding the process negatively impacts temperature perception.'},{text:'<strong>Drone feels more reliable post-order.</strong> But pre-checkout cancellations damage reliability perceptions.'},{text:'<strong>€3 is the hard price ceiling.</strong> Premium pricing only works with an outcome-based promise.'}],chart:{title:'Consumer perception: drone vs. rider',bars:[{label:'Speed (drone)',value:92,display:'92%',primary:true},{label:'Speed (rider)',value:45,display:'45%'},{label:'Temp (drone)',value:38,display:'38%'},{label:'Temp (rider)',value:71,display:'71%',primary:true}],caption:'Satisfaction scores by delivery method. Chopper UX Pulse Report Wave 2.'},quote:{text:"It arrived in 8 minutes which is insane. But the burger was lukewarm. I'd rather wait 25 minutes and have it hot.",attr:'Drone delivery trial participant'},narrative:'The drone proposition has a perception-reality gap: consumers love the speed but anchor expectations on temperature.',sourceUrl:'https://docs.google.com/presentation/d/1ju5Y_KmoH7LzI0y7_XAyYn9631Jcs4WZ6llIvHa0fVY/edit',customBlocks:[
+{type:'provocation',statement:'Excitement is high. Willingness to pay is near zero.',insight:'The gap isn\'t safety \u2014 it\'s whether the meal arrives hot and intact. Speed impresses in the moment; the wallet follows a different rule: automation reads as cheaper than a rider, not worth a premium.'},
+{type:'narrative',text:'Wave 2 Chopper UX paired one drone and one rider order per participant, then diary + depth interview. The through-line: <strong>fast only wins when temperature and handling clear the bar</strong> \u2014 otherwise people happily trade minutes for heat.'},
+{type:'temp-compare',title:'The temperature gap is small \u2014 but perception amplifies it',bars:[
+{label:'Drone',value:47.6,unit:'\u00B0C',max:60,tone:'cold',note:'Paper bag cues poor insulation'},
+{label:'Rider',value:51.2,unit:'\u00B0C',max:60,tone:'warm',note:'Insulated bag sets expectation'}],context:'Only 3.6\u00B0C separates them \u2014 yet four in five rider-preferrers cited temperature. Beliefs about handoffs, weather, and packaging land before the first bite.'},
+{type:'narrative',text:'That sets up pricing: <strong>\u201CIf there\u2019s no driver, why am I paying more?\u201D</strong> The mental model is Roomba, not concierge \u2014 a discount anchor that collides with any drone surcharge unless the outcome (heat, window, spill-free handoff) is undeniable.'},
+{type:'anchor-scale',title:'Pricing: where drone crosses from fair to refused',scaleMin:'€0',scaleMax:'€10+',markers:[
+{position:12,amount:'\u20AC1.50\u2013\u20AC2',reaction:'Feels aligned with rider',tone:'pos'},
+{position:38,amount:'\u20AC3',reaction:'Default ceiling for most',tone:'neu'},
+{position:62,amount:'\u20AC3\u2013\u20AC5',reaction:'Stretch: peak ETA gaps, hosting, temp-sensitive',tone:'neu'},
+{position:88,amount:'\u20AC5+',reaction:'Most refuse unless extreme',tone:'neg'}],leftLabel:'Fair / expected',rightLabel:'Stretch / rejected'},
+{type:'verdict',text:'Commercial viability means <strong>closing the excitement-to-wallet gap</strong>: win on heat perception and packaging/handoff narrative before you sell the aircraft. Hold routine pricing at or below the ~\u20AC3 anchor; charge above only when rider pain and an outcome promise (time window, temperature, occasion) are obvious. Fix pre-checkout silence on cancellations so post-order reliability isn\u2019t wasted on a leaky funnel.'},
+{type:'source',url:'https://docs.google.com/presentation/d/1ju5Y_KmoH7LzI0y7_XAyYn9631Jcs4WZ6llIvHa0fVY/edit'}]},{tag:'International',title:'In the UAE, delivery is daily infrastructure — growth is won through frequency',author:'Jamie',date:'January 2026',statValue:'daily',statContext:'UAE consumers treat food delivery as daily infrastructure rather than an occasional convenience.',findings:[{text:'<strong>Delivery is infrastructure, not indulgence.</strong> Growth depends on frequency rather than brand affinity alone.'},{text:'<strong>Speed and value are table stakes.</strong> The bigger gap is cultural relevance: local food, Arabic-friendly discovery.'},{text:'<strong>Everyday meals are the next battleground.</strong> Removing decision fatigue is where the growth opportunity lies.'},{text:'<strong>Cultural relevance gap exists.</strong> The app experience doesn\'t yet feel fully tuned to local tastes.'}],chart:{title:'UAE delivery usage frequency',bars:[{label:'Daily',value:34,display:'34%',primary:true},{label:'3-5x/week',value:42,display:'42%',primary:true},{label:'1-2x/week',value:18,display:'18%'},{label:'Occasional',value:6,display:'6%'}],caption:'Self-reported delivery frequency among UAE consumers. Immersion research, Jan 2026.'},quote:{text:"I order delivery probably five or six times a week. It's not a treat — it's just how we eat.",attr:'UAE consumer, 30, Dubai Marina'},narrative:'In a market where delivery is already habitual, the challenge isn\'t convincing people to order — it\'s becoming the default choice.',sourceUrl:'https://docs.google.com/presentation/d/1Aq43HtKYs-xI3pUrDZ9mO-KcPKiNTsKkGgmadlKXqNE/edit',customBlocks:[
+{type:'provocation',statement:'Most UAE lunches sit <strong>under AED 60</strong> \u2014 but Deliveroo is only in the set for <strong>44%</strong> of them.',insight:'Daily infrastructure means growth is <strong>habit and price band</strong>, not brand romance. The volume is in everyday meals \u2014 that is where the product must win.'},
+{type:'mosaic',title:'Who lives in the UAE \u2014 and who we\u2019re not yet reaching',tiles:[
+{pct:'~60%',label:'Asian',detail:'39% Indian, 17% Pakistani, 6% Filipino. Largest segment, lowest Deliveroo NPS. Staple cuisines underrepresented on-platform.'},
+{pct:'23%',label:'Arab Expat',detail:'Saudi, Egyptian, Kuwaiti, Syrian, Iraqi. Heavy Talabat use. Arabic search often fails even when items exist.'},
+{pct:'12%',label:'Emirati',detail:'Highest spend per order. Expect premium, curated experiences \u2014 not generic Western defaults.'},
+{pct:'6%',label:'Western',detail:'Strongest Deliveroo affinity today \u2014 but the smallest growth pool.'}]},
+{type:'voice',title:'In their words',quotes:[
+{text:'Everybody wants everything right now. There\u2019s no patience for anything here.',attr:'Female 33, UK Expat \u2014 UAE Consumer Immersion',wide:false},
+{text:'Spending 90 dirham seems crazy to me. That\u2019s a days worth of food.',attr:'UAE consumer \u2014 on everyday value',wide:true}]},
+{type:'anchor-scale',title:'Value zones to win everyday occasions',scaleMin:'AED 0',scaleMax:'AED 120+',markers:[
+{position:18,amount:'AED 15\u201325',reaction:'Individual meals \u2014 high frequency, deal-native',tone:'pos'},
+{position:48,amount:'AED 40\u201360',reaction:'Family / shared lunch \u2014 where \u201Cbelow 40 feels good\u201D meets household reality',tone:'neu'},
+{position:72,amount:'~\u2009AED 60',reaction:'Perceived MOV ceiling \u2014 above feels \u201Canother day of food\u201D',tone:'neu'},
+{position:90,amount:'AED 90+',reaction:'Premium treat territory \u2014 everyday volume lives below this',tone:'neg'}],leftLabel:'Everyday / high frequency',rightLabel:'Treat / selective'},
+{type:'deviations',title:'The broken flywheel: four levers that must move together',items:[
+{label:'Selection',desc:'Stock local staples on the occasions that repeat \u2014 not only premium Western discovery.',data:'Staples depth vs Talabat'},
+{label:'Discovery',desc:'Fix Arabic search and break out cuisines beyond generic regional buckets.',data:'Search + taxonomy'},
+{label:'Culture',desc:'Show up for Ramadan, Eid, Diwali, Onam \u2014 the calendar of belonging.',data:'Moments & meaning'},
+{label:'Value',desc:'Win in AED 15\u201325 and 40\u201360 zones \u2014 where lunch volume actually lives.',data:'Price architecture'}]},
+{type:'verdict',text:'UAE delivery is <strong>daily infrastructure</strong>: frequency, <strong>cultural relevance</strong>, and owning <strong>AED 15\u201325</strong> and <strong>40\u201360</strong> everyday meals beat affinity alone. <strong>Selection, discovery, culture, and value</strong> have to reinforce each other so defaults work for <strong>Asian and Arab expats</strong>, not only <strong>Western</strong> cohorts. Priorities: <strong>Arabic findability</strong>, <strong>cuisine nuance over \u201CMiddle Eastern\u201D</strong>, and product that <strong>reduces deliberation</strong> at the bands where lunch actually happens.'},
+{type:'source',url:'https://docs.google.com/presentation/d/1Aq43HtKYs-xI3pUrDZ9mO-KcPKiNTsKkGgmadlKXqNE/edit'}]},{tag:'Competitive Intel',title:'Keeta is resetting UAE expectations — making Deliveroo feel premium and effortful',author:'Jamie',date:'January 2026',statValue:'free',statContext:'Keeta uses default free-delivery cues and aggressive promos to reset consumer expectations in the UAE.',findings:[{text:'<strong>Aggressive promos reset expectations fast.</strong> Creating a new baseline that\'s hard to compete against.'},{text:'<strong>Product feels more locally tuned.</strong> Better address handling and stronger trust cues give Keeta an edge.'},{text:'<strong>Stripped-back UX reduces effort.</strong> By comparison, Deliveroo feels like more work for everyday orders.'},{text:'<strong>Thinner selection, but it doesn\'t matter yet.</strong> Price and convenience positioning wins everyday occasions.'}],chart:{title:'UAE consumer perception: Keeta vs Deliveroo',bars:[{label:'Value (Keeta)',value:82,display:'82%',primary:true},{label:'Value (Roo)',value:35,display:'35%'},{label:'Quality (Keeta)',value:41,display:'41%'},{label:'Quality (Roo)',value:73,display:'73%',primary:true}],caption:'Consumer perception scores, UAE competitor teardown, Dec 2025.'},quote:{text:"Keeta just feels easier for a quick dinner. Deliveroo is for when I want something special.",attr:'UAE consumer, 26, Abu Dhabi'},narrative:'Keeta isn\'t winning on restaurant quality — Deliveroo still leads there. But it\'s winning on the thing that matters most: making the everyday order feel effortless.',sourceUrl:'https://docs.google.com/presentation/d/1Kz69mOlY1v3CNDd9QVhfB5aieqBzIkHEsvSlmteNUaQ/edit',customBlocks:[
+{type:'provocation',statement:'<span class="pv-num">~50%</span> UAE brand awareness in <strong>two months</strong>\u2014with TOM parity vs Deliveroo while merchant density is still catching up.',insight:'This is not a soft launch: roughly <strong>$2.5M\u2013$2.8M</strong> estimated OOH across <strong>four</strong> coordinated flights (multi-week bursts), layered with 50% / 1-dirham hooks and a conversion-first product. The bet is that <strong>memory and habit</strong> move before catalogue depth does.'},
+{type:'quote',text:'The first promotion I saw then I downloaded the app was the one dirham deals which is unbeatable. No other platform here provides that kind of promotion. So this is the first impression of Keeta on me.',attr:'UAE consumer, AI interview\u2014on why Keeta cut through immediately'},
+{type:'teardown',title:'Surface-by-surface: where Keeta is ahead',surfaces:[
+{name:'Homepage',verdict:'Ahead',badge:'ahead',note:'Ultra-simple: 50%-off hero, cuisine tiles, one value carousel\u2014deliberate break from super-app clutter.'},
+{name:'Address',verdict:'Ahead',badge:'ahead',note:'Plus Codes + photo-based instructions; fixes UAE pin fragility vs brittle map-only flows (directionally ~20%+ drop-off risk where addressing breaks).'},
+{name:'Menu',verdict:'Ahead',badge:'ahead',note:'Full photo coverage, social proof badges, granular MENA taxonomy\u2014not a vague \u201CMiddle Eastern\u201D bucket.'},
+{name:'Checkout',verdict:'Ahead',badge:'ahead',note:'On-time promise, free delivery default, visible promos, unreachable-customer fallbacks\u2014fee psychology on the line.'},
+{name:'Post-Order',verdict:'Ahead',badge:'ahead',note:'Rich live feed, in-app chat with auto-translation, culturally tuned comms (e.g. Friday prayer delays).'},
+{name:'Selection',verdict:'Behind',badge:'behind',note:'Thinner restaurant density for now\u2014but everyday occasions are being won on conversion and price architecture first.'}]},
+{type:'gap',left:{sublabel:'Brand velocity',value:'~2 mo',label:'~50% UAE awareness; TOM parity despite early-stage supply'},right:{sublabel:'Inventory',value:'Thinner',label:'Merchant density still catching up\u2014yet habit and consideration are moving anyway'},context:'The open question for incumbents is whether trust earned screen-by-screen holds once Keeta fills out the long tail\u2014or whether the land grab already reset what \u201Cgood\u201D feels like on fees.'},
+{type:'tension',title:'The Plus fault line: when \u201Cfree delivery\u201D is the default elsewhere',zones:[
+{label:'Keeta\u2019s wedge',desc:'Free delivery as default\u2014not trapped behind a membership wall.',tone:'warn',example:'Reframes the question: \u201CWhy pay for delivery when I don\u2019t have to?\u201D'},
+{label:'Plus perception risk',desc:'If users anchor on fee comparison, Plus can shrink to a line-item battle.',tone:'warn',example:'\u201CFree > AED 29\u201D\u2014the membership advantage may feel narrower than intended.'},
+{label:'Strategic response space',desc:'Differentiation has to move up-stack: selection quality, reliability, recovery, and bundled value beyond the fee\u2014before Roo is judged only on delivery price.',tone:'good',example:'Win the journey, not the surcharge.'}]},
+{type:'verdict',text:'Keeta\u2019s UAE entry is a coordinated shock\u2014capital (multi-million OOH across repeated flights), psychology (50% off / 1-dirham hooks), and product craft (conversion UI, address trust, culturally tuned post-order comms)\u2014aimed at stealing consideration fast even while density lags. For Deliveroo, the strategic pressure is not only riders or restaurant count: it is whether default free delivery undercuts the Plus narrative before fee parity hollows membership meaning\u2014and whether trust earned on every screen of the journey can outlast a promo-led land grab.'},
+{type:'source',url:'https://docs.google.com/presentation/d/1Kz69mOlY1v3CNDd9QVhfB5aieqBzIkHEsvSlmteNUaQ/edit'}]},{tag:'New Verticals',title:"London diners feel the pain of table scarcity — Roo can help with 'notify me'",author:'Simon',date:'March 2026',statValue:'scarce',statContext:'London diners feel the pain of table scarcity. Research points to \'notify me\' alerts and per-person booking limits.',findings:[{text:'<strong>Table scarcity is a real pain point.</strong> London diners are frustrated by resellers and scalpers.'},{text:'<strong>\'Notify me\' is a high-value feature.</strong> Consumers responded strongly to alerts for hard-to-book restaurants.'},{text:'<strong>Per-person booking limits combat scalping.</strong> Building trust that the system is fair.'},{text:'<strong>London is different to UAE.</strong> London diners focus on scarcity and exclusivity — different value propositions.'}],chart:{title:'Most valued table booking features (London)',bars:[{label:'Notify me',value:81,display:'81%',primary:true},{label:'Anti-scalping',value:68,display:'68%',primary:true},{label:'Rewards tie-in',value:55,display:'55%'},{label:'Reviews',value:39,display:'39%'}],caption:'Feature ranking, London table booking research, Q1 2026.'},quote:{text:"I spent 45 minutes trying to get a reservation at Brat on a Friday. If Deliveroo could notify me when a table opens up, I'd use it instantly.",attr:'London diner, 29'},narrative:'London\'s opportunity is fundamentally about scarcity and fairness — solving a specific pain that existing platforms don\'t address.',sourceUrl:'https://docs.google.com/presentation/d/1SqmNZlIt13QSr9qz9XpgWS78GQHnZNdT6l-nMeVBhPQ/edit',customBlocks:[
+{type:'provocation',statement:'<span class="pv-num">81%</span> of London diners rank \u201Cnotify me\u201D as the top table-booking feature\u2014ahead of anti-scalping, rewards, or reviews.',insight:'Booking the hottest rooms already feels like ticketing: midnight refreshes, months-ahead drops, resellers. The opening isn\u2019t \u201Canother directory\u201D\u2014it\u2019s <strong>signal when something is actually free</strong>, <strong>alerts that beat the queue</strong>, and <strong>honest total cost before you commit</strong>.'},
+{type:'chart',title:'Most valued table booking features (London)',bars:[
+{label:'Notify me',value:81,display:'81%',primary:true},
+{label:'Anti-scalping limits',value:68,display:'68%',primary:true},
+{label:'Rewards tie-in',value:55,display:'55%'},
+{label:'Reviews in flow',value:39,display:'39%'}],caption:'What London diners want first is a ping when inventory moves\u2014not another browse experience. SevenRooms London, Q1 2026.'},
+{type:'voice',title:'In their words',quotes:[
+{text:'I spent 45 minutes trying to get a reservation at Brat on a Friday. If Deliveroo could notify me when a table opens up, I\u2019d use it instantly.',attr:'London diner, 29',wide:true},
+{text:'A waitlist isn\u2019t useful if we can\u2019t update availability in real time \u2014 we\u2019re juggling walk-ins, no-shows, and platforms that don\u2019t talk to each other.',attr:'London operator \u2014 merchant IDI (paraphrased)',wide:false}]},
+{type:'pain-matrix',title:'Where the pain lands',segments:['Londoners','UK non-Londoners','Int\u2019l tourists'],pains:[
+{label:'Advance booking',cells:[
+{intensity:'high',text:'Alarms, midnight refreshes, months-ahead planning\u2014top pain.'},
+{intensity:'med',text:'Less acute outside high-demand clusters.'},
+{intensity:'low',text:'Often accept limited availability as \u201Cvisiting London.\u201D'}]},
+{label:'Price transparency',cells:[
+{intensity:'high',text:'Menus, service, cover, deposits scattered\u2014no single \u201Ctrue\u201D total.'},
+{intensity:'high',text:'Same fragmentation\u2014hard to compare sit-down cost across venues.'},
+{intensity:'high',text:'Unfamiliar norms + hidden lines\u2014total cost is guesswork.'}]},
+{label:'App fragmentation',cells:[
+{intensity:'med',text:'3\u20134 apps per hunt; social adds another hop.'},
+{intensity:'low',text:'Fewer must-book venues\u2014less stack fatigue.'},
+{intensity:'high',text:'Google + unfamiliar platforms; +26pp more likely than Londoners to lean on Google.'}]},
+{label:'Scalping & fairness',cells:[
+{intensity:'high',text:'Resellers, bots, bulk holds\u2014viral spots can lock out a year.'},
+{intensity:'low',text:'Rare outside London\u2019s hottest tables.'},
+{intensity:'med',text:'Aware, shorter stays\u2014less time to fight it.'}]}]},
+{type:'narrative',text:'Most international visitors book restaurants <em>after</em> they arrive\u2014yet the city\u2019s trophy tables still behave like sold-out drops. That collision is why \u201Cno availability\u201D without a next-best <strong>time</strong>, <strong>table</strong>, or <strong>true price</strong> feels like the system is working against you\u2014not the calendar.'},
+{type:'verdict',text:'London isn\u2019t short on discovery; it\u2019s short on <strong>trustworthy inventory and honest economics</strong>. For Roo, the credible bundle is <strong>real-time availability</strong>, <strong>notify-me</strong> that merchants can actually honour, and <strong>transparent sit-down pricing</strong>\u2014so table scarcity stops reading as a rigged queue and starts reading as something people can navigate.'},
+{type:'source',url:'https://docs.google.com/presentation/d/1SqmNZlIt13QSr9qz9XpgWS78GQHnZNdT6l-nMeVBhPQ/edit'}]},{tag:'Brand Health',title:'UK brand preference stable — but Uber Eats is closing the gap fast',author:'Holly',date:'December 2025',statValue:'2.1',statContext:'The gap between Deliveroo and Uber Eats brand preference has narrowed to just 2.1 percentage points.',findings:[{text:'<strong>UK: Stable but the gap is closing.</strong> Uber Eats sees the strongest gains — narrowing to 2.1ppt.'},{text:'<strong>France: Deliveroo loses Inner Paris lead.</strong> Uber Eats has regained the lead in Inner Paris.'},{text:'<strong>Italy: Fragmented picture.</strong> Just Eat regains the BP lead nationally as Glovo softens.'},{text:'<strong>UAE: Pressure from all sides.</strong> Deliveroo sees declines as consumers reassess in response to Keeta.'}],chart:{title:'UK brand preference (Q4 2025)',bars:[{label:'Just Eat',value:74,display:'33.8%'},{label:'Deliveroo',value:62,display:'28.4%',primary:true},{label:'Uber Eats',value:58,display:'26.3%',primary:true}],caption:'YouGov Brand Preference, UK, Q4 2025.'},quote:{text:"I used to only use Deliveroo, but Uber Eats has the same restaurants now and they're usually cheaper.",attr:'YouGov panellist, 27, London'},narrative:'The Q4 brand data suggests Deliveroo\'s quality-led positioning is holding, but the moat is shrinking. Uber Eats is becoming \'good enough\' at a better price.',sourceUrl:'https://docs.google.com/document/d/1VAcvJ3pRdehg3O5OyJX5bLdBtpNZwzkyPja2euZGtJY/edit',customBlocks:[
+{type:'provocation',statement:'<span class="pv-num">2.1ppt</span> \u2014 the UK brand preference gap between Deliveroo and Uber Eats: <span class="pv-num">28.4%</span> vs <span class="pv-num">26.3%</span>.',insight:'The national headline still favours Roo, but the race is now thin enough that one bad quarter reads like a lead change.'},
+{type:'funnel-compare',title:'UK: transactions vs preference',brands:[{name:'Deliveroo',key:'roo',tint:'teal'},{name:'Uber Eats',key:'ue',tint:'orange'},{name:'Just Eat',key:'jet',tint:'blue'}],stages:[
+{label:'GTV share',values:{roo:30.5,ue:35.9,jet:33.7}},
+{label:'Brand preference',values:{roo:28.4,ue:26.3,jet:33.8}}],maxVal:36},
+{type:'narrative',text:'The fight is less and less one national number: it is splintering across cities, uneven UK regions, retail adjacency, and new entrants rewriting share.'},
+{type:'deviations',title:'Where the headline broke',items:[
+{label:'UK regions',desc:'London: Uber Eats leads BP at 40.1% (+3.3ppt QoQ). Elsewhere the map diverges sharply\u2014Roo +3.4ppt QoQ in the North West, \u20114.9ppt in Yorkshire.',data:'City vs region'},
+{label:'Inner Paris (BP)',desc:'Uber Eats regains the lead as UE rises +5.9ppt to 40.8% while Roo falls \u20112.6ppt to 35.6%.',data:'UE 40.8% vs Roo 35.6%'},
+{label:'Italy',desc:'Fragmented: Just Eat retakes the national BP lead (32.7%) as Glovo softens; city-level swings still matter.',data:'JE 32.7%'},
+{label:'UAE',desc:'Deliveroo BP slips (e.g. toward 6.1%) as Keeta builds fast (to ~9.8% BP)\u2014already ahead among Asian Expats; incumbents face CVP pressure.',data:'Keeta enters'}]},
+{type:'quote',text:'I used to only use Deliveroo, but Uber Eats has the same restaurants now and they\u2019re usually cheaper.',attr:'YouGov panellist, 27, London'},
+{type:'verdict',text:'Q4 is a story of a narrowing UK preference premium with uneven geography underneath, a Paris leadership flip, an Italian market still in motion as Glovo cools, and a UAE where Keeta is buying share fast. The through-line: competition has moved off a single national headline into regions, retail adjacency, and entrants that did not exist in the old scoreboard.'},
+{type:'source',url:'https://docs.google.com/document/d/1VAcvJ3pRdehg3O5OyJX5bLdBtpNZwzkyPja2euZGtJY/edit'}]},{tag:'Competitive Intel',title:'Savings dashboards are high-stakes audits — not habit builders',author:'Sannah',date:'December 2025',statValue:'1 in 8',statContext:'Only 1 in 8 users had ever proactively checked their UberOne savings dashboard.',findings:[{text:'<strong>Savings dashboards are audit tools.</strong> Users only check when already questioning whether to cancel.'},{text:'<strong>Mental anchors make numbers unpredictable.</strong> Users have internal expectations — actual numbers can disappoint even when good.'},{text:'<strong>Value is felt in the moment, not retrospectively.</strong> Users anchor to in-context events, not cumulative numbers.'},{text:'<strong>Showing a raw number is a gamble.</strong> The same savings figure triggered renewal in some and cancellation in others.'}],chart:{title:'User reaction to savings dashboard (UberOne)',bars:[{label:'Reassured',value:45,display:'45%',primary:true},{label:'Neutral',value:22,display:'22%'},{label:'Disappointed',value:33,display:'33%'}],caption:'n=8 depth interviews, Uber One savings research, Q4 2025.'},quote:{text:"It says I saved £100 this year. Is that a lot? I've paid £96 for the subscription. So I saved... four pounds?",attr:'UberOne subscriber, 31'},narrative:'This is a cautionary tale: a savings dashboard is as likely to trigger cancellation as retention. Value needs real-time communication, not retrospective accounting.',sourceUrl:'https://docs.google.com/presentation/d/1KOp0tcfoZ0ZO9ZaIV0BGIdHZVhw9LrYgbG8F7oMFqLc/edit',customBlocks:[
+{type:'provocation',statement:'<span class="pv-num">1 in 8</span> Uber One members ever opened savings without a nudge. For everyone else, value lives in the order \u2014 free delivery on a rough day \u2014 not on a year-end tally.',insight:'When the dashboard does surface, it behaves like an <strong>audit</strong>: people pull it up when they are already questioning the sub, not to build a habit.'},
+{type:'chart',title:'If they look, the ledger doesn\u2019t guarantee reassurance',bars:[
+{label:'Reassured',value:45,display:'45%',primary:true},
+{label:'Neutral',value:22,display:'22%'},
+{label:'Disappointed',value:33,display:'33%'}],caption:'Reactions split sharply \u2014 a headline savings view is as likely to sharpen doubt as to calm it (n=8, Uber One savings research, Q4 2025).'},
+{type:'voice',title:'Mental maths beats the on-screen total',quotes:[
+{text:'It says I saved \u00a3100 this year. Is that a lot? I\u2019ve paid \u00a396 for the subscription. So I saved\u2026 four pounds?',attr:'Uber One subscriber, 31',wide:true},
+{text:'I don\u2019t go looking for savings \u2014 I notice when delivery\u2019s free on a rubbish weather day. That\u2019s when it feels worth it.',attr:'Uber One member (paraphrased)',wide:false},
+{text:'If I\u2019m already annoyed about the price, I check the dashboard like I\u2019m gathering evidence.',attr:'Uber One member (paraphrased)',wide:false}]},
+{type:'anchor-scale',title:'Same \u00a396 headline, opposite verdict',scaleMin:'£0 saved',scaleMax:'£200+ saved',markers:[
+{position:22,amount:'\u00a396 saved',reaction:'\u201CAbout what I paid\u2014so what\u2019s the point?\u201D \u2192 exit risk',tone:'neg'},
+{position:78,amount:'\u00a396 saved',reaction:'\u201CThat\u2019s real money back\u201D \u2192 renew',tone:'pos'}],leftLabel:'Churn risk',rightLabel:'Retention'},
+{type:'verdict',text:'A savings dashboard is not a loyalty loop. Anchors and private expectations decide whether a number feels fair; the same figure has renewed some members and pushed others toward the door. Retrospective totals compete with in-the-moment value \u2014 treat any big dashboard investment as a retention gamble until Plus-specific evidence says otherwise.'},
+{type:'source',url:'https://docs.google.com/presentation/d/1KOp0tcfoZ0ZO9ZaIV0BGIdHZVhw9LrYgbG8F7oMFqLc/edit'}]}];
+
+/* ═══════════════════════════════════════════════════════ */
+/* STATE                                                   */
+/* ═══════════════════════════════════════════════════════ */
+let activeSection = 'headlines';
+let expandedSection = null;
+let currentIndex = -1;
+let isExpanded = false;
+let isAnimating = false;
+let mcObserver = null;
+
+/* ═══════════════════════════════════════════════════════ */
+/* SECTION SWITCHING                                       */
+/* ═══════════════════════════════════════════════════════ */
+function switchSection(id) {
+  if (isExpanded) return;
+  if (id === activeSection) return;
+
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const incoming = document.getElementById('section-' + id);
+  incoming.style.animation = 'none';
+  void incoming.offsetWidth;
+  incoming.style.animation = '';
+  incoming.classList.add('active');
+
+  document.querySelectorAll('.pill-nav button').forEach(b => {
+    b.classList.toggle('active', b.dataset.section === id);
+  });
+
+  moveIndicator();
+  const app = document.querySelector('.app');
+  app.scrollTop = 0;
+  document.querySelector('.topbar').classList.remove('scrolled');
+  activeSection = id;
+
+  if (id === 'headlines') initHeadlineCards();
+  if (id === 'more-research') initMoreResearchCards();
+  if (id === 'meet-customer') initMeetCustomer();
+}
+
+function moveIndicator() {
+  const nav = document.getElementById('pillNav');
+  const activeBtn = nav.querySelector('button.active');
+  const indicator = document.getElementById('pillIndicator');
+  if (!activeBtn) return;
+  const navRect = nav.getBoundingClientRect();
+  const btnRect = activeBtn.getBoundingClientRect();
+  indicator.style.width = btnRect.width + 'px';
+  indicator.style.transform = `translateX(${btnRect.left - navRect.left - 4}px)`;
+}
+
+/* ═══════════════════════════════════════════════════════ */
+/* CARD ENTRY ANIMATIONS                                   */
+/* ═══════════════════════════════════════════════════════ */
+function initHeadlineCards() {
+  document.querySelectorAll('.headline-card').forEach(c => c.classList.remove('entered'));
+  document.querySelectorAll('.headline-card').forEach((c, i) => {
+    setTimeout(() => c.classList.add('entered'), 80 + i * 80);
+  });
+}
+
+function initMoreResearchCards() {
+  document.querySelectorAll('.compact-card').forEach(c => c.classList.remove('entered'));
+  document.querySelectorAll('.compact-card').forEach((c, i) => {
+    setTimeout(() => c.classList.add('entered'), 80 + i * 70);
+  });
+}
+
+function initMeetCustomer() {
+  if (mcObserver) mcObserver.disconnect();
+  mcObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        animateMCElement(entry.target);
+        mcObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, root: document.querySelector('.app') });
+
+  document.querySelectorAll('#section-meet-customer .reveal').forEach(el => {
+    el.classList.remove('visible');
+    mcObserver.observe(el);
+  });
+}
+
+function animateMCElement(el) {
+  el.querySelectorAll('[data-count]').forEach(numEl => {
+    const target = parseFloat(numEl.dataset.count);
+    const isFloat = numEl.dataset.count.includes('.');
+    const duration = 900;
+    const start = performance.now();
+    function tick(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      const current = target * ease;
+      numEl.textContent = isFloat
+        ? current.toFixed(numEl.dataset.count.split('.')[1].length)
+        : Math.round(current);
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+  el.querySelectorAll('.cuisine-fill').forEach(bar => {
+    setTimeout(() => { bar.style.width = bar.dataset.width; }, 100);
+  });
+  el.querySelectorAll('.time-bar-fill').forEach(bar => {
+    setTimeout(() => { bar.style.height = bar.dataset.height; }, 100);
+  });
+  if (el.querySelector('#sparkline')) {
+    setTimeout(() => drawSparkline(), 200);
+  }
+}
+
+function drawSparkline() {
+  const data = [4.9,5.1,4.7,4.8,4.5,4.6,4.3,4.5,4.2,4.4,4.0,4.3,4.1,4.2,3.9,4.1,4.0,4.2,3.8,4.1,4.0,4.1,3.9,4.1];
+  const w = 500, h = 100, pad = 4;
+  const minV = Math.min(...data) - 0.3, maxV = Math.max(...data) + 0.3;
+  const pts = data.map((v, i) => {
+    const x = pad + (i / (data.length - 1)) * (w - pad * 2);
+    const y = pad + (1 - (v - minV) / (maxV - minV)) * (h - pad * 2);
+    return [x, y];
+  });
+  const line = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const area = line + ` L${pts[pts.length-1][0].toFixed(1)},${h} L${pts[0][0].toFixed(1)},${h} Z`;
+  const lineEl = document.getElementById('sparkLine');
+  const areaEl = document.getElementById('sparkArea');
+  lineEl.setAttribute('d', line);
+  areaEl.setAttribute('d', area);
+  const len = lineEl.getTotalLength();
+  lineEl.style.strokeDasharray = len;
+  lineEl.style.strokeDashoffset = len;
+  lineEl.style.opacity = '1';
+  lineEl.style.transition = `stroke-dashoffset 1.2s ${getComputedStyle(document.documentElement).getPropertyValue('--ease-out-expo')}`;
+  areaEl.style.opacity = '1';
+  areaEl.style.transition = 'opacity 0.8s 0.4s';
+  requestAnimationFrame(() => { lineEl.style.strokeDashoffset = '0'; });
+}
+
+/* ═══════════════════════════════════════════════════════ */
+/* EXPAND / COLLAPSE (shared by Headlines + More Research) */
+/* ═══════════════════════════════════════════════════════ */
+function getItems(section) {
+  return section === 'headlines' ? headlineItems : moreResearchItems;
+}
+
+function getCardSelector(section, index) {
+  if (section === 'headlines') return `.headline-card[data-index="${index}"]`;
+  return `.compact-card[data-index="${index}"]`;
+}
+
+function expandCard(section, index) {
+  if (isAnimating || isExpanded) return;
+  isAnimating = true;
+  expandedSection = section;
+  currentIndex = index;
+
+  const items = getItems(section);
+  const card = document.querySelector(getCardSelector(section, index));
+  const page = document.getElementById('expandingPage');
+  const item = items[index];
+  const isHero = card.classList.contains('hero');
+  const cr = card.getBoundingClientRect();
+
+  const isCompactExpand = section === 'more-research';
+  const startPad = section === 'headlines' && isHero ? 40 : section === 'headlines' ? 28 : 24;
+  const startPadCSSExpand = isCompactExpand ? '24px 28px' : startPad + 'px';
+  const startTitleSize = section === 'headlines' && isHero ? 22 : section === 'headlines' ? 18 : 17;
+  const startBg = section === 'headlines' && isHero ? 'oklch(94% 0.035 178)' : 'var(--surface-raised)';
+  const startBorderCol = section === 'headlines' && isHero ? 'oklch(88% 0.05 178)' : 'var(--border)';
+
+  page.innerHTML = `
+    <div class="ep-tag" style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:${isCompactExpand ? '6' : '10'}px;
+      transition:font-size 0.55s var(--ease-out-expo),margin-bottom 0.55s var(--ease-out-expo);">${item.tag}</div>
+    <div class="ep-title" style="font-weight:700;line-height:${isCompactExpand ? '1.3' : '1.25'};letter-spacing:${isCompactExpand ? '-0.01em' : '-0.015em'};color:var(--ink);font-size:${startTitleSize}px;
+      transition:font-size 0.55s var(--ease-out-expo),letter-spacing 0.55s var(--ease-out-expo),line-height 0.55s var(--ease-out-expo),max-width 0.55s var(--ease-out-expo);">${item.title}</div>
+    <div class="dd-body" id="ddBody"></div>
+  `;
+
+  page.style.cssText = `
+    position:fixed; display:flex; flex-direction:column; z-index:300;
+    top:${cr.top}px; left:${cr.left}px; width:${cr.width}px; height:${cr.height}px;
+    padding:${startPadCSSExpand}; background:${startBg};
+    border:1px solid ${startBorderCol}; border-radius:10px;
+    ${isCompactExpand ? 'border-left:5px solid oklch(68% 0.14 178);' : ''}
+    overflow:hidden;
+    transition-property:top,left,width,height,padding,background,border-color,border-radius,box-shadow,border-left-width,border-left-color;
+    transition-duration:0.55s; transition-timing-function:var(--ease-out-expo);
+  `;
+
+  card.style.opacity = '0';
+  document.getElementById('backdrop').classList.add('visible');
+
+  const vpW = window.innerWidth, vpH = window.innerHeight;
+  const targetW = Math.min(1060, vpW - 48);
+  const targetL = (vpW - targetW) / 2;
+
+  requestAnimationFrame(() => { requestAnimationFrame(() => {
+    page.style.top = '16px';
+    page.style.left = targetL + 'px';
+    page.style.width = targetW + 'px';
+    page.style.height = (vpH - 32) + 'px';
+    page.style.padding = '40px 48px';
+    page.style.background = 'var(--surface-raised)';
+    page.style.borderColor = 'var(--border)';
+    page.style.borderRadius = '12px';
+    page.style.boxShadow = '0 24px 80px oklch(18% 0.01 250 / 0.18), 0 8px 24px oklch(18% 0.01 250 / 0.08)';
+    if (isCompactExpand) {
+      page.style.borderLeftWidth = '1px';
+      page.style.borderLeftColor = 'var(--border)';
+    }
+    page.querySelector('.ep-title').style.fontSize = 'clamp(28px, 3.5vw, 38px)';
+    page.querySelector('.ep-title').style.letterSpacing = '-0.03em';
+    page.querySelector('.ep-title').style.lineHeight = '1.15';
+    page.querySelector('.ep-title').style.maxWidth = '22ch';
+    page.querySelector('.ep-tag').style.fontSize = '11px';
+    page.querySelector('.ep-tag').style.marginBottom = '12px';
+
+    setTimeout(() => {
+      page.style.overflowY = 'auto';
+      const body = document.getElementById('ddBody');
+      body.innerHTML = buildDeepDiveBody(expandedSection, currentIndex);
+      requestAnimationFrame(() => {
+        body.classList.add('visible');
+        setTimeout(() => animateBars(), 300);
+      });
+      isExpanded = true;
+      isAnimating = false;
+    }, 580);
+  }); });
+}
+
+function collapseCard() {
+  if (isAnimating || !isExpanded) return;
+  isAnimating = true;
+
+  const items = getItems(expandedSection);
+  const page = document.getElementById('expandingPage');
+  const card = document.querySelector(getCardSelector(expandedSection, currentIndex));
+  const item = items[currentIndex];
+  const isHero = card.classList.contains('hero');
+
+  document.getElementById('ddBody').classList.remove('visible');
+  document.getElementById('backdrop').classList.remove('visible');
+  card.style.opacity = '';
+
+  const cr = card.getBoundingClientRect();
+  const isCompact = expandedSection === 'more-research';
+  const startPad = expandedSection === 'headlines' && isHero ? 40 : expandedSection === 'headlines' ? 28 : 24;
+  const startPadCSS = isCompact ? '24px 28px' : startPad + 'px';
+  const startTitleSize = expandedSection === 'headlines' && isHero ? 22 : expandedSection === 'headlines' ? 18 : 17;
+  const startBg = expandedSection === 'headlines' && isHero ? 'oklch(94% 0.035 178)' : 'var(--surface-raised)';
+  const cardTitleEl = isCompact ? card.querySelector('.cc-title') : null;
+  const cardTitleWidth = cardTitleEl ? cardTitleEl.getBoundingClientRect().width : null;
+
+  const vpW = window.innerWidth, vpH = window.innerHeight;
+  const targetW = Math.min(1060, vpW - 48);
+  const targetL = (vpW - targetW) / 2;
+
+  page.innerHTML = `
+    <div class="ep-tag" style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:12px;
+      transition:font-size 0.55s var(--ease-out-expo),margin-bottom 0.55s var(--ease-out-expo);">${item.tag}</div>
+    <div class="ep-title" style="font-weight:700;line-height:1.15;letter-spacing:-0.03em;color:var(--ink);font-size:clamp(28px,3.5vw,38px);max-width:${cardTitleWidth ? '100%' : '22ch'};
+      transition:font-size 0.55s var(--ease-out-expo),letter-spacing 0.55s var(--ease-out-expo),line-height 0.55s var(--ease-out-expo),max-width 0.55s var(--ease-out-expo);">${item.title}</div>
+  `;
+
+  page.style.cssText = `
+    position:fixed; display:flex; flex-direction:column; z-index:300;
+    top:16px; left:${targetL}px; width:${targetW}px; height:${vpH - 32}px;
+    padding:40px 48px; background:var(--surface-raised);
+    border:1px solid var(--border); border-radius:12px; overflow:hidden;
+    box-shadow:0 24px 80px oklch(18% 0.01 250 / 0.18), 0 8px 24px oklch(18% 0.01 250 / 0.08);
+    transition-property:top,left,width,height,padding,background,border-color,border-radius,box-shadow,border-left-width,border-left-color;
+    transition-duration:0.55s; transition-timing-function:var(--ease-out-expo);
+  `;
+
+  requestAnimationFrame(() => { requestAnimationFrame(() => {
+    page.style.top = cr.top + 'px';
+    page.style.left = cr.left + 'px';
+    page.style.width = cr.width + 'px';
+    page.style.height = cr.height + 'px';
+    page.style.padding = startPadCSS;
+    page.style.background = startBg;
+    page.style.borderRadius = '10px';
+    page.style.boxShadow = '0 0 0 transparent';
+    if (isCompact) {
+      page.style.borderLeftWidth = '5px';
+      page.style.borderLeftColor = 'oklch(68% 0.14 178)';
+    }
+    const epTitle = page.querySelector('.ep-title');
+    epTitle.style.fontSize = startTitleSize + 'px';
+    epTitle.style.letterSpacing = isCompact ? '-0.01em' : '-0.015em';
+    epTitle.style.lineHeight = isCompact ? '1.3' : '1.25';
+    epTitle.style.maxWidth = cardTitleWidth ? cardTitleWidth + 'px' : 'none';
+    page.querySelector('.ep-tag').style.fontSize = '10px';
+    page.querySelector('.ep-tag').style.marginBottom = isCompact ? '6px' : '10px';
+
+    setTimeout(() => {
+      page.style.display = 'none';
+      isExpanded = false;
+      isAnimating = false;
+      expandedSection = null;
+      currentIndex = -1;
+    }, 560);
+  }); });
+}
+
+function navigateItem(dir) {
+  if (isAnimating) return;
+  isAnimating = true;
+  const items = getItems(expandedSection);
+  const body = document.getElementById('ddBody');
+  body.style.transition = 'transform 0.35s var(--ease-in-out), opacity 0.35s var(--ease-in-out)';
+  body.style.transform = dir === 'next' ? 'translateX(-50px)' : 'translateX(50px)';
+  body.style.opacity = '0';
+  setTimeout(() => {
+    const oldCard = document.querySelector(getCardSelector(expandedSection, currentIndex));
+    if (oldCard) oldCard.style.opacity = '';
+    currentIndex = dir === 'next' ? (currentIndex + 1) % items.length : (currentIndex - 1 + items.length) % items.length;
+    const newCard = document.querySelector(getCardSelector(expandedSection, currentIndex));
+    if (newCard) newCard.style.opacity = '0';
+    const item = items[currentIndex];
+    const page = document.getElementById('expandingPage');
+    page.querySelector('.ep-tag').textContent = item.tag;
+    page.querySelector('.ep-title').textContent = item.title;
+    body.innerHTML = buildDeepDiveBody(expandedSection, currentIndex);
+    body.style.transform = dir === 'next' ? 'translateX(50px)' : 'translateX(-50px)';
+    page.scrollTop = 0;
+    requestAnimationFrame(() => {
+      body.style.transform = 'translateX(0)';
+      body.style.opacity = '1';
+      body.classList.add('visible');
+      setTimeout(() => animateBars(), 200);
+      isAnimating = false;
+    });
+  }, 380);
+}
+
+function animateBars() {
+  document.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.width; });
+  document.querySelectorAll('.market-bar-fill').forEach(b => { b.style.width = b.dataset.width; });
+  document.querySelectorAll('.db-seg-fill').forEach(b => { b.style.width = b.dataset.width; });
+}
+
+function buildBlock(block) {
+  switch (block.type) {
+    case 'stat':
+      return `<div class="block-stat"><span class="big-number">${block.value}</span><p class="stat-context">${block.context}</p></div>`;
+    case 'findings':
+      return `<div class="block-findings"><h3>Key findings</h3><div class="findings-grid">${block.items.map((f,i) => `<div class="finding"><span class="finding-num">${String(i+1).padStart(2,'0')}</span><span class="finding-text">${f.text}</span></div>`).join('')}</div></div>`;
+    case 'intro':
+      return `<div class="block-intro"><span class="intro-accent">${block.accent}</span><p>${block.text}</p></div>`;
+    case 'market-cards': {
+      let cards = block.markets.map(m => `<div class="market-card"><span class="mc-name">${m.name}</span><span class="mc-stat">${m.stat}</span><span class="mc-stat-label">${m.statLabel}</span><p class="mc-finding">${m.finding}</p><p class="mc-quote">\u201C${m.quote}\u201D</p></div>`).join('');
+      let highlight = '';
+      if (block.highlight) {
+        const h = block.highlight;
+        highlight = `<div class="mc-highlight"><div class="mc-stat-group"><span class="mc-name">${h.name}</span><span class="mc-stat">${h.stat}</span><span class="mc-stat-label">${h.statLabel}</span></div><div class="mc-body"><p class="mc-finding">${h.finding}</p><p class="mc-quote">\u201C${h.quote}\u201D</p></div></div>`;
+      }
+      return `<div class="block-market-cards"><h3>${block.title}</h3><div class="mc-grid">${cards}${highlight}</div></div>`;
+    }
+    case 'barriers':
+      return `<div class="block-barriers"><h3>${block.title}</h3><div class="barriers-row">${block.barriers.map(b => `<div class="barrier-cell"><div class="bc-label">${b.label}</div><div class="bc-range">${b.range}</div><div class="bc-note">${b.note}</div></div>`).join('')}</div></div>`;
+    case 'mirror':
+      return `<div class="block-mirror"><h3>${block.title}</h3><div class="mirror-layout"><div class="mirror-side side-in"><div class="mirror-label">${block.leftLabel}</div>${block.leftItems.map(it => `<div class="mirror-item"><div class="mi-text">${it.text}</div><div class="mi-detail">${it.detail}</div></div>`).join('')}</div><div class="mirror-divider"></div><div class="mirror-side side-out"><div class="mirror-label">${block.rightLabel}</div>${block.rightItems.map(it => `<div class="mirror-item"><div class="mi-text">${it.text}</div><div class="mi-detail">${it.detail}</div></div>`).join('')}</div></div></div>`;
+    case 'landscape':
+      return `<div class="block-landscape"><div class="landscape-stats">${block.stats.map(s => `<div class="landscape-stat"><div class="ls-value">${s.value}</div><div class="ls-label">${s.label}</div></div>`).join('')}</div><p class="landscape-insight">${block.insight}</p></div>`;
+    case 'provocation':
+      return `<div class="block-provocation"><div class="pv-statement">${block.statement}</div><p class="pv-insight">${block.insight}</p></div>`;
+    case 'arena':
+      return `<div class="block-arena"><h3>${block.title}</h3><div class="arena-strip">${block.cells.map(c => `<div class="arena-cell"><div class="ac-value">${c.value}</div><div class="ac-label">${c.label}</div></div>`).join('')}</div>${block.context ? `<p class="arena-context">${block.context}</p>` : ''}</div>`;
+    case 'expectations':
+      return `<div class="block-expectations"><h3>${block.title}</h3><div class="exp-grid">${block.items.map(e => `<div class="exp-card"><div class="ec-stat">${e.stat}</div><div class="ec-label">${e.label}</div><div class="ec-desc">${e.desc}</div></div>`).join('')}</div></div>`;
+    case 'playbook':
+      return `<div class="block-playbook"><h3>${block.title}</h3><div class="playbook-cols">${block.columns.map(c => `<div class="playbook-col${c.tint ? ' pc-tint-' + c.tint : ''}"><div class="pc-label">${c.label}</div>${c.items.map(it => `<div class="pc-item">${it}</div>`).join('')}</div>`).join('')}</div></div>`;
+    case 'contrast':
+      return `<div class="block-contrast"><h3>${block.title}</h3><div class="contrast-split"><div class="contrast-side ct-smooth"><div class="ct-label">${block.smooth.label}</div><div class="ct-text">${block.smooth.text}</div></div><div class="contrast-side ct-deviated"><div class="ct-label">${block.deviated.label}</div><div class="ct-text">${block.deviated.text}</div><div class="ct-stats">${block.deviated.stats.map(s => `<div class="ct-stat-row"><span class="ct-stat-val">${s.value}</span><span class="ct-stat-desc">${s.desc}</span></div>`).join('')}</div></div></div>${block.context ? `<p class="contrast-context">${block.context}</p>` : ''}</div>`;
+    case 'deviations':
+      return `<div class="block-deviations"><h3>${block.title}</h3><div class="deviations-list">${block.items.map(d => `<div class="deviation-item"><div><div class="dv-label">${d.label}</div><div class="dv-desc">${d.desc}</div></div><div class="dv-data">${d.data}</div></div>`).join('')}</div></div>`;
+    case 'gap':
+      return `<div class="block-gap"><div class="gap-pair"><div class="gap-metric"><div class="gm-sublabel">${block.left.sublabel}</div><div class="gm-value">${block.left.value}</div><div class="gm-label">${block.left.label}</div></div><div class="gap-vs">vs</div><div class="gap-metric"><div class="gm-sublabel">${block.right.sublabel}</div><div class="gm-value">${block.right.value}</div><div class="gm-label">${block.right.label}</div></div></div>${block.context ? `<p class="gap-context">${block.context}</p>` : ''}</div>`;
+    case 'delta':
+      return `<div class="block-delta"><h3>${block.title}</h3><div class="delta-cards">${block.cards.map(c => `<div class="delta-card"><div class="dc-shift"><span class="dc-from">${c.from}</span><span class="dc-arrow">\u2192</span><span class="dc-to">${c.to}</span></div><div class="dc-label">${c.label}</div></div>`).join('')}</div></div>`;
+    case 'ripple':
+      return `<div class="block-ripple"><div class="ripple-cause"><div class="rc-label">${block.cause}</div><div class="rc-data">${block.causeData}</div></div><div class="ripple-effects">${block.effects.map(e => `<div class="ripple-effect"><div><div class="re-label">${e.label}</div><div class="re-data">${e.data}</div></div><div class="re-desc">${e.desc}</div></div>`).join('')}</div></div>`;
+    case 'question':
+      return `<div class="block-question"><div class="bq-text">${block.question}</div><p class="bq-context">${block.context}</p></div>`;
+    case 'tension':
+      return `<div class="block-tension"><h3>${block.title}</h3><div class="tension-bar"><div class="tb-seg tb-warn-l"></div><div class="tb-seg tb-good"></div><div class="tb-seg tb-warn-r"></div></div><div class="tension-zones">${block.zones.map(z => `<div class="tension-zone${z.tone === 'good' ? ' tz-good' : ''}""><div class="tz-label">${z.label}</div><div class="tz-desc">${z.desc}</div>${z.example ? `<div class="tz-example">${z.example}</div>` : ''}</div>`).join('')}</div></div>`;
+    case 'verdict':
+      return `<div class="block-verdict"><p>${block.text}</p></div>`;
+    case 'cascade':
+      return `<div class="block-cascade"><h3>${block.title}</h3><div class="cascade-steps">${block.steps.map((s,i) => `<div class="cascade-step"><span class="cs-num">${String(i+1).padStart(2,'0')}</span><div class="cs-label">${s.label}</div><div class="cs-mechanism">${s.mechanism}</div><div class="cs-quote-wrap"><div class="cs-quote">\u201C${s.quote}\u201D</div><div class="cs-attr">${s.attr}</div></div></div>`).join('')}</div></div>`;
+    case 'journey':
+      return `<div class="block-journey"><h3>${block.title}</h3><div class="journey-track">${block.stages.map((s,i) => `<div class="journey-stage js-${s.tone}"><span class="js-num">${s.num}</span><div class="js-label">${s.label}</div><div class="js-stat">${s.stat}</div><div class="js-stat-label">${s.statLabel}</div><div class="js-note">${s.note}</div>${i < block.stages.length - 1 ? '<div class="journey-connector"></div>' : ''}</div>`).join('')}</div></div>`;
+    case 'pains':
+      return `<div class="block-pains"><h3>${block.title}</h3><div class="pain-list">${block.items.map((p,i) => `<div class="pain-item"><span class="pi-num">${String(i+1).padStart(2,'0')}</span><div class="pi-body"><div class="pi-title">${p.title}</div><div class="pi-desc">${p.desc}</div><div class="pi-stat">${p.stat}</div></div><span class="pi-tag tag-${p.tag}">${p.tag}</span></div>`).join('')}</div></div>`;
+    case 'voice':
+      return `<div class="block-voice"><h3>${block.title}</h3><div class="voice-grid">${block.quotes.map(q => `<div class="voice-card${q.wide ? ' vc-wide' : ''}"><div class="vc-quote">\u201C${q.text}\u201D</div><div class="vc-attr">${q.attr}</div></div>`).join('')}</div></div>`;
+    case 'touchpoint-audit':
+      return `<div class="block-touchpoint-audit"><h3>${block.title}</h3><div class="ta-grid">${block.touchpoints.map(t => `<div class="ta-row${t.tone ? ' ta-t-' + t.tone : ''}"><div class="ta-surface">${t.surface}</div><span class="ta-badge ta-${t.badge}">${t.verdict}</span><div class="ta-note">${t.note}</div></div>`).join('')}</div>${block.footnote ? `<p class="ta-footnote">${block.footnote}</p>` : ''}</div>`;
+    case 'discovery-trio':
+      return `<div class="block-discovery-trio"><h3>${block.title}</h3><div class="dt-grid">${block.items.map(it => `<div class="dt-cell dt-${it.tone}"><div class="dt-value">${it.value}</div><div class="dt-label">${it.label}</div><div class="dt-hint">${it.hint}</div></div>`).join('')}</div>${block.footnote ? `<p class="dt-footnote">${block.footnote}</p>` : ''}</div>`;
+    case 'sample-stack':
+      return `<div class="block-sample-stack"><h3>${block.title}</h3><div class="ss-rows">${block.rows.map(r => `<div class="ss-row"><div><div class="ss-label">${r.label}</div><div class="ss-sub">${r.sub}</div></div><div class="ss-value">${r.value}</div></div>`).join('')}</div>${block.footnote ? `<p class="ss-footnote">${block.footnote}</p>` : ''}</div>`;
+    case 'direct-breakdown':
+      return `<div class="block-direct-breakdown"><h3>${block.title}</h3><div class="db-head"><div class="db-headline">${block.headline}</div><div class="db-headline-label">${block.headlineLabel}</div>${block.commentN != null ? `<div class="db-comments">${block.commentN} ${block.commentLabel || 'comments'}</div>` : ''}</div><div class="db-stack">${block.segments.map(s => `<div class="db-seg-row"><span class="db-seg-pct">${s.pct}%</span><div class="db-seg-track"><div class="db-seg-fill" style="width:0%" data-width="${s.pct}%"></div></div><span class="db-seg-label">${s.label}</span></div>`).join('')}</div>${block.note ? `<p class="db-note">${block.note}</p>` : ''}</div>`;
+    case 'chart':
+      return `<div class="block-chart"><h3>${block.title}</h3><div class="chart-container"><div class="bar-chart">${block.bars.map(b => `<div class="bar-row"><span class="bar-label">${b.label}</span><div class="bar-track"><div class="bar-fill ${b.primary?'':'secondary'}" style="width:0%" data-width="${b.value}%"></div></div><span class="bar-value">${b.display}</span></div>`).join('')}</div><p class="chart-caption">${block.caption}</p></div></div>`;
+    case 'quote':
+      return `<div class="block-quote"><span class="quote-mark">&ldquo;</span><blockquote>${block.text}</blockquote><p class="quote-attr">${block.attr}</p></div>`;
+    case 'narrative':
+      return `<div class="block-narrative"><p>${block.text}</p></div>`;
+    case 'source':
+      return `<div class="block-source"><a href="${block.url}" class="source-link" target="_blank">Read the full report <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>`;
+    case 'survey-branch':
+      return `<div class="block-survey-branch"><h3>${block.title}</h3><div class="sb-flow">${block.stages.map((s,i) => `<div class="sb-stage"><div class="sb-num">STAGE ${i+1}</div><div class="sb-label">${s.label}</div><div class="sb-desc">${s.desc}</div></div>`).join('')}</div><div class="sb-split-label">${block.splitLabel||'Randomised 50/50 assignment'}</div><div class="sb-split">${block.branches.map(b => `<div class="sb-branch"><div class="sb-pct">${b.pct}</div><div class="sb-label">${b.label}</div><div class="sb-desc">${b.desc}</div></div>`).join('')}</div></div>`;
+    case 'temp-compare':
+      return `<div class="block-temp-compare"><h3>${block.title}</h3><div class="tc-pair">${block.bars.map(b => `<div class="tc-col"><div class="tc-value">${b.value}${b.unit}</div><div class="tc-bar-wrap"><div class="tc-fill tc-${b.tone}" style="height:${Math.round((b.value/b.max)*200)}px"></div></div><div class="tc-label">${b.label}</div><div class="tc-note">${b.note}</div></div>`).join('')}</div>${block.context?`<p class="tc-context">${block.context}</p>`:''}</div>`;
+    case 'mosaic':
+      return `<div class="block-mosaic"><h3>${block.title}</h3><div class="mosaic-grid">${block.tiles.map(t => `<div class="mosaic-tile"><div><div class="mt-pct">${t.pct}</div><div class="mt-label">${t.label}</div></div><div class="mt-detail">${t.detail}</div></div>`).join('')}</div></div>`;
+    case 'teardown':
+      return `<div class="block-teardown"><h3>${block.title}</h3><div class="td-strip">${block.surfaces.map(s => `<div class="td-card"><span class="td-badge td-${s.badge}">${s.verdict}</span><div class="td-surface">${s.name}</div><div class="td-note">${s.note}</div></div>`).join('')}</div></div>`;
+    case 'pain-matrix':
+      return `<div class="block-pain-matrix"><h3>${block.title}</h3><table class="pm-table"><thead><tr><th></th>${block.segments.map(s => `<th>${s}</th>`).join('')}</tr></thead><tbody>${block.pains.map(p => `<tr><td>${p.label}</td>${p.cells.map(c => `<td><span class="pm-dot pm-${c.intensity}"></span><span class="pm-cell-text">${c.text}</span></td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    case 'funnel-compare':
+      return `<div class="block-funnel-compare"><h3>${block.title}</h3><div class="fc-row"><div class="fc-label"></div>${block.brands.map(b => `<div class="fc-header">${b.name}</div>`).join('')}</div>${block.stages.map(s => `<div class="fc-row"><div class="fc-label">${s.label}</div>${block.brands.map(b => {const v=s.values[b.key]; return `<div class="fc-cell"><div class="fc-bar fc-tint-${b.tint}" style="width:${Math.round(v/block.maxVal*100)}%">${v}%</div></div>`;}).join('')}</div>`).join('')}</div>`;
+    case 'anchor-scale':
+      return `<div class="block-anchor-scale"><h3>${block.title}</h3><div class="as-track">${block.scaleMin?`<span class="as-end-min">${block.scaleMin}</span>`:''}${block.scaleMax?`<span class="as-end-max">${block.scaleMax}</span>`:''}${block.markers.map(m => `<div class="as-marker" style="left:${m.position}%"><div class="as-dot as-${m.tone}"></div><div class="as-amount">${m.amount}</div><div class="as-reaction">${m.reaction}</div></div>`).join('')}</div><div class="as-labels"><span>${block.leftLabel}</span><span>${block.rightLabel}</span></div></div>`;
+    default: return '';
+  }
+}
+
+function buildDeepDiveBody(section, index) {
+  const items = getItems(section);
+  const item = items[index];
+  const prevI = (index - 1 + items.length) % items.length;
+  const nextI = (index + 1) % items.length;
+  const backLabel = section === 'headlines' ? 'Back to headlines' : 'Back to more research';
+
+  const header = `
+    <button class="back-btn" onclick="collapseCard()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+      ${backLabel}
+    </button>
+    <div class="dd-meta"><span>${item.author}</span><span>${item.date}</span></div>`;
+
+  const nav = `
+    <div class="item-nav">
+      <button class="item-nav-btn" onclick="navigateItem('prev')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+        <div class="nav-text"><span class="nav-label">Previous</span><br><span class="nav-title">${items[prevI].title.substring(0,40)}…</span></div>
+      </button>
+      <span class="item-counter">${index+1} / ${items.length}</span>
+      <button class="item-nav-btn" onclick="navigateItem('next')">
+        <div class="nav-text"><span class="nav-label">Next</span><br><span class="nav-title">${items[nextI].title.substring(0,40)}…</span></div>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>`;
+
+  if (item.customBlocks) {
+    return header + item.customBlocks.map(b => buildBlock(b)).join('') + nav;
+  }
+
+  return header + `
+    <div class="block-stat"><span class="big-number">${item.statValue}</span><p class="stat-context">${item.statContext}</p></div>
+    <div class="block-findings"><h3>Key findings</h3><div class="findings-grid">${item.findings.map((f,i) => `<div class="finding"><span class="finding-num">${String(i+1).padStart(2,'0')}</span><span class="finding-text">${f.text}</span></div>`).join('')}</div></div>
+    <div class="block-chart"><h3>${item.chart.title}</h3><div class="chart-container"><div class="bar-chart">${item.chart.bars.map(b => `<div class="bar-row"><span class="bar-label">${b.label}</span><div class="bar-track"><div class="bar-fill ${b.primary?'':'secondary'}" style="width:0%" data-width="${b.value}%"></div></div><span class="bar-value">${b.display}</span></div>`).join('')}</div><p class="chart-caption">${item.chart.caption}</p></div></div>
+    <div class="block-quote"><span class="quote-mark">&ldquo;</span><blockquote>${item.quote.text}</blockquote><p class="quote-attr">${item.quote.attr}</p></div>
+    <div class="block-narrative"><p>${item.narrative}</p></div>
+    <div class="block-source"><a href="${item.sourceUrl}" class="source-link" target="_blank">Read the full report <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>` + nav;
+}
+
+/* ═══════════════════════════════════════════════════════ */
+/* INIT                                                    */
+/* ═══════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const indicator = document.getElementById('pillIndicator');
+  indicator.style.transition = 'none';
+  moveIndicator();
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      indicator.style.transition = '';
+    });
+  });
+  initHeadlineCards();
+
+  const app = document.querySelector('.app');
+  const topbar = document.querySelector('.topbar');
+  let scrolled = false;
+  app.addEventListener('scroll', () => {
+    const isScrolled = app.scrollTop > 20;
+    if (isScrolled !== scrolled) {
+      scrolled = isScrolled;
+      topbar.classList.toggle('scrolled', scrolled);
+    }
+  }, { passive: true });
+});
+</script>
+</body>
+</html>
