@@ -852,22 +852,24 @@
     .fc-bar.fc-tint-blue { background: oklch(93% 0.04 250); color: oklch(50% 0.12 250); }
     .fc-header { font-size: 12px; font-weight: 600; color: var(--ink); padding: 14px 16px; background: var(--surface-raised); text-align: center; }
 
-    /* ── BESPOKE: Anchor scale (m6 UberOne Savings) ── */
+    /* ── BESPOKE: Anchor scale ── */
     .block-anchor-scale { margin-bottom: 48px; }
     .block-anchor-scale h3 { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 24px; }
-    .as-track { position: relative; height: 12px; background: linear-gradient(to right, oklch(88% 0.1 155), oklch(95% 0.02 90) 50%, oklch(88% 0.1 25)); border-radius: 6px; margin: 48px 72px 140px; }
-    .as-marker { position: absolute; top: -40px; transform: translateX(-50%); text-align: center; width: 0; }
-    .as-dot { width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--border); position: absolute; top: 0; left: 0; transform: translateX(-50%); }
+    .as-track { position: relative; height: 12px; background: linear-gradient(to right, oklch(88% 0.1 155), oklch(95% 0.02 90) 50%, oklch(88% 0.1 25)); border-radius: 6px; margin: 110px 72px 110px; }
+    .as-marker { position: absolute; top: 0; width: 0; }
+    .as-dot { width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--border); position: absolute; top: -3px; left: 0; transform: translateX(-50%); z-index: 2; }
     .as-dot.as-neg { background: oklch(65% 0.15 25); }
     .as-dot.as-neu { background: oklch(70% 0.08 90); }
     .as-dot.as-pos { background: oklch(60% 0.15 155); }
-    .as-amount { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; color: var(--ink); white-space: nowrap; position: absolute; top: 26px; left: 0; transform: translateX(-50%); }
-    .as-stem { width: 1px; height: 16px; background: var(--border); margin: 4px auto; }
-    .as-reaction { font-size: 10px; color: var(--ink-3); line-height: 1.4; width: max-content; max-width: 130px; position: absolute; top: 64px; left: 0; transform: translateX(-50%); text-align: center; white-space: normal; }
-    .as-edge-right .as-amount,
-    .as-edge-right .as-reaction { transform: translateX(-100%); left: 0; text-align: right; }
-    .as-edge-left .as-amount,
-    .as-edge-left .as-reaction { transform: none; left: 0; text-align: left; }
+    .as-text { position: absolute; left: 0; transform: translateX(-50%); text-align: center; display: flex; flex-direction: column; gap: 4px; width: max-content; max-width: 140px; }
+    .as-amount { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; color: var(--ink); white-space: nowrap; }
+    .as-reaction { font-size: 10px; color: var(--ink-3); line-height: 1.4; }
+    .as-below .as-text { top: 20px; }
+    .as-above .as-text { bottom: 20px; }
+    .as-edge-right .as-text { transform: translateX(-100%); text-align: right; }
+    .as-edge-right.as-above .as-text { transform: translateX(-100%); }
+    .as-edge-left .as-text { transform: none; text-align: left; }
+    .as-edge-left.as-above .as-text { transform: none; }
     .as-end-min, .as-end-max { position: absolute; top: 50%; transform: translateY(-50%); font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600; color: var(--ink-3); white-space: nowrap; }
     .as-end-min { right: calc(100% + 10px); }
     .as-end-max { left: calc(100% + 10px); }
@@ -1372,8 +1374,9 @@
       .sb-stage:nth-child(3) { border-radius: 0 0 0 10px; }
       .sb-stage:nth-child(4) { border-radius: 0 0 10px 0; }
 
-      .as-track { margin: 48px 40px 140px; }
+      .as-track { margin: 100px 40px 100px; }
       .as-labels { padding: 0 40px; }
+      .as-text { max-width: 120px; }
 
       .heatmap { overflow-x: auto; -webkit-overflow-scrolling: touch; min-width: 0; }
 
@@ -1450,16 +1453,16 @@
       .fc-cell { padding: 8px 16px; }
       .pm-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-      .as-track { margin: 40px 32px 200px; }
+      .as-track { margin: 80px 28px 80px; }
       .as-end-min { right: calc(100% + 6px); font-size: 8px; }
       .as-end-max { left: calc(100% + 6px); font-size: 8px; }
-      .as-labels { padding: 0 32px; font-size: 8px; letter-spacing: 0.04em; }
-      .as-reaction { max-width: 70px; font-size: 8px; top: 48px; line-height: 1.3; }
-      .as-amount { font-size: 9px; top: 20px; }
-      .as-dot { width: 12px; height: 12px; border-width: 2px; }
-      .as-marker { top: -28px; }
-      .as-stagger .as-amount { top: 100px; }
-      .as-stagger .as-reaction { top: 118px; }
+      .as-labels { padding: 0 28px; font-size: 8px; letter-spacing: 0.04em; }
+      .as-text { max-width: 80px; gap: 2px; }
+      .as-reaction { font-size: 8px; line-height: 1.3; }
+      .as-amount { font-size: 9px; }
+      .as-dot { width: 14px; height: 14px; border-width: 2px; top: -1px; }
+      .as-below .as-text { top: 18px; }
+      .as-above .as-text { bottom: 18px; }
 
       .block-quote { padding: 24px 20px; }
       .block-quote .quote-mark { left: 20px; }
@@ -2501,8 +2504,8 @@ function buildBlock(block) {
     case 'anchor-scale':
       return `<div class="block-anchor-scale"><h3>${block.title}</h3><div class="as-track">${block.scaleMin?`<span class="as-end-min">${block.scaleMin}</span>`:''}${block.scaleMax?`<span class="as-end-max">${block.scaleMax}</span>`:''}${block.markers.map((m, i) => {
         const edge = m.position <= 15 ? 'as-edge-left' : m.position >= 70 ? 'as-edge-right' : '';
-        const stagger = i % 2 === 1 ? 'as-stagger' : '';
-        return `<div class="as-marker ${edge} ${stagger}" style="left:${m.position}%"><div class="as-dot as-${m.tone}"></div><div class="as-amount">${m.amount}</div><div class="as-reaction">${m.reaction}</div></div>`;
+        const side = i % 2 === 0 ? 'as-above' : 'as-below';
+        return `<div class="as-marker ${edge} ${side}" style="left:${m.position}%"><div class="as-dot as-${m.tone}"></div><div class="as-text"><div class="as-amount">${m.amount}</div><div class="as-reaction">${m.reaction}</div></div></div>`;
       }).join('')}</div><div class="as-labels"><span>${block.leftLabel}</span><span>${block.rightLabel}</span></div></div>`;
     default: return '';
   }
