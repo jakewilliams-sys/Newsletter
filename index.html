@@ -1322,7 +1322,10 @@
     /* RESPONSIVE: TABLET (max-width: 768px)              */
     /* ═══════════════════════════════════════════════════ */
     @media (max-width: 768px) {
-      .topbar { padding: 0 24px; }
+      .topbar { padding: 0 20px; }
+      .topbar-brand { font-size: 12px; }
+      .topbar-brand span { font-size: 11px; margin-left: 6px; }
+      .topbar-logo svg { width: 24px; height: 26px; }
       .content { padding: 32px 24px; }
       .story { padding: 40px 24px 100px; }
 
@@ -1380,15 +1383,25 @@
       .mosaic-tile:nth-child(1) { flex: 1 1 100%; }
 
       .overview-header { flex-direction: column; gap: 8px; }
+
+      .chart-container { padding: 24px 20px; }
+      .bar-label { font-size: 12px; }
+      .deviation-item .dv-data { white-space: normal; }
     }
 
     /* ═══════════════════════════════════════════════════ */
     /* RESPONSIVE: MOBILE (max-width: 480px)              */
     /* ═══════════════════════════════════════════════════ */
     @media (max-width: 480px) {
-      .topbar { padding: 0 16px; height: 56px; }
+      .topbar {
+        padding: 0 12px; height: 52px;
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+      .topbar-brand { display: none; }
+      .topbar-logo { display: none; }
       .topbar.scrolled { height: 48px; }
-      .pill-nav button { padding: 8px 14px; font-size: 12px; }
+      .pill-nav button { padding: 7px 12px; font-size: 11px; }
       .content { padding: 24px 16px; }
       .story { padding: 32px 16px 80px; }
 
@@ -1424,12 +1437,14 @@
       .fc-cell { padding: 8px 16px; }
       .pm-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-      .as-track { margin: 48px 16px 140px; }
-      .as-end-min, .as-end-max { position: static; transform: none; display: block; text-align: center; margin-bottom: 4px; }
-      .as-end-min { position: absolute; top: -24px; left: 0; }
-      .as-end-max { position: absolute; top: -24px; right: 0; }
-      .as-labels { padding: 0 16px; }
-      .as-reaction { max-width: 100px; font-size: 9px; }
+      .as-track { margin: 48px 8px 160px; }
+      .as-end-min { right: calc(100% + 4px); font-size: 8px; }
+      .as-end-max { left: calc(100% + 4px); font-size: 8px; }
+      .as-labels { padding: 0 8px; font-size: 9px; }
+      .as-reaction { max-width: 80px; font-size: 8px; top: 54px; }
+      .as-amount { font-size: 10px; top: 22px; }
+      .as-dot { width: 14px; height: 14px; }
+      .as-marker { top: -32px; }
 
       .block-quote { padding: 24px 20px; }
       .block-quote .quote-mark { left: 20px; }
@@ -1437,6 +1452,25 @@
       .block-provocation .pv-statement { max-width: none; }
       .block-narrative { max-width: none; }
       .block-stat { flex-direction: column; gap: 12px; }
+
+      .chart-container { padding: 20px 16px; }
+      .bar-label { font-size: 11px; }
+      .bar-value { font-size: 11px; }
+      .chart-caption { font-size: 11px; }
+      .tc-pair { gap: 24px; padding: 24px 0; }
+      .tc-value { font-size: 20px; }
+      .tc-note { font-size: 11px; max-width: 90px; }
+      .tc-bar-wrap { width: 44px; }
+
+      .deviation-item { grid-template-columns: 1fr; gap: 8px; }
+      .deviation-item .dv-data { white-space: normal; }
+      .deviations-list { gap: 1px; }
+
+      .db-seg-row { grid-template-columns: 36px 1fr 36px; }
+
+      .gap-metric .gm-value { font-size: clamp(24px, 4vw, 32px); }
+
+      .mosaic-tile { padding: 16px; }
 
       .evidence { padding: 24px 20px; }
       .voice { padding: 20px 24px; }
