@@ -2072,6 +2072,13 @@ let currentIndex = -1;
 let isExpanded = false;
 let isAnimating = false;
 let expandedFromCard = null;
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && isExpanded && !isAnimating) {
+    e.preventDefault();
+    collapseCard();
+  }
+});
 let mcObserver = null;
 
 /* ═══════════════════════════════════════════════════════ */
@@ -2583,11 +2590,6 @@ document.addEventListener('DOMContentLoaded', () => {
       topbar.classList.toggle('scrolled', scrolled);
     }
   }, { passive: true });
-
-  /* ── Escape key ── */
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && isExpanded) collapseCard();
-  });
 
   /* ── Swipe gestures ── */
   const sections = ['headlines', 'more-research', 'meet-customer'];
