@@ -1331,11 +1331,9 @@
 
       .headlines-grid { grid-template-columns: 1fr; }
       .headline-card.hero {
-        flex-direction: column; gap: 20px; padding: 28px 24px;
-        align-items: flex-start;
+        flex-direction: row; gap: 24px; padding: 28px 24px;
       }
       .headline-card.hero .stat-chip .stat-value { font-size: 36px; }
-      .headline-card.hero .stat-chip { align-items: flex-start; }
 
       .card-content { padding: 20px 22px; gap: 16px; }
       .card-right { gap: 16px; }
@@ -1384,9 +1382,13 @@
 
       .overview-header { flex-direction: column; gap: 8px; }
 
-      .chart-container { padding: 24px 20px; }
+      .chart-container { padding: 24px 20px; overflow: hidden; }
       .bar-label { font-size: 12px; }
+      .bar-row { grid-template-columns: 80px 1fr 44px; }
       .deviation-item .dv-data { white-space: normal; }
+      .block-funnel-compare { overflow-x: auto; }
+      .block-pain-matrix { overflow-x: auto; }
+      #expandingPage { overflow-x: hidden; }
     }
 
     /* ═══════════════════════════════════════════════════ */
@@ -1407,14 +1409,19 @@
 
       .headline-card { padding: 20px; min-height: 140px; }
       .headline-card h2 { font-size: 16px; }
-      .headline-card.hero { padding: 24px 20px; }
-      .headline-card.hero h2 { font-size: 19px; }
-      .headline-card.hero .stat-chip .stat-value { font-size: 32px; }
+      .headline-card.hero { padding: 20px 16px; gap: 16px; }
+      .headline-card.hero h2 { font-size: 17px; }
+      .headline-card.hero .hero-desc { font-size: 12px; }
+      .headline-card.hero .stat-chip .stat-value { font-size: 28px; }
+      .headline-card.hero .stat-chip .stat-label { font-size: 10px; max-width: 100px; }
       .stat-chip .stat-value { font-size: 24px; }
 
-      .card-content { padding: 16px; gap: 12px; flex-direction: column; align-items: flex-start; }
-      .card-right { width: 100%; justify-content: space-between; }
-      .cc-title { font-size: 15px; }
+      .card-content { padding: 14px; gap: 10px; }
+      .card-right { min-width: 56px; }
+      .cc-title { font-size: 13px; }
+      .cc-meta { font-size: 10px; gap: 8px; }
+      .card-right .stat-chip .stat-value { font-size: 20px; }
+      .card-right .stat-chip .stat-label { font-size: 9px; max-width: 60px; }
 
       .findings-grid { grid-template-columns: 1fr; }
       .mirror-layout { grid-template-columns: 1fr; }
@@ -1437,14 +1444,15 @@
       .fc-cell { padding: 8px 16px; }
       .pm-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-      .as-track { margin: 48px 8px 160px; }
-      .as-end-min { right: calc(100% + 4px); font-size: 8px; }
-      .as-end-max { left: calc(100% + 4px); font-size: 8px; }
-      .as-labels { padding: 0 8px; font-size: 9px; }
-      .as-reaction { max-width: 80px; font-size: 8px; top: 54px; }
-      .as-amount { font-size: 10px; top: 22px; }
-      .as-dot { width: 14px; height: 14px; }
-      .as-marker { top: -32px; }
+      .block-anchor-scale { overflow: hidden; }
+      .as-track { margin: 40px 32px 150px; }
+      .as-end-min { right: calc(100% + 6px); font-size: 8px; }
+      .as-end-max { left: calc(100% + 6px); font-size: 8px; }
+      .as-labels { padding: 0 32px; font-size: 8px; letter-spacing: 0.04em; }
+      .as-reaction { max-width: 70px; font-size: 8px; top: 48px; line-height: 1.3; }
+      .as-amount { font-size: 9px; top: 20px; }
+      .as-dot { width: 12px; height: 12px; border-width: 2px; }
+      .as-marker { top: -28px; }
 
       .block-quote { padding: 24px 20px; }
       .block-quote .quote-mark { left: 20px; }
@@ -1453,24 +1461,75 @@
       .block-narrative { max-width: none; }
       .block-stat { flex-direction: column; gap: 12px; }
 
-      .chart-container { padding: 20px 16px; }
-      .bar-label { font-size: 11px; }
-      .bar-value { font-size: 11px; }
-      .chart-caption { font-size: 11px; }
-      .tc-pair { gap: 24px; padding: 24px 0; }
-      .tc-value { font-size: 20px; }
-      .tc-note { font-size: 11px; max-width: 90px; }
-      .tc-bar-wrap { width: 44px; }
+      .chart-container { padding: 16px 12px; overflow: hidden; }
+      .bar-row { grid-template-columns: 64px 1fr 36px; gap: 8px; }
+      .bar-label { font-size: 10px; text-align: left; overflow: hidden; text-overflow: ellipsis; }
+      .bar-value { font-size: 10px; }
+      .bar-track { height: 22px; }
+      .chart-caption { font-size: 10px; }
+      .tc-pair { gap: 20px; padding: 20px 0; }
+      .tc-value { font-size: 18px; }
+      .tc-label { font-size: 11px; }
+      .tc-note { font-size: 10px; max-width: 80px; }
+      .tc-bar-wrap { width: 40px; }
 
-      .deviation-item { grid-template-columns: 1fr; gap: 8px; }
-      .deviation-item .dv-data { white-space: normal; }
-      .deviations-list { gap: 1px; }
+      .deviation-item { grid-template-columns: 1fr; gap: 6px; }
+      .deviation-item .dv-data { white-space: normal; font-size: 10px; }
+      .dv-label { font-size: 12px; }
+      .dv-desc { font-size: 11px; }
 
-      .db-seg-row { grid-template-columns: 36px 1fr 36px; }
+      .db-seg-row { grid-template-columns: 32px 1fr 32px; }
+      .db-headline { font-size: clamp(28px, 5vw, 40px); }
 
       .gap-metric .gm-value { font-size: clamp(24px, 4vw, 32px); }
+      .gap-metric .gm-label { font-size: 13px; }
 
-      .mosaic-tile { padding: 16px; }
+      .mosaic-tile { padding: 14px; }
+      .mt-label { font-size: 12px; }
+      .mt-detail { font-size: 10px; }
+
+      .td-card { padding: 14px; }
+      .td-surface { font-size: 12px; }
+      .td-note { font-size: 10px; }
+
+      .pain-item { grid-template-columns: 28px 1fr; gap: 10px; }
+      .pain-item .pi-tag { grid-column: 2; align-self: start; }
+      .pain-item .pi-num { font-size: 18px; }
+
+      .fc-bar { font-size: 10px; padding: 0 8px; height: 20px; }
+      .fc-header { font-size: 11px; padding: 10px 12px; }
+      .fc-label { font-size: 9px; padding: 10px 12px; }
+
+      .block-funnel-compare { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .block-pain-matrix { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+      .sb-stage { padding: 16px; }
+      .sb-label { font-size: 13px; }
+      .sb-desc { font-size: 11px; }
+      .sb-num { font-size: 10px; }
+
+      .cascade-step { padding: 20px; }
+      .cascade-step .cs-num { font-size: 26px; }
+      .cascade-step .cs-label { font-size: 14px; }
+      .cascade-step .cs-mechanism { font-size: 12px; }
+
+      .exp-card { padding: 18px; }
+      .exp-card .ec-stat { font-size: 20px; }
+      .exp-card .ec-label { font-size: 13px; }
+      .exp-card .ec-desc { font-size: 11px; }
+
+      .contrast-side { padding: 20px; }
+      .contrast-side .ct-text { font-size: 13px; }
+      .ct-stat-row .ct-stat-val { font-size: 12px; min-width: 40px; }
+      .ct-stat-row .ct-stat-desc { font-size: 11px; }
+
+      .ripple-effect { padding: 14px 16px; }
+      .ripple-effect .re-label { font-size: 12px; }
+      .ripple-effect .re-desc { font-size: 12px; }
+
+      .block-verdict p { font-size: 14px; }
+
+      #expandingPage { overflow-x: hidden; }
 
       .evidence { padding: 24px 20px; }
       .voice { padding: 20px 24px; }
@@ -2206,10 +2265,10 @@ function expandCard(section, index) {
       page.style.borderLeftWidth = '1px';
       page.style.borderLeftColor = isMobile ? 'transparent' : 'var(--border)';
     }
-    page.querySelector('.ep-title').style.fontSize = 'clamp(28px, 3.5vw, 38px)';
+    page.querySelector('.ep-title').style.fontSize = isMobile ? 'clamp(22px, 5vw, 28px)' : 'clamp(28px, 3.5vw, 38px)';
     page.querySelector('.ep-title').style.letterSpacing = '-0.03em';
     page.querySelector('.ep-title').style.lineHeight = '1.15';
-    page.querySelector('.ep-title').style.maxWidth = '22ch';
+    page.querySelector('.ep-title').style.maxWidth = isMobile ? 'none' : '22ch';
     page.querySelector('.ep-tag').style.fontSize = '11px';
     page.querySelector('.ep-tag').style.marginBottom = '12px';
 
