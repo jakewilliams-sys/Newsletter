@@ -2575,6 +2575,53 @@ document.addEventListener('DOMContentLoaded', () => {
       topbar.classList.toggle('scrolled', scrolled);
     }
   }, { passive: true });
+
+  /* ── Swipe gestures ── */
+  const sections = ['headlines', 'more-research', 'meet-customer'];
+  let swipeStartX = 0, swipeStartY = 0, swiping = false;
+  const SWIPE_THRESHOLD = 60;
+  const ANGLE_LIMIT = 30;
+
+  function handleSwipeStart(e) {
+    const t = e.touches[0];
+    swipeStartX = t.clientX;
+    swipeStartY = t.clientY;
+    swiping = true;
+  }
+
+  function handleSwipeEnd(e, context) {
+    if (!swiping) return;
+    swiping = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - swipeStartX;
+    const dy = t.clientY - swipeStartY;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    if (absDx < SWIPE_THRESHOLD) return;
+    const angle = Math.atan2(absDy, absDx) * (180 / Math.PI);
+    if (angle > ANGLE_LIMIT) return;
+
+    if (context === 'overlay') {
+      collapseCard();
+      return;
+    }
+
+    const currentIdx = sections.indexOf(activeSection);
+    if (dx < 0 && currentIdx < sections.length - 1) {
+      switchSection(sections[currentIdx + 1]);
+    } else if (dx > 0 && currentIdx > 0) {
+      switchSection(sections[currentIdx - 1]);
+    }
+  }
+
+  const page = document.getElementById('expandingPage');
+  page.addEventListener('touchstart', handleSwipeStart, { passive: true });
+  page.addEventListener('touchend', e => handleSwipeEnd(e, 'overlay'), { passive: true });
+
+  app.addEventListener('touchstart', handleSwipeStart, { passive: true });
+  app.addEventListener('touchend', e => {
+    if (!isExpanded) handleSwipeEnd(e, 'main');
+  }, { passive: true });
 });
 </script>
 </body>
