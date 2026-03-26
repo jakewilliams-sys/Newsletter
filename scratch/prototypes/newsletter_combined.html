@@ -1450,8 +1450,7 @@
       .fc-cell { padding: 8px 16px; }
       .pm-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-      .block-anchor-scale { overflow: visible; }
-      .as-track { margin: 40px 32px 150px; }
+      .as-track { margin: 40px 32px 200px; }
       .as-end-min { right: calc(100% + 6px); font-size: 8px; }
       .as-end-max { left: calc(100% + 6px); font-size: 8px; }
       .as-labels { padding: 0 32px; font-size: 8px; letter-spacing: 0.04em; }
@@ -1459,6 +1458,8 @@
       .as-amount { font-size: 9px; top: 20px; }
       .as-dot { width: 12px; height: 12px; border-width: 2px; }
       .as-marker { top: -28px; }
+      .as-stagger .as-amount { top: 100px; }
+      .as-stagger .as-reaction { top: 118px; }
 
       .block-quote { padding: 24px 20px; }
       .block-quote .quote-mark { left: 20px; }
@@ -2498,9 +2499,10 @@ function buildBlock(block) {
     case 'funnel-compare':
       return `<div class="block-funnel-compare"><h3>${block.title}</h3><div class="fc-row"><div class="fc-label"></div>${block.brands.map(b => `<div class="fc-header">${b.name}</div>`).join('')}</div>${block.stages.map(s => `<div class="fc-row"><div class="fc-label">${s.label}</div>${block.brands.map(b => {const v=s.values[b.key]; return `<div class="fc-cell"><div class="fc-bar fc-tint-${b.tint}" style="width:${Math.round(v/block.maxVal*100)}%">${v}%</div></div>`;}).join('')}</div>`).join('')}</div>`;
     case 'anchor-scale':
-      return `<div class="block-anchor-scale"><h3>${block.title}</h3><div class="as-track">${block.scaleMin?`<span class="as-end-min">${block.scaleMin}</span>`:''}${block.scaleMax?`<span class="as-end-max">${block.scaleMax}</span>`:''}${block.markers.map(m => {
+      return `<div class="block-anchor-scale"><h3>${block.title}</h3><div class="as-track">${block.scaleMin?`<span class="as-end-min">${block.scaleMin}</span>`:''}${block.scaleMax?`<span class="as-end-max">${block.scaleMax}</span>`:''}${block.markers.map((m, i) => {
         const edge = m.position <= 15 ? 'as-edge-left' : m.position >= 70 ? 'as-edge-right' : '';
-        return `<div class="as-marker ${edge}" style="left:${m.position}%"><div class="as-dot as-${m.tone}"></div><div class="as-amount">${m.amount}</div><div class="as-reaction">${m.reaction}</div></div>`;
+        const stagger = i % 2 === 1 ? 'as-stagger' : '';
+        return `<div class="as-marker ${edge} ${stagger}" style="left:${m.position}%"><div class="as-dot as-${m.tone}"></div><div class="as-amount">${m.amount}</div><div class="as-reaction">${m.reaction}</div></div>`;
       }).join('')}</div><div class="as-labels"><span>${block.leftLabel}</span><span>${block.rightLabel}</span></div></div>`;
     default: return '';
   }
