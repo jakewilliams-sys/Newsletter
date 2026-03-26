@@ -24,6 +24,8 @@
       --up-soft: oklch(94% 0.03 155);
       --down: oklch(65% 0.12 45);
       --down-soft: oklch(94% 0.03 45);
+      --track-bg: oklch(96% 0.005 250);
+      --teal-border: oklch(88% 0.05 178);
       --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
       --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
@@ -69,7 +71,7 @@
     .topbar.scrolled .topbar-logo { opacity: 0; pointer-events: none; }
     .pill-nav {
       display: flex; gap: 0; padding: 4px;
-      background: oklch(96% 0.005 250); border-radius: 999px;
+      background: var(--track-bg); border-radius: 999px;
       border: 1px solid var(--border); justify-self: center;
       position: relative;
       box-shadow: 0 2px 8px oklch(0% 0 0 / 0.06), 0 1px 2px oklch(0% 0 0 / 0.04);
@@ -168,31 +170,6 @@
     .dd-meta .dd-author-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-4); }
     .dd-meta .dd-author-name { font-size: 15px; font-weight: 700; color: var(--ink); }
     .dd-meta .dd-date { font-size: 12px; color: var(--ink-3); margin-left: auto; }
-    .block-stat {
-      display: flex; align-items: baseline; gap: 24px; padding: 40px 0;
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 40px 0;
-    }
-    .block-stat .big-number {
-      font-family: 'DM Mono', monospace; font-size: clamp(56px, 7vw, 80px);
-      font-weight: 500; letter-spacing: -0.06em; line-height: 1; color: var(--teal); flex-shrink: 0;
-    }
-    .block-stat .stat-context { font-size: 17px; line-height: 1.5; color: var(--ink-2); max-width: 36ch; }
-    .block-findings { margin-bottom: 48px; }
-    .block-findings h3 {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
-    }
-    .findings-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
-      background: var(--border-light); border-radius: 8px; overflow: hidden;
-    }
-    .finding { background: var(--surface-raised); padding: 24px; display: flex; gap: 16px; align-items: flex-start; }
-    .finding-num {
-      font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 500;
-      color: var(--teal-mid); line-height: 1; flex-shrink: 0; padding-top: 2px;
-    }
-    .finding-text { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
-    .finding-text strong { color: var(--ink); font-weight: 600; }
     .block-chart { margin-bottom: 48px; }
     .block-chart h3 {
       font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
@@ -205,7 +182,7 @@
     .bar-chart { display: flex; flex-direction: column; gap: 16px; }
     .bar-row { display: grid; grid-template-columns: 100px 1fr 48px; align-items: center; gap: 12px; }
     .bar-label { font-size: 13px; color: var(--ink-2); text-align: right; }
-    .bar-track { height: 28px; background: oklch(96% 0.005 250); border-radius: 4px; overflow: hidden; }
+    .bar-track { height: 28px; background: var(--track-bg); border-radius: 4px; overflow: hidden; }
     .bar-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.8s var(--ease-out-expo); }
     .bar-fill.secondary { background: var(--teal-mid); }
     .bar-value { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink-2); }
@@ -234,86 +211,6 @@
     .source-link:hover { gap: 12px; }
     .source-link svg { width: 16px; height: 16px; }
 
-    /* ── CUSTOM BLOCK: Intro ── */
-    .block-intro { margin-bottom: 48px; padding-bottom: 36px; border-bottom: 1px solid var(--border-light); }
-    .block-intro .intro-accent {
-      font-family: 'DM Mono', monospace; font-size: clamp(40px, 5vw, 56px);
-      font-weight: 500; letter-spacing: -0.05em; color: var(--teal);
-      line-height: 1; margin-bottom: 16px;
-    }
-    .block-intro p {
-      font-size: 17px; line-height: 1.7; color: var(--ink-2); max-width: 52ch;
-    }
-
-    /* ── CUSTOM BLOCK: Market cards ── */
-    .block-market-cards { margin-bottom: 48px; }
-    .block-market-cards h3 {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
-    }
-    .mc-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
-      background: var(--border-light); border-radius: 10px; overflow: hidden;
-    }
-    .market-card {
-      background: var(--surface-raised); padding: 28px;
-      display: flex; flex-direction: column;
-    }
-    .market-card .mc-name {
-      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
-      letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 14px;
-    }
-    .market-card .mc-stat {
-      font-family: 'DM Mono', monospace; font-size: 32px; font-weight: 500;
-      letter-spacing: -0.04em; color: var(--ink); line-height: 1; margin-bottom: 4px;
-    }
-    .market-card .mc-stat-label {
-      font-size: 11px; color: var(--ink-4); margin-bottom: 14px;
-    }
-    .market-card .mc-finding {
-      font-size: 13px; line-height: 1.6; color: var(--ink-2); flex: 1;
-    }
-    .market-card .mc-quote {
-      font-size: 12px; font-style: italic; color: var(--ink-3);
-      padding-left: 12px; border-left: 2px solid var(--teal-mid);
-      margin-top: 16px; line-height: 1.5;
-    }
-    .mc-highlight {
-      grid-column: 1 / -1; background: var(--teal-soft);
-      padding: 28px; display: flex; gap: 32px; align-items: flex-start;
-    }
-    .mc-highlight .mc-name { color: oklch(50% 0.12 178); }
-    .mc-highlight .mc-stat-group {
-      flex-shrink: 0; display: flex; flex-direction: column;
-    }
-    .mc-highlight .mc-body { flex: 1; min-width: 0; }
-    .mc-highlight .mc-finding { font-size: 14px; color: var(--ink-2); }
-    .mc-highlight .mc-quote { border-left-color: oklch(60% 0.1 178); }
-
-    /* ── CUSTOM BLOCK: Barriers strip ── */
-    .block-barriers { margin-bottom: 48px; }
-    .block-barriers h3 {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
-    }
-    .barriers-row {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
-      background: var(--border-light); border-radius: 10px; overflow: hidden;
-    }
-    .barrier-cell { background: var(--surface-raised); padding: 24px 20px; }
-    .barrier-cell .bc-label {
-      font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.3;
-      margin-bottom: 12px;
-    }
-    .barrier-cell .bc-range {
-      font-family: 'DM Mono', monospace; font-size: 20px;
-      font-weight: 500; color: var(--teal); letter-spacing: -0.03em;
-      line-height: 1; margin-bottom: 6px;
-    }
-    .barrier-cell .bc-note {
-      font-size: 11px; color: var(--ink-4); line-height: 1.4;
-    }
-
     /* ── CUSTOM BLOCK: Mirror (sign-up vs churn) ── */
     .block-mirror { margin-bottom: 48px; }
     .block-mirror h3 {
@@ -340,62 +237,6 @@
       font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 2px;
     }
     .mirror-item .mi-detail { font-size: 12px; color: var(--ink-3); }
-
-    /* ── CUSTOM BLOCK: Journey stages ── */
-    .block-journey { margin-bottom: 48px; }
-    .block-journey h3 {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
-    }
-    .journey-track {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
-      border: 1px solid var(--border-light); border-radius: 10px; overflow: hidden;
-    }
-    .journey-stage {
-      padding: 24px; position: relative;
-    }
-    .journey-stage + .journey-stage { border-left: 1px solid var(--border-light); }
-    .journey-stage .js-num {
-      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
-      color: var(--ink-4); margin-bottom: 10px; display: block;
-    }
-    .journey-stage .js-label {
-      font-size: 13px; font-weight: 600; color: var(--ink);
-      margin-bottom: 14px; line-height: 1.3;
-    }
-    .journey-stage .js-stat {
-      font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500;
-      color: var(--teal); line-height: 1; margin-bottom: 4px; letter-spacing: -0.03em;
-    }
-    .journey-stage .js-stat-label {
-      font-size: 11px; color: var(--ink-4); margin-bottom: 12px;
-    }
-    .journey-stage .js-note {
-      font-size: 12px; color: var(--ink-3); line-height: 1.5;
-    }
-    .journey-stage.js-alert { background: oklch(97.5% 0.012 45); }
-    .journey-stage.js-alert .js-stat { color: var(--down); }
-    .journey-stage.js-positive { background: oklch(97.5% 0.012 155); }
-    .journey-stage.js-positive .js-stat { color: var(--up); }
-    .journey-stage.js-neutral { background: var(--surface-raised); }
-    .journey-connector {
-      position: absolute; right: -7px; top: 50%; z-index: 1;
-      width: 12px; height: 12px; background: var(--surface-raised);
-      border: 1px solid var(--border-light); border-radius: 50%;
-      transform: translateY(-50%);
-    }
-    .journey-stage.js-alert .journey-connector { background: oklch(97.5% 0.012 45); }
-    .journey-stage.js-positive .journey-connector { background: oklch(97.5% 0.012 155); }
-
-    /* ── CUSTOM BLOCK: Research question opening ── */
-    .block-question { margin-bottom: 48px; padding: 36px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .block-question .bq-text {
-      font-size: clamp(22px, 3vw, 30px); font-weight: 600; line-height: 1.25;
-      color: var(--ink); letter-spacing: -0.025em; max-width: 24ch;
-    }
-    .block-question .bq-context {
-      font-size: 14px; color: var(--ink-3); margin-top: 20px; line-height: 1.65; max-width: 52ch;
-    }
 
     /* ── CUSTOM BLOCK: Cascade (breakpoint funnel) ── */
     .block-cascade { margin-bottom: 48px; }
@@ -477,35 +318,6 @@
       padding-top: 16px; border-top: 1px solid var(--border-light);
     }
 
-    /* ── CUSTOM BLOCK: Delta (before → after stats) ── */
-    .block-delta { margin-bottom: 48px; }
-    .block-delta h3 {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
-    }
-    .delta-cards {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px;
-      background: var(--border-light); border-radius: 10px; overflow: hidden;
-    }
-    .delta-card { background: var(--surface-raised); padding: 28px; }
-    .delta-card .dc-shift {
-      display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px;
-    }
-    .delta-card .dc-from {
-      font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500;
-      color: var(--ink-4); line-height: 1;
-    }
-    .delta-card .dc-arrow {
-      font-size: 16px; color: var(--ink-4);
-    }
-    .delta-card .dc-to {
-      font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500;
-      color: var(--down); line-height: 1;
-    }
-    .delta-card .dc-label {
-      font-size: 13px; color: var(--ink-2); line-height: 1.5;
-    }
-
     /* ── CUSTOM BLOCK: Deviations (compact issue list) ── */
     .block-deviations { margin-bottom: 48px; }
     .block-deviations h3 {
@@ -581,29 +393,6 @@
       font-size: 14px; color: var(--ink-3); line-height: 1.65; max-width: 52ch;
     }
 
-    /* ── CUSTOM BLOCK: Arena (competitive data strip) ── */
-    .block-arena { margin-bottom: 48px; }
-    .block-arena h3 {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px;
-    }
-    .arena-strip {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
-      border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
-    }
-    .arena-cell { padding: 20px; text-align: center; }
-    .arena-cell + .arena-cell { border-left: 1px solid var(--border-light); }
-    .arena-cell .ac-value {
-      font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500;
-      color: var(--ink); letter-spacing: -0.03em; line-height: 1; margin-bottom: 6px;
-    }
-    .arena-cell .ac-label {
-      font-size: 11px; color: var(--ink-3); line-height: 1.4;
-    }
-    .arena-context {
-      font-size: 13px; color: var(--ink-3); line-height: 1.6; margin-top: 14px;
-    }
-
     /* ── CUSTOM BLOCK: Expectations (card grid) ── */
     .block-expectations { margin-bottom: 48px; }
     .block-expectations h3 {
@@ -627,31 +416,6 @@
     .exp-card .ec-desc {
       font-size: 12px; color: var(--ink-3); line-height: 1.55;
     }
-
-    /* ── CUSTOM BLOCK: Playbook (tinted multi-column recommendations) ── */
-    .block-playbook { margin-bottom: 48px; }
-    .block-playbook h3 {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
-    }
-    .playbook-cols {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-      background: var(--border-light); border-radius: 10px; overflow: hidden;
-    }
-    .playbook-col { background: var(--surface-raised); padding: 24px; }
-    .playbook-col.pc-tint-teal { background: oklch(97.5% 0.015 178); }
-    .playbook-col.pc-tint-warm { background: oklch(97.5% 0.012 45); }
-    .playbook-col .pc-label {
-      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
-      letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal);
-      margin-bottom: 16px;
-    }
-    .playbook-col.pc-tint-warm .pc-label { color: var(--down); }
-    .playbook-col .pc-item {
-      font-size: 13px; color: var(--ink-2); line-height: 1.55; padding: 8px 0;
-    }
-    .playbook-col .pc-item + .pc-item { border-top: 1px solid var(--border-light); }
-    .playbook-col .pc-item strong { color: var(--ink); font-weight: 600; }
 
     /* ── CUSTOM BLOCK: Gap (two metrics showing a disconnect) ── */
     .block-gap { margin-bottom: 48px; }
@@ -706,43 +470,6 @@
     /* ── CUSTOM BLOCK: Verdict ── */
     .block-verdict { margin-bottom: 48px; padding-left: 20px; border-left: 3px solid var(--teal); }
     .block-verdict p { font-size: 16px; line-height: 1.65; color: var(--ink); }
-
-    /* ── CUSTOM BLOCK: Pain stack ── */
-    .block-pains { margin-bottom: 48px; }
-    .block-pains h3 {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
-    }
-    .pain-list {
-      display: flex; flex-direction: column; gap: 1px;
-      background: var(--border-light); border-radius: 10px; overflow: hidden;
-    }
-    .pain-item {
-      background: var(--surface-raised); padding: 22px 24px;
-      display: grid; grid-template-columns: 36px 1fr auto;
-      gap: 16px; align-items: start;
-    }
-    .pain-item .pi-num {
-      font-family: 'DM Mono', monospace; font-size: 22px;
-      font-weight: 500; color: var(--teal-mid); line-height: 1; padding-top: 2px;
-    }
-    .pain-item .pi-title {
-      font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 4px;
-    }
-    .pain-item .pi-desc {
-      font-size: 13px; color: var(--ink-3); line-height: 1.55;
-    }
-    .pain-item .pi-stat {
-      font-family: 'DM Mono', monospace; font-size: 11px;
-      color: var(--ink-4); margin-top: 6px;
-    }
-    .pain-item .pi-tag {
-      font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
-      text-transform: uppercase; padding: 4px 10px; border-radius: 999px;
-      white-space: nowrap; align-self: center;
-    }
-    .pi-tag.tag-adoption { background: oklch(94% 0.03 45); color: oklch(50% 0.1 45); }
-    .pi-tag.tag-trust { background: oklch(94% 0.03 280); color: oklch(45% 0.1 280); }
 
     /* ── CUSTOM BLOCK: Voice collage ── */
     .block-voice { margin-bottom: 48px; }
@@ -934,32 +661,6 @@
       font-size: 11px; color: var(--ink-4); line-height: 1.5; margin-top: 14px; max-width: 58ch; font-style: italic;
     }
 
-    /* ── BESPOKE: Holly h0 — sample-stack ── */
-    .block-sample-stack { margin-bottom: 48px; }
-    .block-sample-stack h3 {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px;
-    }
-    .ss-rows {
-      display: flex; flex-direction: column;
-      border: 1px solid var(--border-light); border-radius: 10px; overflow: hidden;
-    }
-    .ss-row {
-      display: grid; grid-template-columns: 1fr auto; gap: 24px;
-      align-items: baseline; padding: 22px 24px; background: var(--surface-raised);
-      border-bottom: 1px solid var(--border-light);
-    }
-    .ss-row:last-child { border-bottom: none; }
-    .ss-row .ss-label { font-size: 14px; font-weight: 600; color: var(--ink); }
-    .ss-row .ss-sub { font-size: 12px; color: var(--ink-3); margin-top: 4px; line-height: 1.45; }
-    .ss-row .ss-value {
-      font-family: 'DM Mono', monospace; font-size: clamp(28px, 4vw, 40px);
-      font-weight: 500; letter-spacing: -0.04em; color: var(--teal); line-height: 1;
-    }
-    .ss-footnote {
-      font-size: 12px; color: var(--ink-4); margin-top: 14px; line-height: 1.5; font-style: italic;
-    }
-
     /* ── BESPOKE: Holly h0 — direct-breakdown ── */
     .block-direct-breakdown { margin-bottom: 48px; }
     .block-direct-breakdown h3 {
@@ -979,7 +680,7 @@
     .db-stack { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
     .db-seg-row { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 12px; }
     .db-seg-pct { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: var(--ink); }
-    .db-seg-track { height: 22px; background: oklch(96% 0.005 250); border-radius: 4px; overflow: hidden; }
+    .db-seg-track { height: 22px; background: var(--track-bg); border-radius: 4px; overflow: hidden; }
     .db-seg-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.8s var(--ease-out-expo); }
     .db-seg-label { font-size: 13px; color: var(--ink-2); }
     .db-note { font-size: 12px; color: var(--ink-4); margin-top: 16px; line-height: 1.5; font-style: italic; }
@@ -1035,7 +736,7 @@
     .headline-card.hero {
       grid-column: 1 / -1; flex-direction: row; align-items: center;
       gap: 48px; min-height: auto; padding: 40px 48px;
-      background: var(--teal-soft); border-color: oklch(88% 0.05 178);
+      background: var(--teal-soft); border-color: var(--teal-border);
     }
     .headline-card.hero:hover { border-color: var(--teal); }
     .headline-card.hero .hero-text { flex: 1; }
@@ -1208,17 +909,17 @@
       padding-bottom: 4px; font-size: 10px; letter-spacing: 0.04em;
     }
     .heatmap-cell { aspect-ratio: 1; border-radius: 4px; }
-    .heatmap-cell.l0 { background: oklch(96% 0.005 250); }
+    .heatmap-cell.l0 { background: var(--track-bg); }
     .heatmap-cell.l1 { background: oklch(90% 0.04 178); }
     .heatmap-cell.l2 { background: oklch(80% 0.08 178); }
-    .heatmap-cell.l3 { background: oklch(68% 0.14 178); }
+    .heatmap-cell.l3 { background: var(--teal); }
     .heatmap-cell.l4 { background: oklch(55% 0.14 178); }
     .cuisine-row {
       display: grid; grid-template-columns: 90px 1fr 48px;
       align-items: center; gap: 16px; margin-bottom: 10px;
     }
     .cuisine-name { font-size: 14px; color: var(--ink-2); text-align: right; font-weight: 500; }
-    .cuisine-track { height: 28px; background: oklch(96% 0.005 250); border-radius: 4px; overflow: hidden; }
+    .cuisine-track { height: 28px; background: var(--track-bg); border-radius: 4px; overflow: hidden; }
     .cuisine-fill {
       height: 100%; border-radius: 4px; transition: width 0.8s var(--ease-out-expo);
     }
@@ -1272,7 +973,7 @@
     .savings-row:last-child .savings-value { color: var(--up); font-size: 18px; }
     .connection {
       margin-top: 24px; padding: 32px 36px;
-      background: var(--teal-soft); border: 1px solid oklch(88% 0.05 178); border-radius: 12px;
+      background: var(--teal-soft); border: 1px solid var(--teal-border); border-radius: 12px;
     }
     .connection-label {
       font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
@@ -1351,14 +1052,6 @@
       .cascade-steps { grid-template-columns: 1fr; }
       .tension-zones { grid-template-columns: 1fr; }
       .dt-grid { grid-template-columns: 1fr; }
-      .barriers-row { grid-template-columns: 1fr 1fr; }
-      .journey-track { grid-template-columns: 1fr 1fr; }
-      .journey-stage + .journey-stage { border-left: none; border-top: 1px solid var(--border-light); }
-      .journey-connector { display: none; }
-      .arena-strip { grid-template-columns: 1fr 1fr; }
-      .arena-cell + .arena-cell { border-left: none; }
-      .arena-cell:nth-child(n+3) { border-top: 1px solid var(--border-light); }
-      .playbook-cols { grid-template-columns: 1fr; }
       .fc-row { grid-template-columns: 80px 1fr 1fr 1fr; }
       .gap-pair { grid-template-columns: 1fr; gap: 20px; text-align: center; }
       .gap-metric:last-child { text-align: center; }
@@ -1432,7 +1125,6 @@
       .card-right .stat-chip .stat-value { font-size: 20px; }
       .card-right .stat-chip .stat-label { font-size: 9px; max-width: 60px; }
 
-      .findings-grid { grid-template-columns: 1fr; }
       .mirror-layout { grid-template-columns: 1fr; }
       .mirror-divider { height: 1px; }
       .contrast-split { grid-template-columns: 1fr; }
@@ -1443,9 +1135,6 @@
       .voice-grid { grid-template-columns: 1fr; }
       .voice-card.vc-wide { grid-column: auto; }
       .exp-grid { grid-template-columns: 1fr; }
-      .mc-grid { grid-template-columns: 1fr; }
-      .mc-highlight { flex-direction: column; gap: 16px; }
-
       .ripple-effect { grid-template-columns: 1fr; gap: 6px; }
       .cuisine-row { grid-template-columns: 64px 1fr 36px; gap: 10px; }
       .fc-row { grid-template-columns: 1fr; gap: 0; }
@@ -1469,7 +1158,6 @@
       .block-quote blockquote { font-size: 16px; }
       .block-provocation .pv-statement { max-width: none; }
       .block-narrative { max-width: none; }
-      .block-stat { flex-direction: column; gap: 12px; }
 
       .chart-container { padding: 16px 12px; overflow: hidden; }
       .bar-row { grid-template-columns: 64px 1fr 36px; gap: 8px; }
@@ -1505,10 +1193,6 @@
       .td-card { padding: 14px; }
       .td-surface { font-size: 12px; }
       .td-note { font-size: 10px; }
-
-      .pain-item { grid-template-columns: 28px 1fr; gap: 10px; }
-      .pain-item .pi-tag { grid-column: 2; align-self: start; }
-      .pain-item .pi-num { font-size: 18px; }
 
       .fc-bar { font-size: 10px; padding: 0 8px; height: 20px; }
       .fc-header { font-size: 11px; padding: 10px 12px; }
@@ -2240,8 +1924,8 @@ function expandCard(section, index) {
   const startPad = section === 'headlines' && isHero ? 40 : section === 'headlines' ? 28 : 24;
   const startPadCSSExpand = isCompactExpand ? '24px 28px' : startPad + 'px';
   const startTitleSize = section === 'headlines' && isHero ? 22 : section === 'headlines' ? 18 : 17;
-  const startBg = section === 'headlines' && isHero ? 'oklch(94% 0.035 178)' : 'var(--surface-raised)';
-  const startBorderCol = section === 'headlines' && isHero ? 'oklch(88% 0.05 178)' : 'var(--border)';
+  const startBg = section === 'headlines' && isHero ? 'var(--teal-soft)' : 'var(--surface-raised)';
+  const startBorderCol = section === 'headlines' && isHero ? 'var(--teal-border)' : 'var(--border)';
 
   page.innerHTML = `
     <div class="ep-tag" style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:${isCompactExpand ? '6' : '10'}px;
@@ -2256,7 +1940,7 @@ function expandCard(section, index) {
     top:${cr.top}px; left:${cr.left}px; width:${cr.width}px; height:${cr.height}px;
     padding:${startPadCSSExpand}; background:${startBg};
     border:1px solid ${startBorderCol}; border-radius:10px;
-    ${isCompactExpand ? 'border-left:5px solid oklch(68% 0.14 178);' : ''}
+    ${isCompactExpand ? 'border-left:5px solid var(--teal);' : ''}
     overflow:hidden;
     transition-property:top,left,width,height,padding,background,border-color,border-radius,box-shadow,border-left-width,border-left-color;
     transition-duration:0.55s; transition-timing-function:var(--ease-out-expo);
@@ -2334,7 +2018,7 @@ function collapseCard() {
   const startPad = expandedSection === 'headlines' && isHero ? 40 : expandedSection === 'headlines' ? 28 : 24;
   const startPadCSS = isCompact ? '24px 28px' : startPad + 'px';
   const startTitleSize = expandedSection === 'headlines' && isHero ? 22 : expandedSection === 'headlines' ? 18 : 17;
-  const startBg = expandedSection === 'headlines' && isHero ? 'oklch(94% 0.035 178)' : 'var(--surface-raised)';
+  const startBg = expandedSection === 'headlines' && isHero ? 'var(--teal-soft)' : 'var(--surface-raised)';
   const cardTitleEl = isCompact ? card.querySelector('.cc-title') : null;
   const cardTitleWidth = cardTitleEl ? cardTitleEl.getBoundingClientRect().width : null;
 
@@ -2376,7 +2060,7 @@ function collapseCard() {
     page.style.boxShadow = '0 0 0 transparent';
     if (isCompact) {
       page.style.borderLeftWidth = '5px';
-      page.style.borderLeftColor = 'oklch(68% 0.14 178)';
+      page.style.borderLeftColor = 'var(--teal)';
     }
     const epTitle = page.querySelector('.ep-title');
     epTitle.style.fontSize = startTitleSize + 'px';
@@ -2439,65 +2123,32 @@ function animateBars() {
 
 function buildBlock(block) {
   switch (block.type) {
-    case 'stat':
-      return `<div class="block-stat"><span class="big-number">${block.value}</span><p class="stat-context">${block.context}</p></div>`;
-    case 'findings':
-      return `<div class="block-findings"><h3>Key findings</h3><div class="findings-grid">${block.items.map((f,i) => `<div class="finding"><span class="finding-num">${String(i+1).padStart(2,'0')}</span><span class="finding-text">${f.text}</span></div>`).join('')}</div></div>`;
-    case 'intro':
-      return `<div class="block-intro"><span class="intro-accent">${block.accent}</span><p>${block.text}</p></div>`;
-    case 'market-cards': {
-      let cards = block.markets.map(m => `<div class="market-card"><span class="mc-name">${m.name}</span><span class="mc-stat">${m.stat}</span><span class="mc-stat-label">${m.statLabel}</span><p class="mc-finding">${m.finding}</p><p class="mc-quote">\u201C${m.quote}\u201D</p></div>`).join('');
-      let highlight = '';
-      if (block.highlight) {
-        const h = block.highlight;
-        highlight = `<div class="mc-highlight"><div class="mc-stat-group"><span class="mc-name">${h.name}</span><span class="mc-stat">${h.stat}</span><span class="mc-stat-label">${h.statLabel}</span></div><div class="mc-body"><p class="mc-finding">${h.finding}</p><p class="mc-quote">\u201C${h.quote}\u201D</p></div></div>`;
-      }
-      return `<div class="block-market-cards"><h3>${block.title}</h3><div class="mc-grid">${cards}${highlight}</div></div>`;
-    }
-    case 'barriers':
-      return `<div class="block-barriers"><h3>${block.title}</h3><div class="barriers-row">${block.barriers.map(b => `<div class="barrier-cell"><div class="bc-label">${b.label}</div><div class="bc-range">${b.range}</div><div class="bc-note">${b.note}</div></div>`).join('')}</div></div>`;
     case 'mirror':
       return `<div class="block-mirror"><h3>${block.title}</h3><div class="mirror-layout"><div class="mirror-side side-in"><div class="mirror-label">${block.leftLabel}</div>${block.leftItems.map(it => `<div class="mirror-item"><div class="mi-text">${it.text}</div><div class="mi-detail">${it.detail}</div></div>`).join('')}</div><div class="mirror-divider"></div><div class="mirror-side side-out"><div class="mirror-label">${block.rightLabel}</div>${block.rightItems.map(it => `<div class="mirror-item"><div class="mi-text">${it.text}</div><div class="mi-detail">${it.detail}</div></div>`).join('')}</div></div></div>`;
-    case 'landscape':
-      return `<div class="block-landscape"><div class="landscape-stats">${block.stats.map(s => `<div class="landscape-stat"><div class="ls-value">${s.value}</div><div class="ls-label">${s.label}</div></div>`).join('')}</div><p class="landscape-insight">${block.insight}</p></div>`;
     case 'provocation':
       return `<div class="block-provocation"><div class="pv-statement">${block.statement}</div><p class="pv-insight">${block.insight}</p></div>`;
-    case 'arena':
-      return `<div class="block-arena"><h3>${block.title}</h3><div class="arena-strip">${block.cells.map(c => `<div class="arena-cell"><div class="ac-value">${c.value}</div><div class="ac-label">${c.label}</div></div>`).join('')}</div>${block.context ? `<p class="arena-context">${block.context}</p>` : ''}</div>`;
     case 'expectations':
       return `<div class="block-expectations"><h3>${block.title}</h3><div class="exp-grid">${block.items.map(e => `<div class="exp-card"><div class="ec-stat">${e.stat}</div><div class="ec-label">${e.label}</div><div class="ec-desc">${e.desc}</div></div>`).join('')}</div></div>`;
-    case 'playbook':
-      return `<div class="block-playbook"><h3>${block.title}</h3><div class="playbook-cols">${block.columns.map(c => `<div class="playbook-col${c.tint ? ' pc-tint-' + c.tint : ''}"><div class="pc-label">${c.label}</div>${c.items.map(it => `<div class="pc-item">${it}</div>`).join('')}</div>`).join('')}</div></div>`;
     case 'contrast':
       return `<div class="block-contrast"><h3>${block.title}</h3><div class="contrast-split"><div class="contrast-side ct-smooth"><div class="ct-label">${block.smooth.label}</div><div class="ct-text">${block.smooth.text}</div></div><div class="contrast-side ct-deviated"><div class="ct-label">${block.deviated.label}</div><div class="ct-text">${block.deviated.text}</div><div class="ct-stats">${block.deviated.stats.map(s => `<div class="ct-stat-row"><span class="ct-stat-val">${s.value}</span><span class="ct-stat-desc">${s.desc}</span></div>`).join('')}</div></div></div>${block.context ? `<p class="contrast-context">${block.context}</p>` : ''}</div>`;
     case 'deviations':
       return `<div class="block-deviations"><h3>${block.title}</h3><div class="deviations-list">${block.items.map(d => `<div class="deviation-item"><div><div class="dv-label">${d.label}</div><div class="dv-desc">${d.desc}</div></div><div class="dv-data">${d.data}</div></div>`).join('')}</div></div>`;
     case 'gap':
       return `<div class="block-gap"><div class="gap-pair"><div class="gap-metric"><div class="gm-sublabel">${block.left.sublabel}</div><div class="gm-value">${block.left.value}</div><div class="gm-label">${block.left.label}</div></div><div class="gap-vs">vs</div><div class="gap-metric"><div class="gm-sublabel">${block.right.sublabel}</div><div class="gm-value">${block.right.value}</div><div class="gm-label">${block.right.label}</div></div></div>${block.context ? `<p class="gap-context">${block.context}</p>` : ''}</div>`;
-    case 'delta':
-      return `<div class="block-delta"><h3>${block.title}</h3><div class="delta-cards">${block.cards.map(c => `<div class="delta-card"><div class="dc-shift"><span class="dc-from">${c.from}</span><span class="dc-arrow">\u2192</span><span class="dc-to">${c.to}</span></div><div class="dc-label">${c.label}</div></div>`).join('')}</div></div>`;
     case 'ripple':
       return `<div class="block-ripple"><div class="ripple-cause"><div class="rc-label">${block.cause}</div><div class="rc-data">${block.causeData}</div></div><div class="ripple-effects">${block.effects.map(e => `<div class="ripple-effect"><div><div class="re-label">${e.label}</div><div class="re-data">${e.data}</div></div><div class="re-desc">${e.desc}</div></div>`).join('')}</div></div>`;
-    case 'question':
-      return `<div class="block-question"><div class="bq-text">${block.question}</div><p class="bq-context">${block.context}</p></div>`;
     case 'tension':
-      return `<div class="block-tension"><h3>${block.title}</h3><div class="tension-bar"><div class="tb-seg tb-warn-l"></div><div class="tb-seg tb-good"></div><div class="tb-seg tb-warn-r"></div></div><div class="tension-zones">${block.zones.map(z => `<div class="tension-zone${z.tone === 'good' ? ' tz-good' : ''}""><div class="tz-label">${z.label}</div><div class="tz-desc">${z.desc}</div>${z.example ? `<div class="tz-example">${z.example}</div>` : ''}</div>`).join('')}</div></div>`;
+      return `<div class="block-tension"><h3>${block.title}</h3><div class="tension-bar"><div class="tb-seg tb-warn-l"></div><div class="tb-seg tb-good"></div><div class="tb-seg tb-warn-r"></div></div><div class="tension-zones">${block.zones.map(z => `<div class="tension-zone${z.tone === 'good' ? ' tz-good' : ''}"><div class="tz-label">${z.label}</div><div class="tz-desc">${z.desc}</div>${z.example ? `<div class="tz-example">${z.example}</div>` : ''}</div>`).join('')}</div></div>`;
     case 'verdict':
       return `<div class="block-verdict"><p>${block.text}</p></div>`;
     case 'cascade':
       return `<div class="block-cascade"><h3>${block.title}</h3><div class="cascade-steps">${block.steps.map((s,i) => `<div class="cascade-step"><span class="cs-num">${String(i+1).padStart(2,'0')}</span><div class="cs-label">${s.label}</div><div class="cs-mechanism">${s.mechanism}</div><div class="cs-quote-wrap"><div class="cs-quote">\u201C${s.quote}\u201D</div><div class="cs-attr">${s.attr}</div></div></div>`).join('')}</div></div>`;
-    case 'journey':
-      return `<div class="block-journey"><h3>${block.title}</h3><div class="journey-track">${block.stages.map((s,i) => `<div class="journey-stage js-${s.tone}"><span class="js-num">${s.num}</span><div class="js-label">${s.label}</div><div class="js-stat">${s.stat}</div><div class="js-stat-label">${s.statLabel}</div><div class="js-note">${s.note}</div>${i < block.stages.length - 1 ? '<div class="journey-connector"></div>' : ''}</div>`).join('')}</div></div>`;
-    case 'pains':
-      return `<div class="block-pains"><h3>${block.title}</h3><div class="pain-list">${block.items.map((p,i) => `<div class="pain-item"><span class="pi-num">${String(i+1).padStart(2,'0')}</span><div class="pi-body"><div class="pi-title">${p.title}</div><div class="pi-desc">${p.desc}</div><div class="pi-stat">${p.stat}</div></div><span class="pi-tag tag-${p.tag}">${p.tag}</span></div>`).join('')}</div></div>`;
     case 'voice':
       return `<div class="block-voice"><h3>${block.title}</h3><div class="voice-grid">${block.quotes.map(q => `<div class="voice-card${q.wide ? ' vc-wide' : ''}"><div class="vc-quote">\u201C${q.text}\u201D</div><div class="vc-attr">${q.attr}</div></div>`).join('')}</div></div>`;
     case 'touchpoint-audit':
       return `<div class="block-touchpoint-audit"><h3>${block.title}</h3><div class="ta-grid">${block.touchpoints.map(t => `<div class="ta-row${t.tone ? ' ta-t-' + t.tone : ''}"><div class="ta-surface">${t.surface}</div><span class="ta-badge ta-${t.badge}">${t.verdict}</span><div class="ta-note">${t.note}</div></div>`).join('')}</div>${block.footnote ? `<p class="ta-footnote">${block.footnote}</p>` : ''}</div>`;
     case 'discovery-trio':
       return `<div class="block-discovery-trio"><h3>${block.title}</h3><div class="dt-grid">${block.items.map(it => `<div class="dt-cell dt-${it.tone}"><div class="dt-value">${it.value}</div><div class="dt-label">${it.label}</div><div class="dt-hint">${it.hint}</div></div>`).join('')}</div>${block.footnote ? `<p class="dt-footnote">${block.footnote}</p>` : ''}</div>`;
-    case 'sample-stack':
-      return `<div class="block-sample-stack"><h3>${block.title}</h3><div class="ss-rows">${block.rows.map(r => `<div class="ss-row"><div><div class="ss-label">${r.label}</div><div class="ss-sub">${r.sub}</div></div><div class="ss-value">${r.value}</div></div>`).join('')}</div>${block.footnote ? `<p class="ss-footnote">${block.footnote}</p>` : ''}</div>`;
     case 'direct-breakdown':
       return `<div class="block-direct-breakdown"><h3>${block.title}</h3><div class="db-head"><div class="db-headline">${block.headline}</div><div class="db-headline-label">${block.headlineLabel}</div>${block.commentN != null ? `<div class="db-comments">${block.commentN} ${block.commentLabel || 'comments'}</div>` : ''}</div><div class="db-stack">${block.segments.map(s => `<div class="db-seg-row"><span class="db-seg-pct">${s.pct}%</span><div class="db-seg-track"><div class="db-seg-fill" style="width:0%" data-width="${s.pct}%"></div></div><span class="db-seg-label">${s.label}</span></div>`).join('')}</div>${block.note ? `<p class="db-note">${block.note}</p>` : ''}</div>`;
     case 'chart':
