@@ -63,7 +63,7 @@
       transition: opacity 0.3s var(--ease-out-quart);
     }
     .topbar.scrolled .topbar-brand { opacity: 0; pointer-events: none; }
-    .topbar-brand span { font-weight: 400; color: var(--ink-3); margin-left: 8px; font-size: 13px; }
+    .topbar-brand span { font-weight: 500; color: var(--teal); margin-left: 8px; font-size: 11px; letter-spacing: 0.04em; background: var(--teal-soft); padding: 3px 10px; border-radius: 999px; }
     .topbar-logo {
       justify-self: end;
       transition: opacity 0.3s var(--ease-out-quart);
@@ -694,7 +694,7 @@
     }
     .item-nav-btn:hover { border-color: var(--teal); color: var(--ink); }
     .item-nav-btn .nav-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-4); }
-    .item-nav-btn .nav-title { font-weight: 600; color: var(--ink); }
+    .item-nav-btn .nav-title { font-weight: 600; color: var(--ink); display: block; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .item-nav-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
     .item-counter { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink-4); }
 
@@ -1003,8 +1003,9 @@
     /* ═══════════════════════════════════════════════════ */
     .edition-marker {
       font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
-      letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-4);
-      margin-bottom: 24px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);
+      margin-bottom: 24px; background: var(--track-bg); display: inline-block;
+      padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border-light);
     }
     .section-footer {
       margin-top: 64px; padding: 32px 0; border-top: 1px solid var(--border-light);
@@ -2199,11 +2200,11 @@ function buildDeepDiveBody(section, index) {
     <div class="item-nav">
       <button class="item-nav-btn" onclick="navigateItem('prev')">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
-        <div class="nav-text"><span class="nav-label">Previous</span><br><span class="nav-title">${items[prevI].title.substring(0,40)}…</span></div>
+        <div class="nav-text"><span class="nav-label">Previous</span><br><span class="nav-title">${items[prevI].title}</span></div>
       </button>
       <span class="item-counter">${index+1} / ${items.length}</span>
       <button class="item-nav-btn" onclick="navigateItem('next')">
-        <div class="nav-text"><span class="nav-label">Next</span><br><span class="nav-title">${items[nextI].title.substring(0,40)}…</span></div>
+        <div class="nav-text"><span class="nav-label">Next</span><br><span class="nav-title">${items[nextI].title}</span></div>
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
       </button>
     </div>`;
