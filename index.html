@@ -1567,11 +1567,11 @@
   <div class="app">
     <header class="topbar">
       <div class="topbar-brand">R&I Newsletter<span>Q1 2026</span></div>
-      <nav class="pill-nav" id="pillNav">
+      <nav class="pill-nav" id="pillNav" role="tablist" aria-label="Newsletter sections">
         <div class="pill-indicator" id="pillIndicator"></div>
-        <button class="active" data-section="headlines" onclick="switchSection('headlines')">Headlines</button>
-        <button data-section="more-research" onclick="switchSection('more-research')">More Research</button>
-        <button data-section="meet-customer" onclick="switchSection('meet-customer')">Meet the Customer</button>
+        <button role="tab" aria-selected="true" aria-controls="section-headlines" class="active" data-section="headlines" onclick="switchSection('headlines')">Headlines</button>
+        <button role="tab" aria-selected="false" aria-controls="section-more-research" data-section="more-research" onclick="switchSection('more-research')">More Research</button>
+        <button role="tab" aria-selected="false" aria-controls="section-meet-customer" data-section="meet-customer" onclick="switchSection('meet-customer')">Meet the Customer</button>
       </nav>
       <div class="topbar-logo">
         <svg width="30" height="33" viewBox="0 0 525 568" fill="none">
@@ -1585,7 +1585,7 @@
       <!-- ═══════════════════════════════════════════ -->
       <!-- SECTION 1: HEADLINES                        -->
       <!-- ═══════════════════════════════════════════ -->
-      <div class="section active" id="section-headlines">
+      <div class="section active" id="section-headlines" role="tabpanel" aria-label="Headlines">
         <div class="content">
           <div class="edition-marker">R&I Newsletter · Issue 04 · Q1 2026</div>
           <div class="overview-header">
@@ -1651,7 +1651,7 @@
       <!-- ═══════════════════════════════════════════ -->
       <!-- SECTION 2: MORE RESEARCH                    -->
       <!-- ═══════════════════════════════════════════ -->
-      <div class="section" id="section-more-research">
+      <div class="section" id="section-more-research" role="tabpanel" aria-label="More Research">
         <div class="content">
           <div class="edition-marker">R&I Newsletter · Issue 04 · Q1 2026</div>
           <div class="overview-header">
@@ -1702,7 +1702,7 @@
       <!-- ═══════════════════════════════════════════ -->
       <!-- SECTION 3: MEET THE CUSTOMER                -->
       <!-- ═══════════════════════════════════════════ -->
-      <div class="section" id="section-meet-customer">
+      <div class="section" id="section-meet-customer" role="tabpanel" aria-label="Meet the Customer">
         <div class="story">
           <div class="edition-marker" style="margin-bottom:32px;">R&I Newsletter · Issue 04 · Q1 2026</div>
           <div class="reveal name-reveal">
@@ -1835,7 +1835,7 @@
   </div>
 
   <div id="backdrop" onclick="collapseCard()"></div>
-  <div id="expandingPage"></div>
+  <div id="expandingPage" role="dialog" aria-modal="true" aria-label="Deep dive detail"></div>
 
 <script>
 /* ═══════════════════════════════════════════════════════ */
@@ -2096,7 +2096,9 @@ function switchSection(id) {
   incoming.classList.add('active');
 
   document.querySelectorAll('.pill-nav button').forEach(b => {
-    b.classList.toggle('active', b.dataset.section === id);
+    const isActive = b.dataset.section === id;
+    b.classList.toggle('active', isActive);
+    b.setAttribute('aria-selected', isActive);
   });
 
   moveIndicator();
@@ -2263,6 +2265,7 @@ function expandCard(section, index) {
   expandedFromCard = card;
   card.style.opacity = '0';
   document.getElementById('backdrop').classList.add('visible');
+  document.querySelector('.app').setAttribute('inert', '');
 
   const vpW = window.innerWidth, vpH = window.innerHeight;
   const isMobile = vpW <= 480;
@@ -2323,6 +2326,7 @@ function collapseCard() {
 
   document.getElementById('ddBody').classList.remove('visible');
   document.getElementById('backdrop').classList.remove('visible');
+  document.querySelector('.app').removeAttribute('inert');
   card.style.opacity = '';
 
   const cr = card.getBoundingClientRect();
@@ -2534,7 +2538,7 @@ function buildDeepDiveBody(section, index) {
   const backLabel = section === 'headlines' ? 'Back to headlines' : 'Back to more research';
 
   const header = `
-    <button class="back-btn" onclick="collapseCard()">
+    <button class="back-btn" aria-label="Close deep dive" onclick="collapseCard()">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
       ${backLabel}
     </button>
