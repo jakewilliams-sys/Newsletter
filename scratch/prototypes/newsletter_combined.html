@@ -864,6 +864,10 @@
     .as-amount { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; color: var(--ink); white-space: nowrap; position: absolute; top: 26px; left: 0; transform: translateX(-50%); }
     .as-stem { width: 1px; height: 16px; background: var(--border); margin: 4px auto; }
     .as-reaction { font-size: 10px; color: var(--ink-3); line-height: 1.4; width: max-content; max-width: 130px; position: absolute; top: 64px; left: 0; transform: translateX(-50%); text-align: center; white-space: normal; }
+    .as-edge-right .as-amount,
+    .as-edge-right .as-reaction { transform: translateX(-100%); left: 0; text-align: right; }
+    .as-edge-left .as-amount,
+    .as-edge-left .as-reaction { transform: none; left: 0; text-align: left; }
     .as-end-min, .as-end-max { position: absolute; top: 50%; transform: translateY(-50%); font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600; color: var(--ink-3); white-space: nowrap; }
     .as-end-min { right: calc(100% + 10px); }
     .as-end-max { left: calc(100% + 10px); }
@@ -971,7 +975,7 @@
       letter-spacing: 0.04em; margin-top: 12px;
     }
     .db-stack { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-    .db-seg-row { display: grid; grid-template-columns: 44px 1fr 40px; align-items: center; gap: 12px; }
+    .db-seg-row { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 12px; }
     .db-seg-pct { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: var(--ink); }
     .db-seg-track { height: 22px; background: oklch(96% 0.005 250); border-radius: 4px; overflow: hidden; }
     .db-seg-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.8s var(--ease-out-expo); }
@@ -1386,6 +1390,8 @@
       .bar-label { font-size: 12px; }
       .bar-row { grid-template-columns: 80px 1fr 44px; }
       .deviation-item .dv-data { white-space: normal; }
+      .db-seg-row { grid-template-columns: 36px 1fr auto; gap: 10px; }
+      .db-seg-label { font-size: 12px; }
       .block-funnel-compare { overflow-x: auto; }
       .block-pain-matrix { overflow-x: auto; }
       #expandingPage { overflow-x: hidden; }
@@ -1444,7 +1450,7 @@
       .fc-cell { padding: 8px 16px; }
       .pm-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-      .block-anchor-scale { overflow: hidden; }
+      .block-anchor-scale { overflow: visible; }
       .as-track { margin: 40px 32px 150px; }
       .as-end-min { right: calc(100% + 6px); font-size: 8px; }
       .as-end-max { left: calc(100% + 6px); font-size: 8px; }
@@ -1478,8 +1484,12 @@
       .dv-label { font-size: 12px; }
       .dv-desc { font-size: 11px; }
 
-      .db-seg-row { grid-template-columns: 32px 1fr 32px; }
+      .db-seg-row { grid-template-columns: 32px 1fr auto; gap: 8px; }
+      .db-seg-pct { font-size: 11px; }
+      .db-seg-label { font-size: 11px; white-space: nowrap; }
       .db-headline { font-size: clamp(28px, 5vw, 40px); }
+      .db-headline-label { font-size: 12px; }
+      .db-note { font-size: 11px; }
 
       .gap-metric .gm-value { font-size: clamp(24px, 4vw, 32px); }
       .gap-metric .gm-label { font-size: 13px; }
@@ -2488,7 +2498,10 @@ function buildBlock(block) {
     case 'funnel-compare':
       return `<div class="block-funnel-compare"><h3>${block.title}</h3><div class="fc-row"><div class="fc-label"></div>${block.brands.map(b => `<div class="fc-header">${b.name}</div>`).join('')}</div>${block.stages.map(s => `<div class="fc-row"><div class="fc-label">${s.label}</div>${block.brands.map(b => {const v=s.values[b.key]; return `<div class="fc-cell"><div class="fc-bar fc-tint-${b.tint}" style="width:${Math.round(v/block.maxVal*100)}%">${v}%</div></div>`;}).join('')}</div>`).join('')}</div>`;
     case 'anchor-scale':
-      return `<div class="block-anchor-scale"><h3>${block.title}</h3><div class="as-track">${block.scaleMin?`<span class="as-end-min">${block.scaleMin}</span>`:''}${block.scaleMax?`<span class="as-end-max">${block.scaleMax}</span>`:''}${block.markers.map(m => `<div class="as-marker" style="left:${m.position}%"><div class="as-dot as-${m.tone}"></div><div class="as-amount">${m.amount}</div><div class="as-reaction">${m.reaction}</div></div>`).join('')}</div><div class="as-labels"><span>${block.leftLabel}</span><span>${block.rightLabel}</span></div></div>`;
+      return `<div class="block-anchor-scale"><h3>${block.title}</h3><div class="as-track">${block.scaleMin?`<span class="as-end-min">${block.scaleMin}</span>`:''}${block.scaleMax?`<span class="as-end-max">${block.scaleMax}</span>`:''}${block.markers.map(m => {
+        const edge = m.position <= 15 ? 'as-edge-left' : m.position >= 70 ? 'as-edge-right' : '';
+        return `<div class="as-marker ${edge}" style="left:${m.position}%"><div class="as-dot as-${m.tone}"></div><div class="as-amount">${m.amount}</div><div class="as-reaction">${m.reaction}</div></div>`;
+      }).join('')}</div><div class="as-labels"><span>${block.leftLabel}</span><span>${block.rightLabel}</span></div></div>`;
     default: return '';
   }
 }
