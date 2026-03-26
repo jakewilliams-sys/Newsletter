@@ -812,6 +812,11 @@
       transition: opacity 0.7s var(--ease-out-quart), transform 0.7s var(--ease-out-quart);
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
+    .dd-reveal {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.5s var(--ease-out-quart), transform 0.5s var(--ease-out-quart);
+    }
+    .dd-reveal.visible { opacity: 1; transform: translateY(0); }
     .chapter { margin-bottom: 80px; }
     .chapter-title {
       font-size: clamp(28px, 3.5vw, 38px); font-weight: 700;
@@ -1245,6 +1250,37 @@
       .chapter-break { margin: 48px 0 40px; }
 
       .mosaic-tile { min-width: 100%; }
+    }
+
+    /* ═══════════════════════════════════════════════════ */
+    /* PRINT STYLESHEET                                   */
+    /* ═══════════════════════════════════════════════════ */
+    @media print {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+      body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .app, .topbar, .pill-nav, .pill-indicator, #backdrop,
+      .section-footer, .item-nav, .back-btn, .hero-sparkline { display: none !important; }
+      #expandingPage {
+        position: static !important; width: 100% !important; height: auto !important;
+        overflow: visible !important; opacity: 1 !important;
+        transform: none !important; box-shadow: none !important;
+        border: none !important; border-radius: 0 !important;
+      }
+      .story { padding: 24px 0 !important; max-width: 100% !important; }
+      .dd-body, .dd-reveal { opacity: 1 !important; transform: none !important; }
+      .ep-tag, .ep-title, .dd-meta { break-inside: avoid; }
+      .block-provocation, .block-contrast, .block-mirror, .block-cascade,
+      .block-chart, .block-voice, .block-expectations, .block-ripple,
+      .block-gap, .block-direct-breakdown, .block-verdict,
+      .block-touchpoint-audit, .block-discovery-trio, .block-survey-branch,
+      .block-temp-compare, .block-mosaic, .block-teardown, .block-pain-matrix,
+      .block-funnel-compare, .block-anchor-scale, .block-tension,
+      .block-deviations, .block-quote, .block-narrative {
+        break-inside: avoid; page-break-inside: avoid;
+      }
+      .block-source { break-before: avoid; }
+      .bar-fill, .db-seg-fill { width: var(--print-w, 0%) !important; }
+      a[href]::after { content: none !important; }
     }
   </style>
 </head>
@@ -1989,7 +2025,7 @@ function expandCard(section, index) {
       body.innerHTML = buildDeepDiveBody(expandedSection, currentIndex);
       requestAnimationFrame(() => {
         body.classList.add('visible');
-        setTimeout(() => animateBars(), 300);
+        setTimeout(() => { animateBars(); initBlockReveals(); }, 300);
       });
       const backBtn = page.querySelector('.back-btn');
       if (backBtn) backBtn.focus({ preventScroll: true });
@@ -2002,6 +2038,7 @@ function expandCard(section, index) {
 function collapseCard() {
   if (isAnimating || !isExpanded) return;
   isAnimating = true;
+  if (ddRevealObserver) { ddRevealObserver.disconnect(); ddRevealObserver = null; }
 
   const items = getItems(expandedSection);
   const page = document.getElementById('expandingPage');
@@ -2110,7 +2147,7 @@ function navigateItem(dir) {
       body.style.transform = 'translateX(0)';
       body.style.opacity = '1';
       body.classList.add('visible');
-      setTimeout(() => animateBars(), 200);
+      setTimeout(() => { animateBars(); initBlockReveals(); }, 200);
       isAnimating = false;
     });
   }, 380);
@@ -2122,7 +2159,37 @@ function animateBars() {
   document.querySelectorAll('.db-seg-fill').forEach(b => { b.style.width = b.dataset.width; });
 }
 
+let ddRevealObserver = null;
+function initBlockReveals() {
+  if (ddRevealObserver) ddRevealObserver.disconnect();
+  const page = document.getElementById('expandingPage');
+  ddRevealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        ddRevealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, root: page });
+
+  const blocks = page.querySelectorAll('.dd-reveal');
+  blocks.forEach((el, i) => {
+    el.classList.remove('visible');
+    if (i < 3) {
+      el.style.transitionDelay = `${i * 0.08}s`;
+    } else {
+      el.style.transitionDelay = '0s';
+    }
+    ddRevealObserver.observe(el);
+  });
+}
+
 function buildBlock(block) {
+  const inner = buildBlockInner(block);
+  if (!inner) return '';
+  return `<div class="dd-reveal">${inner}</div>`;
+}
+function buildBlockInner(block) {
   switch (block.type) {
     case 'mirror':
       return `<div class="block-mirror"><h3>${block.title}</h3><div class="mirror-layout"><div class="mirror-side side-in"><div class="mirror-label">${block.leftLabel}</div>${block.leftItems.map(it => `<div class="mirror-item"><div class="mi-text">${it.text}</div><div class="mi-detail">${it.detail}</div></div>`).join('')}</div><div class="mirror-divider"></div><div class="mirror-side side-out"><div class="mirror-label">${block.rightLabel}</div>${block.rightItems.map(it => `<div class="mirror-item"><div class="mi-text">${it.text}</div><div class="mi-detail">${it.detail}</div></div>`).join('')}</div></div></div>`;
