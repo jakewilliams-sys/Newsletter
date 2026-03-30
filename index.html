@@ -848,6 +848,8 @@
       letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-4);
     }
     .profile-strip .detail-value { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .cd-inline { font-size: 13px; color: var(--ink-3); line-height: 1.55; margin-bottom: 40px; max-width: 55ch; }
+    .cd-inline strong { color: var(--teal); font-weight: 600; }
     .plus-badge {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;
@@ -1430,13 +1432,13 @@
       <div class="section" id="section-meet-customer" role="tabpanel" aria-label="Meet the Customer">
         <div class="story">
           <div class="edition-marker" style="margin-bottom:32px;">R&I Newsletter · Issue 04 · Q1 2026</div>
-          <div class="overview-header" style="margin-bottom:48px;">
+          <div class="overview-header" style="margin-bottom:20px;">
             <div class="overview-header-left">
               <h1>Meet the customer</h1>
-              <p class="overview-subtitle">Every week, the R&I team conducts around 30 in-depth interviews with UK customers as part of our Continuous Discovery programme — a mix of human-led and AI-moderated conversations that follow Teresa Torres' "last order" methodology. Each interview reconstructs a customer's most recent order step-by-step, from trigger to delivery, giving us a real-time pulse on how people actually experience the category.</p>
-              <p class="overview-subtitle" style="margin-top:8px;">Each issue, we select one customer whose story connects to a research theme from the quarter. The aim is simple: put a face and a voice to the patterns the data reveals.</p>
+              <p class="overview-subtitle">Each issue, we highlight one customer whose story connects to a research theme from the quarter — putting a face and a voice to the patterns the data reveals.</p>
             </div>
           </div>
+          <p class="cd-inline">Sourced from <strong>Continuous Discovery</strong> — our weekly programme of ~30 in-depth interviews with UK customers, following Teresa Torres' "last order" methodology.</p>
           <div class="reveal name-reveal">
             <h1>Maria</h1>
             <p class="subtitle">London · Customer since March 2024 · <strong>Plus Gold</strong></p>
@@ -1794,7 +1796,21 @@ note:'Illustrative mix from transactional sampling. <strong>So what:</strong> cr
 {position:22,amount:'\u00a396 saved',reaction:'\u201CAbout what I paid\u2014so what\u2019s the point?\u201D \u2192 exit risk',tone:'neg'},
 {position:78,amount:'\u00a396 saved',reaction:'\u201CThat\u2019s real money back\u201D \u2192 renew',tone:'pos'}],leftLabel:'Churn risk',rightLabel:'Retention'},
 {type:'verdict',text:'A savings dashboard is not a loyalty loop. Anchors and private expectations decide whether a number feels fair; the same figure has renewed some members and pushed others toward the door. Retrospective totals compete with in-the-moment value \u2014 treat any big dashboard investment as a retention gamble until Plus-specific evidence says otherwise.'},
-{type:'source',url:'https://docs.google.com/presentation/d/1KOp0tcfoZ0ZO9ZaIV0BGIdHZVhw9LrYgbG8F7oMFqLc/edit'}]}];
+{type:'source',url:'https://docs.google.com/presentation/d/1KOp0tcfoZ0ZO9ZaIV0BGIdHZVhw9LrYgbG8F7oMFqLc/edit'}]},{tag:'Growth / Platform',title:'Web is your invisible infrastructure — and it\'s leaking MAU',author:'Andrea Aggio',date:'March 2026',intro:'Andrea\'s research reframes web from a secondary channel to critical MAU infrastructure. Combining behavioural analysis of 2.2 million web users with 13 in-depth interviews across six user profiles, the study reveals that web isn\'t a bridge to the app — for most users it IS the product — and addressable execution gaps are driving them away.',statValue:'28%',statContext:'Nearly 1 in 3 first Deliveroo orders happen on Web — making it the 2nd largest acquisition channel after iOS. 2.2M users placed 13.6M orders in 2025, and 79% of them never use the app.',findings:[{text:'<strong>Web is the 2nd largest first-order channel.</strong> 28% of new customer orders come through web — 868K first orders in 2025 in the UK alone.'},{text:'<strong>Context drives platform choice, not preference.</strong> 11 of 13 participants use web because the device is nearest — desktop has structural advantages the current site doesn\'t leverage.'},{text:'<strong>Homepage clutter is the #1 web problem.</strong> Confusing tags, invisible login states, and missing postcode confirmation drive users away — execution gaps, not product gaps.'},{text:'<strong>Uber Eats is winning on web basics.</strong> Cleaner homepage, sticky sidebar, simpler filter bar — users describe Deliveroo as feeling "underdeveloped as a storefront."'}],chart:{title:'First-order platform split (UK 2025)',bars:[{label:'iOS',value:52,display:'52%',primary:true},{label:'Web',value:28,display:'28%'},{label:'Android',value:16,display:'16%'},{label:'Other',value:4,display:'4%'}],caption:'Web is the second largest acquisition channel — nearly 1 in 3 first orders.'},quote:{text:'I type "de" and it autocompletes. I\'m logged in, my address is saved, and within seconds I\'m browsing. Nine times out of ten I\'ll reorder something familiar.',attr:'Oliver, Cross-Platform Switcher — 478 orders in 2025'},narrative:'Web isn\'t a waiting room for the app. For four out of five web users, it IS the product — and right now the product has addressable gaps that competitors already do better.',sourceUrl:'https://docs.google.com/presentation/d/10dTq7-lyjuyD-d2t7TjArgW_84uTQpjHSck8_K-O5iY/edit',customBlocks:[
+{type:'provocation',statement:'<span class="pv-num">79%</span> of web users never open the app. They aren\u2019t waiting to convert \u2014 web IS their Deliveroo.',insight:'The mental model of web-as-funnel-to-app is wrong. Four in five web orderers stay on web permanently. Losing them on web means <strong>losing them entirely</strong>.'},
+{type:'chart',title:'Web user behaviour in 2025',bars:[
+{label:'Web only',value:79,display:'79%',primary:true},
+{label:'Cross-platform',value:21,display:'21%'}],caption:'The vast majority of web users never download the app \u2014 web is a permanent channel, not a stepping stone.'},
+{type:'voice',title:'Why they stay on web',quotes:[
+{text:'The apps take some space in your phone. And there\u2019s permissions you have to allow. I prefer to use websites for any kind of service.',attr:'Sophie, Mobile Web Loyalist \u2014 208 orders in 2025',wide:true},
+{text:'I use Google Maps to search for restaurants. It takes me to the website. I never think about opening an app.',attr:'Andrew, New to Deliveroo',wide:false},
+{text:'If I need storage space, the Deliveroo app goes first. It doesn\u2019t affect anything \u2014 the browser works fine.',attr:'Hel, Desktop Loyal \u2014 256 desktop orders in 2025',wide:false}]},
+{type:'expectations',title:'Three jobs to unlock web MAU',items:[
+{stat:'Fix',label:'Unblock intent',desc:'Broken mobile nav, homepage clutter, and swipe-back bugs turn <strong>ready buyers</strong> into abandoners.'},
+{stat:'Win',label:'Make value obvious',desc:'Desktop\u2019s UVP is control and visibility \u2014 multi-tab comparison, larger catalogues. The current site <strong>slows that down</strong> instead of enabling it.'},
+{stat:'Build',label:'Turn moments into MAU',desc:'Corporate allowance users are habitual but stop at the limit. Accessibility users have <strong>zero alternative</strong> to web.'}]},
+{type:'verdict',text:'Ship a <strong>web-native strategy</strong> that treats each platform for how it\u2019s actually used: fix the friction that blocks ready buyers, make value obvious for those still deciding, and build preference with those who\u2019ll return later. The gaps are execution, not product \u2014 and competitors are already doing it better. Web has no dedicated strategy despite being a major acquisition surface and a standalone channel for the majority of its users.'},
+{type:'source',url:'https://docs.google.com/presentation/d/10dTq7-lyjuyD-d2t7TjArgW_84uTQpjHSck8_K-O5iY/edit'}]}];
 
 /* ═══════════════════════════════════════════════════════ */
 /* STATE                                                   */
